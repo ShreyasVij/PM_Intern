@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+import csv
 
 app = Flask(__name__)
 
@@ -39,6 +40,25 @@ def receive_profile():
         return jsonify({"message": "Profile saved successfully"}), 201 # Return a success message
     else:
         return jsonify({"error": "Failed to save profile"}), 500
+
+@app.route("/api/internships", methods=["GET"])
+def display_internships():
+    """Reads internships.csv and returns it as JSON"""
+    internships = []
+
+    try:
+        with open('data/internships.csv', mode='r', newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                internships.append(row)
+
+        return jsonify({"internships": internships}), 200  # Success response
+
+    except FileNotFoundError:
+        return jsonify({"error": "internships.csv not found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": f"Failed to load internships: {str(e)}"}), 500
 
 
 if __name__ == '__main__':
