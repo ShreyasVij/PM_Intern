@@ -1,0 +1,110 @@
+[
+  {
+    "name": "John",
+    "skills_possessed": [
+      "java",
+      "cpp"
+    ],
+    "location_preference": "delhi",
+    "candidate_id": "CAND_f1e873e4"
+  },
+  {
+    "candidate_id": "CAND1758042704896",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758043542105",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758043556805",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758043565819",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758043821372",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758044005190",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758044832146",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758044839068",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758045149987",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
+  }
+]

@@ -8717,7 +8717,7 @@
   },
   {
     "candidate_id": "CAND0497",
-    "name": "Vaishnavi D\u2019Alia",
+    "name": "Vaishnavi D’Alia",
     "education_level": "Diploma",
     "field_of_study": "Science",
     "skills_possessed": [
@@ -8783,5 +8783,25 @@
       "Data Science"
     ],
     "location_preference": "Thane"
+  },
+  {
+    "candidate_id": "CAND_f1e873e4",
+    "name": "John",
+    "skills_possessed": [
+      "java",
+      "cpp"
+    ],
+    "location_preference": "delhi"
+  },
+  {
+    "candidate_id": "CAND1758042704896",
+    "name": "Harry Woods",
+    "skills_possessed": [
+      "content writing",
+      "aws",
+      "data analysis",
+      "javascript"
+    ],
+    "location_preference": "Mumbai"
   }
 ]
