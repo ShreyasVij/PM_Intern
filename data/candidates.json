@@ -8805,19 +8805,12 @@
     "location_preference": "Mumbai"
   },
   {
-    "candidate_id": "CAND1758093645815",
-    "name": "Sanchit Kumar Mishra",
+    "candidate_id": "CAND1758125344805",
+    "name": "Sanchit",
     "skills_possessed": [
-      "cpp"
+      "java",
+      "python"
     ],
-    "location_preference": "Chandigarh"
-  },
-  {
-    "candidate_id": "CAND1758106746648",
-    "name": "Sanchit Kumar Mishra",
-    "skills_possessed": [
-      "communication"
-    ],
-    "location_preference": "Los Angeles"
+    "location_preference": "mohali"
   }
 ]
