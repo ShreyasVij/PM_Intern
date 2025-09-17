@@ -147,11 +147,11 @@ async function loadAll(){
     // reset UI counts and placeholders
     candidatesCount.textContent = 'No search yet';
     internCount.textContent = 'No search yet';
-    candidatesList.innerHTML = '<div class="empty"><h3>🚀 Start Your Search</h3><p>Type a name, skill, or location to discover amazing candidates!</p></div>';
-    internshipsList.innerHTML = '<div class="empty"><h3>🎯 Find Opportunities</h3><p>Search for internship titles, companies, or required skills!</p></div>';
+    candidatesList.innerHTML = '<div class="empty"><h3> Start Your Search</h3><p>Type a name, skill, or location to discover amazing candidates!</p></div>';
+    internshipsList.innerHTML = '<div class="empty"><h3> Find Opportunities</h3><p>Search for internship titles, companies, or required skills!</p></div>';
     clearRecommendations();
   } catch (err){
-    alert('❌ Error loading data: ' + err.message);
+    alert(' Error loading data: ' + err.message);
   } finally {
     setLoading(false);
   }
@@ -198,11 +198,11 @@ function renderCandidates(){
   candidatesList.innerHTML = '';
   if (!filtered.length){
     candidatesCount.textContent = '0 results';
-    candidatesList.innerHTML = '<div class="empty"><h3>🔍 No matches found</h3><p>Try different keywords or clear some filters!</p></div>';
+    candidatesList.innerHTML = '<div class="empty"><h3> No matches found</h3><p>Try different keywords or clear some filters!</p></div>';
     candidatesShowMore.style.display = 'none';
     return;
   }
-  candidatesCount.textContent = `🎯 ${filtered.length} candidate${filtered.length === 1 ? '' : 's'} found`;
+  candidatesCount.textContent = ` ${filtered.length} candidate${filtered.length === 1 ? '' : 's'} found`;
   const toShow = filtered.slice(0, candidatesLimit);
   for (const c of toShow){
     const card = document.createElement('div');
@@ -214,10 +214,10 @@ function renderCandidates(){
     card.innerHTML = `
       <div class="card-header">
         <div>
-          <div class="card-title">👤 ${escapeHtml(c.name || '—')}</div>
-          <div class="small">🆔 ${escapeHtml(c.candidate_id || '—')}</div>
+          <div class="card-title"> ${escapeHtml(c.name || '—')}</div>
+          <div class="small"> ${escapeHtml(c.candidate_id || '—')}</div>
         </div>
-        <div class="small">📍 ${escapeHtml(c.location_preference || '—')}</div>
+        <div class="small"> ${escapeHtml(c.location_preference || '—')}</div>
       </div>
       <div class="badges">${(c.skills_possessed||[]).slice(0,8).map(s=>`<span class="badge">${escapeHtml(s)}</span>`).join('')}</div>
     `;
@@ -240,11 +240,11 @@ function renderInternships(){
   internshipsList.innerHTML = '';
   if (!filtered.length){
     internCount.textContent = '0 results';
-    internshipsList.innerHTML = '<div class="empty"><h3>🔍 No opportunities found</h3><p>Try different search terms or locations!</p></div>';
+    internshipsList.innerHTML = '<div class="empty"><h3> No opportunities found</h3><p>Try different search terms or locations!</p></div>';
     internShowMore.style.display = 'none';
     return;
   }
-  internCount.textContent = `💼 ${filtered.length} internship${filtered.length === 1 ? '' : 's'} found`;
+  internCount.textContent = ` ${filtered.length} internship${filtered.length === 1 ? '' : 's'} found`;
   const toShow = filtered.slice(0, internshipsLimit);
 
   const grid = document.createElement('div');
@@ -256,10 +256,10 @@ function renderInternships(){
     div.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
-          <div class="card-title">💼 ${escapeHtml(it.title)}</div>
-          <div class="small">🏢 ${escapeHtml(it.organization)} • 📍 ${escapeHtml(it.location)}</div>
+          <div class="card-title"> ${escapeHtml(it.title)}</div>
+          <div class="small"> ${escapeHtml(it.organization)} •  ${escapeHtml(it.location)}</div>
         </div>
-        <div class="small">🏷️ ${escapeHtml(it.sector||'—')}</div>
+        <div class="small"> ${escapeHtml(it.sector||'—')}</div>
       </div>
       <div class="badges" style="margin-top:10px">
         ${(it.skills_required||[]).slice(0,8).map(s=>`<span class="badge">${escapeHtml(s)}</span>`).join('')}
@@ -284,7 +284,7 @@ function selectCandidate(candidateId){
 // fetch recommendations from backend
 async function fetchRecommendations(candidateId){
   if (!candidateId) return;
-  recommendationsArea.innerHTML = '<div class="small" style="text-align:center;padding:2rem;"><div class="loading" style="position:relative;height:20px;">🤖 AI is analyzing the perfect matches...</div></div>';
+  recommendationsArea.innerHTML = '<div class="small" style="text-align:center;padding:2rem;"><div class="loading" style="position:relative;height:20px;"> AI is analyzing the perfect matches...</div></div>';
   try {
     const res = await fetch(`${API_BASE}/recommendations/${encodeURIComponent(candidateId)}`);
     const json = await res.json();
@@ -292,7 +292,7 @@ async function fetchRecommendations(candidateId){
     const recs = Array.isArray(json.recommendations) ? json.recommendations : [];
     renderRecommendations(candidateId, recs);
   } catch (err){
-    recommendationsArea.innerHTML = `<div class="empty"><h4>❌ Oops! Something went wrong</h4><p>${escapeHtml(err.message)}</p><div class="note" style="margin-top:1rem"><strong>💡 Troubleshooting:</strong> If you just created a profile, make sure your backend properly saves it to <code>candidates.json</code> for the AI recommendations to work.</div></div>`;
+    recommendationsArea.innerHTML = `<div class="empty"><h4> Oops! Something went wrong</h4><p>${escapeHtml(err.message)}</p><div class="note" style="margin-top:1rem"><strong>💡 Troubleshooting:</strong> If you just created a profile, make sure your backend properly saves it to <code>candidates.json</code> for the AI recommendations to work.</div></div>`;
   }
 }
 
@@ -300,7 +300,7 @@ async function fetchRecommendations(candidateId){
 function renderRecommendations(candidateId, recs){
   recommendationsArea.innerHTML = '';
   if (!recs.length) {
-    recommendationsArea.innerHTML = '<div class="empty"><h4>🤔 No matches found</h4><p>Our AI couldn\'t find suitable internships for this candidate\'s profile. Try expanding the search criteria!</p></div>';
+    recommendationsArea.innerHTML = '<div class="empty"><h4> No matches found</h4><p>Our AI couldn\'t find suitable internships for this candidate\'s profile. Try expanding the search criteria!</p></div>';
     return;
   }
   const candidate = candidates.find(c => c.candidate_id === candidateId) || {};
@@ -317,12 +317,12 @@ function renderRecommendations(candidateId, recs){
     block.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
         <div>
-          <div class="card-title">🎯 ${escapeHtml(r.title || it.title || '—')}</div>
-          <div class="small">🏢 ${escapeHtml(r.organization || it.organization || '')} • 📍 ${escapeHtml(it.location || r.location || '—')}</div>
+          <div class="card-title"> ${escapeHtml(r.title || it.title || '—')}</div>
+          <div class="small"> ${escapeHtml(r.organization || it.organization || '')} •  ${escapeHtml(it.location || r.location || '—')}</div>
         </div>
-        <div class="small">📊 Score: <span class="match">${escapeHtml(String(r.match_score ?? '0'))}</span></div>
+        <div class="small"> Score: <span class="match">${escapeHtml(String(r.match_score ?? '0'))}</span></div>
       </div>
-      <div style="margin-bottom:8px"><strong>🎯 Matched Skills:</strong> ${matchedHtml}</div>
+      <div style="margin-bottom:8px"><strong> Matched Skills:</strong> ${matchedHtml}</div>
       <div class="small" style="color:var(--text-muted)">${escapeHtml(it.description || '')}</div>
     `;
     recommendationsArea.appendChild(block);
@@ -333,7 +333,7 @@ function renderRecommendations(candidateId, recs){
 
 // clear recommendations
 function clearRecommendations(){
-  recommendationsArea.innerHTML = '<div class="empty"><h4>🤖 Smart Matching</h4><p>Select a candidate to see personalized internship recommendations powered by AI!</p></div>';
+  recommendationsArea.innerHTML = '<div class="empty"><h4> Smart Matching</h4><p>Select a candidate to see personalized internship recommendations powered by AI!</p></div>';
   selectedCandidateLabel.textContent = 'none';
   selectedCandidateId = null;
 }
@@ -381,7 +381,7 @@ internLocation.addEventListener('input', debInterns);
 
 // Auto-select new candidate after creation
 async function autoSelectNewCandidate(candidateId, candidateName) {
-  console.log(`🎯 Auto-selecting candidate: ${candidateId} (${candidateName})`);
+  console.log(` Auto-selecting candidate: ${candidateId} (${candidateName})`);
   
   // Clear all search filters first to ensure we can find the candidate
   searchName.value = '';
@@ -413,7 +413,7 @@ async function autoSelectNewCandidate(candidateId, candidateName) {
   
   // If not found by ID search, try by name
   if (!candidateCard) {
-    console.log(`🔍 Candidate ${candidateId} not found by ID, trying name search`);
+    console.log(` Candidate ${candidateId} not found by ID, trying name search`);
     searchName.value = candidateName;
     renderCandidates();
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -426,7 +426,7 @@ async function autoSelectNewCandidate(candidateId, candidateName) {
       const idElement = card.querySelector('.small');
       if (idElement) {
         const cardIdText = idElement.textContent;
-        const match = cardIdText.match(/🆔\s*(\w+)/);
+        const match = cardIdText.match(/\s*(\w+)/);
         if (match) {
           const cardId = match[1];
           // Extract timestamp from candidate ID (CAND + timestamp)
@@ -445,7 +445,7 @@ async function autoSelectNewCandidate(candidateId, candidateName) {
     if (bestMatch) {
       candidateCard = bestMatch.card;
       candidateId = bestMatch.candidateId; // Update to the actual found ID
-      console.log(`📍 Found best match: ${candidateId}`);
+      console.log(` Found best match: ${candidateId}`);
     }
   }
   
@@ -461,12 +461,12 @@ async function autoSelectNewCandidate(candidateId, candidateName) {
     candidateCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     
     // Fetch recommendations
-    console.log(`🚀 Fetching recommendations for ${candidateId}`);
+    console.log(` Fetching recommendations for ${candidateId}`);
     await fetchRecommendations(candidateId);
     
-    console.log(`✅ Successfully auto-selected and loaded recommendations for ${candidateId}`);
+    console.log(` Successfully auto-selected and loaded recommendations for ${candidateId}`);
   } else {
-    console.error(`❌ Could not find candidate card for ${candidateId}`);
+    console.error(` Could not find candidate card for ${candidateId}`);
     // Fallback: just try to fetch recommendations by ID
     selectCandidate(candidateId);
     await fetchRecommendations(candidateId);
@@ -482,16 +482,16 @@ profileForm.addEventListener('submit', async (event) => {
   const skills = (pSkills.value || '').split(',').map(s=>s.trim()).filter(Boolean);
   
   if (!name || !location || !skills.length){
-    showProfileMessage('❌ Please fill all fields with valid information', true);
+    showProfileMessage(' Please fill all fields with valid information', true);
     return;
   }
   
   saveProfileBtn.disabled = true;
-  saveProfileBtn.textContent = '🔄 Creating Profile...';
+  saveProfileBtn.textContent = ' Creating Profile...';
   let createdCandidateId = null;
   
   try {
-    console.log('🔄 Starting profile save process...');
+    console.log(' Starting profile save process...');
     
     const candidate_id = 'CAND' + Date.now();
     const payload = {
@@ -501,8 +501,8 @@ profileForm.addEventListener('submit', async (event) => {
       location_preference: location
     };
     
-    showProfileMessage('🚀 Creating your profile and preparing AI matching...');
-    console.log('📤 Sending payload:', payload);
+    showProfileMessage(' Creating your profile and preparing AI matching...');
+    console.log(' Sending payload:', payload);
     
     const res = await fetch(`${API_BASE}/profile`, {
       method: 'POST',
@@ -511,7 +511,7 @@ profileForm.addEventListener('submit', async (event) => {
     });
     
     const json = await res.json();
-    console.log('📥 Server response:', json);
+    console.log(' Server response:', json);
     
     if (!res.ok) throw new Error(json.error || json.message || 'Failed to save profile');
 
@@ -521,17 +521,17 @@ profileForm.addEventListener('submit', async (event) => {
     createdCandidateId = json.candidate?.candidate_id || json.candidate_id || candidate_id;
     const createdCandidateName = json.candidate?.name || name;
     
-    console.log(`✅ Profile saved with ID: ${createdCandidateId}`);
+    console.log(` Profile saved with ID: ${createdCandidateId}`);
     
     // Refresh the candidates list to include the new profile
-    console.log('🔄 Refreshing candidate list...');
+    console.log(' Refreshing candidate list...');
     await loadAll();
     
     // Auto-select and show recommendations for the new candidate
-    showProfileMessage('🤖 AI is analyzing your profile for perfect matches...');
+    showProfileMessage(' AI is analyzing your profile for perfect matches...');
     await autoSelectNewCandidate(createdCandidateId, createdCandidateName);
     
-    showProfileMessage(`🎉 Success! Your profile is ready and AI recommendations are loaded. ID: ${createdCandidateId}`);
+    showProfileMessage(` Success! Your profile is ready and AI recommendations are loaded. ID: ${createdCandidateId}`);
     
     // Clear the form after successful save
     pName.value = '';
@@ -539,22 +539,22 @@ profileForm.addEventListener('submit', async (event) => {
     pSkills.value = '';
     
   } catch (err){
-    console.error('❌ Profile save error:', err);
-    showProfileMessage('❌ Failed to create profile: ' + err.message, true);
+    console.error(' Profile save error:', err);
+    showProfileMessage(' Failed to create profile: ' + err.message, true);
     
     // If we have a candidate ID but failed later, still try to load recommendations
     if (createdCandidateId) {
-      console.log('🔄 Attempting recovery with candidate ID:', createdCandidateId);
+      console.log(' Attempting recovery with candidate ID:', createdCandidateId);
       try {
         await loadAll();
         await autoSelectNewCandidate(createdCandidateId, name);
       } catch (recoveryErr) {
-        console.error('❌ Recovery attempt failed:', recoveryErr);
+        console.error(' Recovery attempt failed:', recoveryErr);
       }
     }
   } finally {
     saveProfileBtn.disabled = false;
-    saveProfileBtn.textContent = '🎯 Save + Get Match';
+    saveProfileBtn.textContent = ' Save + Get Match';
   }
 });
 

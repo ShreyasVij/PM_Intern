@@ -391,7 +391,7 @@
         const it = internships.find(i => i.internship_id === r.internship_id) || {};
         const internSkills = (it.skills_required || []).map(s=>s.toLowerCase());
         const matched = internSkills.filter(s=>candSkills.includes(s));
-        const matchedHtml = matched.length ? matched.map(m=>`<span class="tag" style="background:var(--success);margin-right:4px">${escapeHtml(m)}</span>`).join(' ') : '<span class="small" style="color:var(--text-dim)">⚡ Skills match to be determined</span>';
+        const matchedHtml = matched.length ? matched.map(m=>`<span class="tag" style="background:var(--success);margin-right:4px">${escapeHtml(m)}</span>`).join(' ') : '<span class="small" style="color:var(--text-dim)"> Skills match to be determined</span>';
         
         const block = document.createElement('div');
         block.className = 'recommendation';
