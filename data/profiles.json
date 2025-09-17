@@ -106,5 +106,14 @@
       "javascript"
     ],
     "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758125344805",
+    "name": "Sanchit",
+    "skills_possessed": [
+      "java",
+      "python"
+    ],
+    "location_preference": "mohali`"
   }
 ]
