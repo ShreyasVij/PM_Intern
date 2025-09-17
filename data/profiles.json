@@ -106,5 +106,21 @@
       "javascript"
     ],
     "location_preference": "Mumbai"
+  },
+  {
+    "candidate_id": "CAND1758093645815",
+    "name": "Sanchit Kumar Mishra",
+    "skills_possessed": [
+      "cpp"
+    ],
+    "location_preference": "Chandigarh"
+  },
+  {
+    "candidate_id": "CAND1758106746648",
+    "name": "Sanchit Kumar Mishra",
+    "skills_possessed": [
+      "Communication"
+    ],
+    "location_preference": "Los Angeles"
   }
 ]
