@@ -10,6 +10,7 @@
       --card:#ffffff;
       --muted:#6b7280;
       --accent:#2563eb;
+
       --accent-2:#4f46e5;
       --success:#059669;
       --border: #e6eefc;
@@ -34,6 +35,7 @@
     /* layout: two columns (candidates left, internships right) */
     .wrap{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);align-items:start;}
     .panel{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;border:1px solid var(--border);}
+    
     /* INCREASED vertical space: was ~62vh; now much taller (~82vh) */
     .panel.fullheight{height:82vh;display:flex;flex-direction:column;overflow:hidden;}
     .panel.small{padding:12px}
