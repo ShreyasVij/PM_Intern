@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | PM Intern</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .login-container {
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .input-group {
+      position: relative;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border 0.3s;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      border: 1px solid #667eea;
+      outline: none;
+      box-shadow: 0 0 5px rgba(102,126,234,0.6);
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #444;
+      user-select: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid #eee;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      color: #555;
+    }
+
+    .tab.active {
+      color: #667eea;
+      border-bottom: 3px solid #667eea;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+    }
+
+    #message {
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #e63946;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="tabs">
+      <div class="tab active" data-tab="login">Login</div>
+      <div class="tab" data-tab="signup">Signup</div>
+    </div>
+
+    <div id="message"></div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="form active">
+      <h2>Login</h2>
+      <div class="input-group">
+        <input type="text" id="login-username" placeholder="Username" required />
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="login-password" placeholder="Password" required />
+        <span class="toggle-password" data-target="login-password">Show</span>
+      </div>
+
+      <button type="submit">Login</button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signupForm" class="form">
+      <h2>Signup</h2>
+      <div class="input-group">
+        <input type="text" id="signup-username" placeholder="Username" required />
+      </div>
+
+      <div class="input-group">
+        <input type="password" id="signup-password" placeholder="Password" required />
+        <span class="toggle-password" data-target="signup-password">Show</span>
+      </div>
+
+      <button type="submit">Signup</button>
+    </form>
+  </div>
+
+  <script>
+    const message = document.getElementById("message");
+
+    // Tab switching
+    const tabs = document.querySelectorAll(".tab");
+    const forms = document.querySelectorAll(".form");
+
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        forms.forEach(f => f.classList.remove("active"));
+
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab + "Form").classList.add("active");
+        message.textContent = ""; // clear message
+      });
+    });
+
+    // Password toggle (Show / Hide)
+    document.querySelectorAll(".toggle-password").forEach(toggle => {
+      toggle.addEventListener("click", () => {
+        const target = document.getElementById(toggle.dataset.target);
+        if (target.type === "password") {
+          target.type = "text";
+          toggle.textContent = "Hide";
+        } else {
+          target.type = "password";
+          toggle.textContent = "Show";
+        }
+      });
+    });
+
+    // Login form
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("login-username").value;
+      const password = document.getElementById("login-password").value;
+
+      const res = await fetch("http://127.0.0.1:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      message.textContent = data.message || data.error;
+
+      if (res.ok) {
+        window.location.href = "index.html";
+      }
+    });
+
+    // Signup form
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = document.getElementById("signup-username").value;
+      const password = document.getElementById("signup-password").value;
+
+      const res = await fetch("http://127.0.0.1:3000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      message.textContent = data.message || data.error;
+
+      if (res.ok) {
+        window.location.href = "index.html";
+      }
+    });
+  </script>
+</body>
+</html>

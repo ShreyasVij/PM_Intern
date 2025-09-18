@@ -4,18 +4,73 @@ from flask_cors import CORS
 import json
 import os
 import uuid
+from werkzeug.security import generate_password_hash, check_password_hash
+import os
+
 
 app = Flask(__name__)
 CORS(app)
 
 BASE_DIR = os.path.dirname(__file__)                 # backend/
 DATA_DIR = os.path.join(BASE_DIR, "..", "data")      # ../data
+LOGIN_FILE = os.path.join(DATA_DIR, "login-info.json")
 
 CANDIDATES_FILE = os.path.join(DATA_DIR, "candidates.json")
 INTERNSHIPS_FILE = os.path.join(DATA_DIR, "internships.json")
 PROFILES_FILE = os.path.join(DATA_DIR, "profiles.json")
 
 print(f"🔎 Data folder in use: {DATA_DIR}")  # debug print
+
+def load_login_data():
+    try:
+        with open(LOGIN_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return []
+
+def save_login_data(data):
+    os.makedirs(os.path.dirname(LOGIN_FILE), exist_ok=True)
+    with open(LOGIN_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+@app.route("/signup", methods=["POST"])
+def signup():
+    creds = request.get_json()
+    if not creds or "username" not in creds or "password" not in creds:
+        return jsonify({"error": "Invalid data"}), 400
+
+    users = load_login_data()
+    if any(u["username"] == creds["username"] for u in users):
+        return jsonify({"error": "User already exists"}), 400
+
+    users.append({"username": creds["username"], "password": creds["password"]})
+    save_login_data(users)
+    return jsonify({"message": "Signup successful"}), 201
+
+
+def load_users():
+    if os.path.exists(USERS_FILE):
+        with open(USERS_FILE, "r") as f:
+            return json.load(f)
+    return []
+
+def save_users(users):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f, indent=2)
+
+
+@app.route("/login", methods=["POST"])
+def login():
+    creds = request.get_json()
+    if not creds or "username" not in creds or "password" not in creds:
+        return jsonify({"error": "Invalid data"}), 400
+
+    users = load_login_data()
+    for u in users:
+        if u["username"] == creds["username"] and u["password"] == creds["password"]:
+            return jsonify({"message": "Login successful"}), 200
+
+    return jsonify({"error": "Invalid username or password"}), 401
 
 def load_json(file_path):
     try:

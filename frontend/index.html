@@ -8,18 +8,23 @@
 </head>
 <body>
 
-<button class="theme-toggle" aria-label="Toggle theme">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-    </svg>
-</button>
+<div class="topbar" style="display:flex;justify-content:space-between;align-items:center;position:relative;">
+    <h1 style="text-align: center; flex:1;">PM Intern Recommender</h1>
+    
+    <!-- 🔹 Login button (slightly left of theme toggle) -->
+    <button onclick="window.location.href='login.html'" class="btn" style="margin-right:3.5rem; position:absolute; right:3rem; top:50%; transform:translateY(-50%);">
+        Login
+    </button>
 
-<div class="topbar">
-    <h1>PM Intern Recommender</h1>
+    <!-- 🔹 Theme toggle stays at far right -->
+    <button class="theme-toggle" aria-label="Toggle theme" style="position:absolute; right:0.5rem; top:50%; transform:translateY(-50%);">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+    </button>
+
     <div class="muted">
-        <span>AI-Powered Opportunity Discovery</span>
-        <span>•</span>
-        <span>Backend: <code id="apiBaseDisplay">http://127.0.0.1:3000/api</code></span>
+        <span style="display: none;">Backend: <code id="apiBaseDisplay">http://127.0.0.1:3000/api</code></span>
     </div>
 </div>
 
