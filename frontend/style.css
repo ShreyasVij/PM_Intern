@@ -169,12 +169,11 @@ body::before {
 /* Main layout */
 .wrap {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
   gap: 2rem;
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  min-height: calc(100vh - 120px);
 }
 
 /* Enhanced panels */
@@ -188,6 +187,8 @@ body::before {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .panel:hover {
@@ -196,9 +197,7 @@ body::before {
 }
 
 .fullheight {
-  height: calc(100vh - 180px);
-  display: flex;
-  flex-direction: column;
+  height: calc(100vh - 180px); /* Full height panels */
 }
 
 /* Enhanced inputs */
@@ -299,8 +298,9 @@ input[type="text"]::placeholder {
 .cards-scroller {
   flex: 1;
   overflow-y: auto;
-  margin: 1rem 0;
+  margin-top: 1rem;
   padding-right: 0.5rem;
+  min-height: 0; /* Important for flexbox scrolling */
 }
 
 .cards-scroller::-webkit-scrollbar {
@@ -316,6 +316,12 @@ input[type="text"]::placeholder {
   background: var(--primary);
   border-radius: 3px;
 }
+
+/* AI panel scrollbar gets a different color */
+#aiRecommendationsArea::-webkit-scrollbar-thumb {
+    background: var(--success);
+}
+
 
 .card {
   background: var(--bg-secondary);
@@ -393,53 +399,7 @@ input[type="text"]::placeholder {
   transform: scale(1.05);
 }
 
-/* Grid layout for internships */
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-/* Right split layout */
-.right-split {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  gap: 1.5rem;
-}
-
-.internships-area {
-  flex: 5;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.recommendations-area {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 1rem;
-  background: var(--bg-tertiary);
-  overflow-y: auto;
-}
-
-.recommendations-area::-webkit-scrollbar {
-  width: 6px;
-}
-
-.recommendations-area::-webkit-scrollbar-track {
-  background: var(--bg);
-  border-radius: 3px;
-}
-
-.recommendations-area::-webkit-scrollbar-thumb {
-  background: var(--success);
-  border-radius: 3px;
-}
-
+/* Recommendation cards in the AI panel */
 .recommendation {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
@@ -482,17 +442,18 @@ input[type="text"]::placeholder {
 .show-more {
   background: transparent;
   color: var(--primary);
-  border: 1px solid var(--primary);
+  border: 1px solid transparent;
   border-radius: 8px;
   padding: 0.5rem 1rem;
   transition: all 0.3s ease;
   font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 .show-more:hover {
-  background: var(--primary);
-  color: white;
-  transform: scale(1.05);
+  background: var(--primary-light);
+  border-color: var(--primary);
 }
 
 /* Empty states */
@@ -503,6 +464,11 @@ input[type="text"]::placeholder {
   background: var(--bg-tertiary);
   border-radius: 12px;
   border: 2px dashed var(--border);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Small text */
@@ -511,102 +477,42 @@ input[type="text"]::placeholder {
   color: var(--text-muted);
 }
 
-/* Notes */
-.note {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
-  color: var(--warning);
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  margin-top: 1rem;
-}
-
-/* Profile section */
-.profile-section {
-  max-width: 1400px;
-  margin: 2rem auto;
-  padding: 0 2rem;
-}
-
-.profile-panel {
-  background: var(--panel-bg);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: var(--shadow-lg);
-  position: relative;
-  overflow: hidden;
-}
-
-/* REMOVED .profile-panel::before rule to delete the top-line gradient */
-
-.profile-form {
-  display: grid;
-  grid-template-columns: 2fr 1fr 2fr auto auto;
-  gap: 1rem;
-  align-items: end;
-  margin-top: 1rem;
-}
-
-.profile-form input {
-  min-width: 0;
-}
-
-/* Success/Error messages */
-.success-msg {
-  color: var(--success);
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-
-.error-msg {
-  color: var(--error);
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-}
-
 /* Loading states */
-.loading {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
 .loading::after {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 20px;
-  height: 20px;
-  border: 2px solid var(--border);
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 3px solid var(--border);
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
-  transform: translate(-50%, -50%);
 }
 
 @keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
+
+.panel.loading > *:not(::after) {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
 
 /* Responsive design */
 @media (max-width: 1024px) {
   .wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
     gap: 1rem;
+    padding: 1rem;
   }
   
   .fullheight {
     height: auto;
-    min-height: 400px;
+    min-height: 500px; /* Give panels a minimum height when stacked */
   }
   
   .filters-row {
@@ -614,11 +520,6 @@ input[type="text"]::placeholder {
     gap: 0.5rem;
   }
   
-  .profile-form {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
   .theme-toggle {
     top: 1rem;
     right: 1rem;
