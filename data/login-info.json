@@ -1,6 +1,22 @@
 [
   {
     "username": "dhairya",
-    "password": "hjkl"
+    "password": "scrypt:32768:8:1$kojmdLTvSGN8jtwi$e0be9c578bc205032d5a99fd6c7dced824076f5f77123edf46ef25a2e24ff2e73a07e0f5bde62afc3c24877a17c2ad91c66d014ccc0ee775798df1ce348bab0a"
+  },
+  {
+    "username": "raghav",
+    "password": "scrypt:32768:8:1$aVlgkQ8wm1W1BN8e$0d658268d99217b3020c18de626bfcfd6506518f9c1186d3575a965cdb3bb6d909e49885ced7bb3ad38c17a2085cf7d2e7cfb8925b6958f13a480547fc5e940a"
+  },
+  {
+    "username": "sanchi",
+    "password": "scrypt:32768:8:1$8eQUpa50sqvQoXv6$02dd6a259935172a29c66624eefcb5bff29fd96da513c489d91494a9744a36acfde5553a40b1b8c12e6530fa50fe7116e70236a7169e78f2f18036a96519db7a"
+  },
+  {
+    "username": "sanchit",
+    "password": "scrypt:32768:8:1$TT2fcQcMyrpz3om9$92b5b7e236a14f7cbe86bb1754a6073e08b03b68777ba75eb8fb55b726f8ecf2bfc6b4aefe0f024f5bc7a8762e5df6139832a7cc2259a3a5f40939a1e3cdbff3"
+  },
+  {
+    "username": "dhaorya",
+    "password": "scrypt:32768:8:1$cGYM2h35Jtxpoes3$73951a6850cf505f8489321b6b7d256009fc80d2b9b7c519ef431623db72d0950e95f3b466cfca9ddb74d0aafc904d833f9a733c23179690468b0c2f89157838"
   }
 ]

@@ -60,8 +60,7 @@ const selectedAiTriggerLabel = document.getElementById('selectedAiTriggerLabel')
 const recSearchInput = document.getElementById('recSearchInput');
 const recLocationInput = document.getElementById('recLocationInput');
 
-// SHOW-MORE BUTTON
-const normalRecsShowMore = document.getElementById('normalRecsShowMore');
+// SHOW-MORE BUTTON (removed)
 
 // BUTTONS
 document.getElementById('reloadBtn').addEventListener('click', loadAllData);
@@ -161,7 +160,7 @@ function renderNormalRecommendations() {
         btn.addEventListener('click', handleAiTriggerClick);
     });
 
-    normalRecsShowMore.style.display = filtered.length > normalRecsLimit ? 'inline-block' : 'none';
+    // Show more button removed
 }
 
 function handleAiTriggerClick(e) {
@@ -228,7 +227,10 @@ function renderAiRecommendations(recs, baseInternship) {
                 <div class="small">Similarity: <span class="match">${(r.match_score * 100).toFixed(0)}%</span></div>
             </div>
             <div style="margin-bottom:8px"><strong>Shared Skills:</strong> ${matchedHtml}</div>
-            <div class="small" style="color:var(--text-muted)">${escapeHtml(it.description || '')}</div>
+            <div class="small" style="color:var(--text-muted); margin-bottom: 8px;">${escapeHtml(it.description || '')}</div>
+            <div class="skills-display">
+                <strong>All Skills:</strong> ${internSkills.slice(0, 5).map(skill => escapeHtml(skill)).join(', ')}${internSkills.length > 5 ? '...' : ''}
+            </div>
         `;
         aiRecommendationsArea.appendChild(block);
     }
@@ -249,11 +251,7 @@ function clearNormalRecFilters() {
     renderNormalRecommendations();
 }
 
-// SHOW MORE HANDLER
-normalRecsShowMore.addEventListener('click', () => {
-    normalRecsLimit += 10;
-    renderNormalRecommendations();
-});
+// SHOW MORE HANDLER (removed)
 
 // HOOK INPUT EVENTS (debounced)
 const debouncedRender = debounce(() => {
@@ -276,5 +274,96 @@ function setLoading(isLoading, element) {
     document.getElementById('normalRecsClear').disabled = false; // Always keep clear enabled
 }
 
+// LOGIN/LOGOUT FUNCTIONALITY
+function checkLoginStatus() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    if (isLoggedIn) {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+    } else {
+        loginBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+    }
+}
+
+function logout() {
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('username');
+    checkLoginStatus();
+    // Clear personalized recommendations
+    clearAiRecommendations();
+    // Optionally redirect to login page
+    // window.location.href = 'login.html';
+}
+
+// Load personalized recommendations for logged-in users
+async function loadPersonalizedRecommendations() {
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const username = localStorage.getItem('username');
+    
+    if (!isLoggedIn || !username) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`${API_BASE}/recommendations/current_user`, {
+            headers: {
+                'X-Username': username
+            }
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            if (result.recommendations && result.recommendations.length > 0) {
+                displayPersonalizedRecommendations(result.recommendations, result.candidate);
+            }
+        }
+    } catch (error) {
+        console.log('No personalized recommendations available');
+    }
+}
+
+// Display personalized recommendations in the AI panel
+function displayPersonalizedRecommendations(recommendations, candidateName) {
+    const aiPanel = aiRecommendationsArea.closest('.panel');
+    const titleElement = aiPanel.querySelector('strong');
+    const subtitleElement = aiPanel.querySelector('.small');
+    
+    // Update the panel title
+    titleElement.textContent = 'Personalized Recommendations';
+    subtitleElement.textContent = `Based on ${candidateName}'s profile`;
+    
+    // Clear and populate recommendations
+    aiRecommendationsArea.innerHTML = '';
+    
+    recommendations.forEach(rec => {
+        const block = document.createElement('div');
+        block.className = 'recommendation';
+        // Get the full internship data to show skills
+        const fullInternship = allInternships.find(i => i.internship_id === rec.internship_id) || rec;
+        const skills = fullInternship.skills_required || [];
+        
+        block.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                <div>
+                    <div class="card-title">${escapeHtml(rec.title || '—')}</div>
+                    <div class="small">${escapeHtml(rec.organization || '')} • ${escapeHtml(rec.location || '—')}</div>
+                </div>
+                <div class="small">Match: <span class="match">${Math.min(100, Math.round(rec.match_score * 100))}%</span></div>
+            </div>
+            <div class="small" style="color:var(--text-muted); margin-bottom: 8px;">${escapeHtml(rec.description || '')}</div>
+            <div class="skills-display">
+                <strong>Skills:</strong> ${skills.slice(0, 5).map(skill => escapeHtml(skill)).join(', ')}${skills.length > 5 ? '...' : ''}
+            </div>
+        `;
+        aiRecommendationsArea.appendChild(block);
+    });
+}
+
 // INITIAL FETCH of data
 loadAllData();
+checkLoginStatus();
+loadPersonalizedRecommendations();

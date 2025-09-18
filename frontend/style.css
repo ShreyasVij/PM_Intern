@@ -414,6 +414,14 @@ input[type="text"]::placeholder {
   background: rgba(16, 185, 129, 0.1);
 }
 
+.recommendation .skills-display {
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
 /* Tags and labels */
 .tag {
   background: var(--success);

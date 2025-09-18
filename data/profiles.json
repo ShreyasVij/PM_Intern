@@ -115,5 +115,87 @@
       "python"
     ],
     "location_preference": "mohali`"
+  },
+  {
+    "name": "Dhairya Sood",
+    "education_level": "Undergraduate",
+    "field_of_study": "ece",
+    "location_preference": "Patna",
+    "skills_possessed": [
+      "java",
+      "aws"
+    ],
+    "sector_interests": [
+      "tech"
+    ],
+    "candidate_id": "CAND_8cb9a715",
+    "created_at": "636376858"
+  },
+  {
+    "name": "Raghav Muni",
+    "education_level": "Postgraduate",
+    "field_of_study": "Design",
+    "location_preference": "Thane",
+    "skills_possessed": [
+      "content writing",
+      "social media",
+      "sales",
+      "javascript"
+    ],
+    "sector_interests": [
+      "Sales"
+    ],
+    "candidate_id": "CAND0396",
+    "created_at": "3773417963"
+  },
+  {
+    "name": "Raghav Muni",
+    "education_level": "Postgraduate",
+    "field_of_study": "Design",
+    "location_preference": "Thane",
+    "skills_possessed": [
+      "content writing",
+      "social media",
+      "sales",
+      "javascript",
+      "html"
+    ],
+    "sector_interests": [
+      "Sales"
+    ],
+    "candidate_id": "CAND0396",
+    "created_at": "3893683583"
+  },
+  {
+    "name": "sanchi",
+    "education_level": "Undergraduate",
+    "field_of_study": "electronics",
+    "location_preference": "Mumbai",
+    "skills_possessed": [
+      "java",
+      "aws",
+      "docker",
+      "git"
+    ],
+    "sector_interests": [
+      "tech",
+      "finance"
+    ],
+    "candidate_id": "CAND_b867aec7",
+    "created_at": "352000729"
+  },
+  {
+    "name": "dhaorya",
+    "education_level": "Undergraduate",
+    "field_of_study": "",
+    "location_preference": "Chandigarh",
+    "skills_possessed": [
+      "java"
+    ],
+    "sector_interests": [
+      "tech"
+    ],
+    "candidate_id": "CAND_b56ce5fb",
+    "created_at": "115936120"
   }
 ]

@@ -4,25 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | PM Intern</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
       margin: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
+      position: relative;
     }
 
     .login-container {
-      background: #fff;
-      padding: 2.5rem;
-      border-radius: 1rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      width: 350px;
+      background: var(--panel-bg);
+      backdrop-filter: blur(20px);
+      padding: 3rem;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      width: 400px;
       text-align: center;
       animation: fadeIn 0.8s ease;
+      border: 1px solid var(--border);
     }
 
     @keyframes fadeIn {
@@ -31,13 +36,15 @@
     }
 
     h2 {
-      margin-bottom: 1rem;
-      color: #333;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      font-size: 1.8rem;
+      font-weight: 700;
     }
 
     .input-group {
       position: relative;
-      margin: 15px 0;
+      margin: 20px 0;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -45,66 +52,77 @@
 
     input {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
       font-size: 1rem;
-      transition: border 0.3s;
+      transition: all 0.3s ease;
       box-sizing: border-box;
+      background: var(--bg);
+      color: var(--text);
+      backdrop-filter: blur(10px);
     }
 
     input:focus {
-      border: 1px solid #667eea;
+      border-color: var(--primary);
       outline: none;
-      box-shadow: 0 0 5px rgba(102,126,234,0.6);
+      box-shadow: 0 0 0 3px var(--primary-light);
     }
 
     .toggle-password {
       position: absolute;
-      right: 12px;
+      right: 15px;
       cursor: pointer;
       font-size: 0.9rem;
-      color: #444;
+      color: var(--text-muted);
       user-select: none;
+      transition: color 0.3s ease;
+    }
+
+    .toggle-password:hover {
+      color: var(--primary);
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      margin-top: 1rem;
+      padding: 1rem;
+      margin-top: 1.5rem;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       font-size: 1rem;
-      font-weight: bold;
-      color: #fff;
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      font-weight: 600;
+      color: white;
+      background: var(--gradient);
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
     }
 
     button:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow-lg);
     }
 
     .tabs {
       display: flex;
       justify-content: space-around;
-      margin-bottom: 1rem;
-      border-bottom: 2px solid #eee;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--border);
     }
 
     .tab {
       flex: 1;
-      padding: 0.5rem;
+      padding: 1rem;
       cursor: pointer;
-      font-weight: bold;
-      color: #555;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+      border-radius: 8px 8px 0 0;
     }
 
     .tab.active {
-      color: #667eea;
-      border-bottom: 3px solid #667eea;
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+      background: var(--primary-light);
     }
 
     .form {
@@ -118,13 +136,110 @@
     #message {
       margin-bottom: 1rem;
       font-size: 0.9rem;
-      color: #e63946;
-      font-weight: bold;
+      font-weight: 600;
+      padding: 1rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    .message-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .message-error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid var(--error);
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 2rem;
+      left: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 12px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow);
+    }
+
+    .theme-toggle svg {
+      width: 20px;
+      height: 20px;
+      stroke: var(--text);
+    }
+
+    .logo {
+      margin-bottom: 2rem;
+    }
+
+    .logo h1 {
+      color: var(--text);
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .logo p {
+      color: var(--text-muted);
+      margin: 0.5rem 0 0 0;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
+  <!-- Theme Toggle -->
+  <button class="theme-toggle" aria-label="Toggle theme">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+    </svg>
+  </button>
+
+  <!-- Back Button -->
+  <a href="index.html" class="back-btn">
+    ← Back to Home
+  </a>
+
   <div class="login-container">
+    <div class="logo">
+      <h1>PM Intern</h1>
+      <p>Find Your Perfect Internship</p>
+    </div>
+
     <div class="tabs">
       <div class="tab active" data-tab="login">Login</div>
       <div class="tab" data-tab="signup">Signup</div>
@@ -134,7 +249,7 @@
 
     <!-- Login Form -->
     <form id="loginForm" class="form active">
-      <h2>Login</h2>
+      <h2>Welcome Back</h2>
       <div class="input-group">
         <input type="text" id="login-username" placeholder="Username" required />
       </div>
@@ -149,7 +264,7 @@
 
     <!-- Signup Form -->
     <form id="signupForm" class="form">
-      <h2>Signup</h2>
+      <h2>Create Account</h2>
       <div class="input-group">
         <input type="text" id="signup-username" placeholder="Username" required />
       </div>
@@ -159,12 +274,55 @@
         <span class="toggle-password" data-target="signup-password">Show</span>
       </div>
 
-      <button type="submit">Signup</button>
+      <button type="submit">Sign Up</button>
     </form>
   </div>
 
   <script>
     const message = document.getElementById("message");
+
+    // Theme toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const themeToggle = document.querySelector('.theme-toggle');
+      const htmlElement = document.documentElement;
+
+      function toggleTheme() {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+          htmlElement.removeAttribute('data-theme');
+          localStorage.setItem('theme', 'light');
+          updateThemeIcon('light');
+        } else {
+          htmlElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme', 'dark');
+          updateThemeIcon('dark');
+        }
+      }
+
+      function updateThemeIcon(theme) {
+        if (!themeToggle) return;
+        const svg = themeToggle.querySelector('svg');
+        if (!svg) return;
+        if (theme === 'dark') {
+          svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>`;
+        } else {
+          svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>`;
+        }
+      }
+
+      if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+      }
+
+      const savedTheme = localStorage.getItem('theme');
+      if (savedTheme === 'dark') {
+        htmlElement.setAttribute('data-theme', 'dark');
+        updateThemeIcon('dark');
+      } else {
+        htmlElement.removeAttribute('data-theme');
+        updateThemeIcon('light');
+      }
+    });
 
     // Tab switching
     const tabs = document.querySelectorAll(".tab");
@@ -177,7 +335,8 @@
 
         tab.classList.add("active");
         document.getElementById(tab.dataset.tab + "Form").classList.add("active");
-        message.textContent = ""; // clear message
+        message.textContent = "";
+        message.className = "";
       });
     });
 
@@ -201,17 +360,31 @@
       const username = document.getElementById("login-username").value;
       const password = document.getElementById("login-password").value;
 
-      const res = await fetch("http://127.0.0.1:3000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+      try {
+        const res = await fetch("http://127.0.0.1:3000/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
 
-      const data = await res.json();
-      message.textContent = data.message || data.error;
-
-      if (res.ok) {
-        window.location.href = "index.html";
+        const data = await res.json();
+        
+        if (res.ok) {
+          message.textContent = "Login successful! Redirecting...";
+          message.className = "message-success";
+          // Store login state
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('username', username);
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        } else {
+          message.textContent = data.error || "Login failed";
+          message.className = "message-error";
+        }
+      } catch (error) {
+        message.textContent = "Connection error. Please try again.";
+        message.className = "message-error";
       }
     });
 
@@ -221,17 +394,37 @@
       const username = document.getElementById("signup-username").value;
       const password = document.getElementById("signup-password").value;
 
-      const res = await fetch("http://127.0.0.1:3000/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
+      if (password.length < 6) {
+        message.textContent = "Password must be at least 6 characters long";
+        message.className = "message-error";
+        return;
+      }
 
-      const data = await res.json();
-      message.textContent = data.message || data.error;
+      try {
+        const res = await fetch("http://127.0.0.1:3000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
 
-      if (res.ok) {
-        window.location.href = "index.html";
+        const data = await res.json();
+        
+        if (res.ok) {
+          message.textContent = "Signup successful! Redirecting...";
+          message.className = "message-success";
+          // Store login state
+          localStorage.setItem('isLoggedIn', 'true');
+          localStorage.setItem('username', username);
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        } else {
+          message.textContent = data.error || "Signup failed";
+          message.className = "message-error";
+        }
+      } catch (error) {
+        message.textContent = "Connection error. Please try again.";
+        message.className = "message-error";
       }
     });
   </script>

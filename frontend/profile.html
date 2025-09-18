@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | PM Intern</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-form {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .skills-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            min-height: 2rem;
+        }
+
+        .skill-tag {
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .skill-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .skill-tag .remove:hover {
+            opacity: 1;
+        }
+
+        .add-skill {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .add-skill input {
+            flex: 1;
+        }
+
+        .add-skill button {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-skill button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--text-muted);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn-edit {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: var(--topbar-bg);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .recommendations-section {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+        }
+
+        .recommendations-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .recommendation-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .recommendation-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--text);
+        }
+
+        .recommendation-card .company {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-card .match-score {
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .profile-display {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .profile-display h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            background: var(--bg);
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .info-item label {
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .info-item .value {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .skills-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .skill-display {
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .edit-toggle {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text);
+        }
+
+        /* Searchable Dropdown Styles */
+        .searchable-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .searchable-dropdown input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            padding-right: 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .searchable-dropdown input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .dropdown-arrow {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .searchable-dropdown.open .dropdown-arrow {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-top: none;
+            border-radius: 0 0 12px 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .searchable-dropdown.open .dropdown-options {
+            display: block;
+        }
+
+        .dropdown-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dropdown-option:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-option:hover {
+            background: var(--primary-light);
+        }
+
+        .dropdown-option.selected {
+            background: var(--primary);
+            color: white;
+        }
+
+        .dropdown-option.highlighted {
+            background: var(--primary-light);
+        }
+
+        .no-results {
+            padding: 0.75rem 1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" aria-label="Toggle theme">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+    </button>
+
+    <div class="profile-container">
+        <div class="navigation">
+            <a href="index.html" class="back-btn">
+                ← Back to Home
+            </a>
+            <h1>Profile Management</h1>
+            <div></div>
+        </div>
+
+        <div id="statusMessage" class="hidden"></div>
+
+        <!-- Profile Display Section -->
+        <div id="profileDisplay" class="profile-display hidden">
+            <h3>Your Profile</h3>
+            <div class="profile-info" id="profileInfo">
+                <!-- Profile info will be populated here -->
+            </div>
+            <div class="edit-toggle">
+                <button onclick="toggleEdit()" class="btn btn-edit" id="editToggleBtn">
+                    Edit Profile
+                </button>
+            </div>
+        </div>
+
+        <!-- Profile Form Section -->
+        <div id="profileFormSection" class="profile-form">
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="education_level">Education Level *</label>
+                    <select id="education_level" name="education_level" required>
+                        <option value="">Select Education Level</option>
+                        <option value="Undergraduate">Undergraduate (UG)</option>
+                        <option value="Postgraduate">Postgraduate (PG)</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="field_of_study">Field of Study</label>
+                    <input type="text" id="field_of_study" name="field_of_study" placeholder="e.g., Computer Science, Business Administration">
+                </div>
+
+                <div class="form-group">
+                    <label for="location_preference">Preferred Location (City) *</label>
+                    <div class="searchable-dropdown">
+                        <input type="text" id="location_preference" name="location_preference" placeholder="Type to search cities..." required autocomplete="off">
+                        <div class="dropdown-arrow">▼</div>
+                        <div class="dropdown-options" id="cityDropdown">
+                            <!-- Options will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Skills *</label>
+                    <div class="skills-input" id="skillsContainer">
+                        <!-- Skills will be added here dynamically -->
+                    </div>
+                    <div class="add-skill">
+                        <input type="text" id="skillInput" placeholder="Add a skill (e.g., Python, Project Management)">
+                        <button type="button" id="addSkillBtn">Add Skill</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="sector_interests">Sector Interests</label>
+                    <textarea id="sector_interests" name="sector_interests" rows="3" placeholder="e.g., Technology, Finance, Healthcare, Marketing"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Profile & Get Recommendations</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="recommendationsSection" class="recommendations-section hidden">
+            <h3>Your Personalized Recommendations</h3>
+            <div id="recommendationsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://127.0.0.1:3000/api";
+        let skills = [];
+        let currentProfile = null;
+        let isEditMode = false;
+
+        // Alphabetically sorted Indian cities
+        const cities = [
+            "Achalpur", "Agra", "Ahmedabad", "Ahmadnagar", "Akot", "Amalner", "Amravati", "Amritsar",
+            "Aurangabad", "Banglore", "Barshi", "Beed", "Bhavnagar", "Bhiwandi", "Bhopal", "Bhubaneswar",
+            "Bhusawal", "Borgaon", "Chandigarh", "Chennai", "Coimbatore", "Delhi", "Dhule", "Digras",
+            "Faridabad", "Ghaziabad", "Gondia", "Guntur", "Gwalior", "Howrah", "Hyderabad", "Ichalkaranji",
+            "Indore", "Jabalpur", "Jaipur", "Jalgaon", "Jalna", "Kalyan-Dombivali", "Kamptee", "Kanpur",
+            "Kochi", "Kolhapur", "Kolkata", "Latur", "Lucknow", "Ludhiana", "Madurai", "Malegaon",
+            "Mangrulpir", "Meerut", "Motala", "Mumbai", "Mysore", "Nagothana", "Nagpur", "Nanded",
+            "Nandgaon", "Nandurbar", "Nashik", "Navi Mumbai", "Noida", "Osmanabad", "Pandharpur",
+            "Pandharkaoda", "Pandhurna", "Panvel", "Parli", "Patna", "Pathri", "Patur", "Pimpri-Chinchwad",
+            "Pune", "Parbhani", "Raipur", "Rajkot", "Rajura", "Ranchi", "Raver", "Sangamner", "Sangli",
+            "Salem", "Satara", "Savner", "Sasvad", "Shahada", "Shirdi", "Shirpur", "Shirur", "Shrigonda",
+            "Shendurjana", "Solapur", "Srinagar", "Talode", "Thane", "Tiruchirappalli", "Udgir", "Ulhasnagar",
+            "Vadnagar", "Vadodara", "Varanasi", "Vasai-Virar", "Vijayawada", "Visakhapatnam", "Wardha",
+            "Warangal", "Warud", "Yavatmal"
+        ].sort(); // Sort alphabetically
+
+        // DOM elements
+        const profileForm = document.getElementById('profileForm');
+        const skillsContainer = document.getElementById('skillsContainer');
+        const skillInput = document.getElementById('skillInput');
+        const addSkillBtn = document.getElementById('addSkillBtn');
+        const statusMessage = document.getElementById('statusMessage');
+        const recommendationsSection = document.getElementById('recommendationsSection');
+        const recommendationsList = document.getElementById('recommendationsList');
+        const profileDisplay = document.getElementById('profileDisplay');
+        const profileFormSection = document.getElementById('profileFormSection');
+        const profileInfo = document.getElementById('profileInfo');
+        const editToggleBtn = document.getElementById('editToggleBtn');
+        
+        // City dropdown elements
+        const cityInput = document.getElementById('location_preference');
+        const cityDropdown = document.getElementById('cityDropdown');
+        const searchableDropdown = document.querySelector('.searchable-dropdown');
+
+        // Theme toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            const htmlElement = document.documentElement;
+
+            function toggleTheme() {
+                const currentTheme = htmlElement.getAttribute('data-theme');
+                if (currentTheme === 'dark') {
+                    htmlElement.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'light');
+                    updateThemeIcon('light');
+                } else {
+                    htmlElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                    updateThemeIcon('dark');
+                }
+            }
+
+            function updateThemeIcon(theme) {
+                if (!themeToggle) return;
+                const svg = themeToggle.querySelector('svg');
+                if (!svg) return;
+                if (theme === 'dark') {
+                    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>`;
+                } else {
+                    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>`;
+                }
+            }
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                htmlElement.setAttribute('data-theme', 'dark');
+                updateThemeIcon('dark');
+            } else {
+                htmlElement.removeAttribute('data-theme');
+                updateThemeIcon('light');
+            }
+        });
+
+        // City dropdown functionality
+        function initializeCityDropdown() {
+            let filteredCities = [...cities];
+            let selectedIndex = -1;
+
+            function renderOptions() {
+                cityDropdown.innerHTML = '';
+                
+                if (filteredCities.length === 0) {
+                    cityDropdown.innerHTML = '<div class="no-results">No cities found</div>';
+                    return;
+                }
+
+                filteredCities.forEach((city, index) => {
+                    const option = document.createElement('div');
+                    option.className = 'dropdown-option';
+                    option.textContent = city;
+                    option.dataset.value = city;
+                    
+                    if (index === selectedIndex) {
+                        option.classList.add('highlighted');
+                        option.scrollIntoView({ block: 'nearest' });
+                    }
+                    
+                    option.addEventListener('click', () => {
+                        selectCity(city);
+                    });
+                    
+                    cityDropdown.appendChild(option);
+                });
+            }
+
+            function selectCity(city) {
+                cityInput.value = city;
+                cityInput.setAttribute('data-value', city);
+                searchableDropdown.classList.remove('open');
+                selectedIndex = -1;
+            }
+
+            function filterCities(query) {
+                if (!query.trim()) {
+                    filteredCities = [...cities];
+                } else {
+                    const lowerQuery = query.toLowerCase();
+                    filteredCities = cities.filter(city => 
+                        city.toLowerCase().includes(lowerQuery)
+                    );
+                }
+                selectedIndex = -1;
+                renderOptions();
+            }
+
+            function openDropdown() {
+                searchableDropdown.classList.add('open');
+                renderOptions();
+            }
+
+            function closeDropdown() {
+                searchableDropdown.classList.remove('open');
+                selectedIndex = -1;
+            }
+
+            // Event listeners
+            cityInput.addEventListener('input', (e) => {
+                const query = e.target.value;
+                filterCities(query);
+                openDropdown();
+            });
+
+            cityInput.addEventListener('focus', () => {
+                openDropdown();
+            });
+
+            cityInput.addEventListener('blur', (e) => {
+                // Delay closing to allow option clicks
+                setTimeout(() => {
+                    closeDropdown();
+                }, 200);
+            });
+
+            cityInput.addEventListener('keydown', (e) => {
+                if (!searchableDropdown.classList.contains('open')) {
+                    if (e.key === 'ArrowDown' || e.key === 'Enter') {
+                        e.preventDefault();
+                        openDropdown();
+                        return;
+                    }
+                }
+
+                switch (e.key) {
+                    case 'ArrowDown':
+                        e.preventDefault();
+                        selectedIndex = Math.min(selectedIndex + 1, filteredCities.length - 1);
+                        renderOptions();
+                        break;
+                    case 'ArrowUp':
+                        e.preventDefault();
+                        selectedIndex = Math.max(selectedIndex - 1, -1);
+                        renderOptions();
+                        break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (selectedIndex >= 0 && filteredCities[selectedIndex]) {
+                            selectCity(filteredCities[selectedIndex]);
+                        }
+                        break;
+                    case 'Escape':
+                        closeDropdown();
+                        break;
+                }
+            });
+
+            // Click outside to close
+            document.addEventListener('click', (e) => {
+                if (!searchableDropdown.contains(e.target)) {
+                    closeDropdown();
+                }
+            });
+
+            // Prevent invalid input
+            cityInput.addEventListener('keypress', (e) => {
+                // Allow typing, but we'll validate on blur
+            });
+
+            cityInput.addEventListener('blur', () => {
+                const value = cityInput.value;
+                if (value && !cities.includes(value)) {
+                    // Find closest match
+                    const closest = cities.find(city => 
+                        city.toLowerCase().startsWith(value.toLowerCase())
+                    );
+                    if (closest) {
+                        cityInput.value = closest;
+                        cityInput.setAttribute('data-value', closest);
+                    } else {
+                        // Clear invalid input
+                        cityInput.value = '';
+                        cityInput.removeAttribute('data-value');
+                    }
+                }
+            });
+        }
+
+        // Check if user has existing profile
+        async function checkExistingProfile() {
+            const username = localStorage.getItem('username');
+            if (!username) {
+                // If not logged in, show empty form
+                profileDisplay.classList.add('hidden');
+                profileFormSection.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                // Try to find profile by exact username match in candidates
+                const response = await fetch(`${API_BASE}/candidates`);
+                const result = await response.json();
+                
+                if (response.ok) {
+                    const candidates = result.candidates || [];
+                    // Look for exact username match, not partial match
+                    const existingProfile = candidates.find(c => 
+                        c.name && c.name.toLowerCase() === username.toLowerCase()
+                    );
+                    
+                    if (existingProfile) {
+                        currentProfile = existingProfile;
+                        displayProfile(existingProfile);
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.log('No existing profile found');
+            }
+            
+            // If no profile found, show empty form
+            profileDisplay.classList.add('hidden');
+            profileFormSection.classList.remove('hidden');
+        }
+
+        // Display existing profile
+        function displayProfile(profile) {
+            profileInfo.innerHTML = `
+                <div class="info-item">
+                    <label>Name</label>
+                    <div class="value">${escapeHtml(profile.name || 'Not specified')}</div>
+                </div>
+                <div class="info-item">
+                    <label>Education Level</label>
+                    <div class="value">${escapeHtml(profile.education_level || 'Not specified')}</div>
+                </div>
+                <div class="info-item">
+                    <label>Field of Study</label>
+                    <div class="value">${escapeHtml(profile.field_of_study || 'Not specified')}</div>
+                </div>
+                <div class="info-item">
+                    <label>Location Preference</label>
+                    <div class="value">${escapeHtml(profile.location_preference || 'Not specified')}</div>
+                </div>
+                <div class="info-item">
+                    <label>Skills</label>
+                    <div class="skills-display">
+                        ${(profile.skills_possessed || []).map(skill => 
+                            `<span class="skill-display">${escapeHtml(skill)}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label>Sector Interests</label>
+                    <div class="value">${escapeHtml((profile.sector_interests || []).join(', ') || 'Not specified')}</div>
+                </div>
+            `;
+            
+            profileDisplay.classList.remove('hidden');
+            profileFormSection.classList.add('hidden');
+        }
+
+        // Toggle edit mode
+        function toggleEdit() {
+            if (isEditMode) {
+                // Switch to display mode
+                profileDisplay.classList.remove('hidden');
+                profileFormSection.classList.add('hidden');
+                editToggleBtn.textContent = 'Edit Profile';
+                isEditMode = false;
+            } else {
+                // Switch to edit mode
+                if (currentProfile) {
+                    populateForm(currentProfile);
+                }
+                profileDisplay.classList.add('hidden');
+                profileFormSection.classList.remove('hidden');
+                editToggleBtn.textContent = 'Cancel Edit';
+                isEditMode = true;
+            }
+        }
+
+        // Populate form with existing data
+        function populateForm(profile) {
+            document.getElementById('name').value = profile.name || '';
+            document.getElementById('education_level').value = profile.education_level || '';
+            document.getElementById('field_of_study').value = profile.field_of_study || '';
+            
+            // Set city value and data attribute
+            const cityValue = profile.location_preference || '';
+            cityInput.value = cityValue;
+            if (cityValue) {
+                cityInput.setAttribute('data-value', cityValue);
+            }
+            
+            document.getElementById('sector_interests').value = (profile.sector_interests || []).join(', ');
+            
+            skills = [...(profile.skills_possessed || [])];
+            renderSkills();
+        }
+
+        // Add skill functionality
+        addSkillBtn.addEventListener('click', addSkill);
+        skillInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSkill();
+            }
+        });
+
+        function addSkill() {
+            const skill = skillInput.value.trim().toLowerCase();
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                skillInput.value = '';
+                renderSkills();
+            }
+        }
+
+        function removeSkill(skillToRemove) {
+            skills = skills.filter(skill => skill !== skillToRemove);
+            renderSkills();
+        }
+
+        function renderSkills() {
+            skillsContainer.innerHTML = skills.map(skill => `
+                <div class="skill-tag">
+                    ${skill}
+                    <span class="remove" onclick="removeSkill('${skill}')">&times;</span>
+                </div>
+            `).join('');
+        }
+
+        // Form submission
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (skills.length === 0) {
+                showMessage('Please add at least one skill', 'error');
+                return;
+            }
+
+            const formData = new FormData(profileForm);
+            const username = localStorage.getItem('username');
+            const profileData = {
+                name: formData.get('name') || username, // Use username as default name
+                education_level: formData.get('education_level'),
+                field_of_study: formData.get('field_of_study'),
+                location_preference: cityInput.getAttribute('data-value') || cityInput.value,
+                skills_possessed: skills,
+                sector_interests: formData.get('sector_interests') ? formData.get('sector_interests').split(',').map(s => s.trim()).filter(s => s) : []
+            };
+
+            // If editing existing profile, include the candidate_id
+            if (currentProfile && currentProfile.candidate_id) {
+                profileData.candidate_id = currentProfile.candidate_id;
+            }
+
+            try {
+                showMessage('Saving profile...', 'success');
+                
+                const response = await fetch(`${API_BASE}/profile`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage('Profile saved successfully!', 'success');
+                    currentProfile = result.candidate;
+                    await loadRecommendations(result.candidate.candidate_id);
+                    
+                    // Switch to display mode
+                    displayProfile(result.candidate);
+                    profileFormSection.classList.add('hidden');
+                    editToggleBtn.textContent = 'Edit Profile';
+                    isEditMode = false;
+                } else {
+                    showMessage(result.error || 'Failed to save profile', 'error');
+                }
+            } catch (error) {
+                showMessage('Error saving profile: ' + error.message, 'error');
+            }
+        });
+
+        async function loadRecommendations(candidateId) {
+            try {
+                const response = await fetch(`${API_BASE}/recommendations/${candidateId}`);
+                const result = await response.json();
+
+                if (response.ok) {
+                    displayRecommendations(result.recommendations);
+                } else {
+                    showMessage('Failed to load recommendations', 'error');
+                }
+            } catch (error) {
+                showMessage('Error loading recommendations: ' + error.message, 'error');
+            }
+        }
+
+        function displayRecommendations(recommendations) {
+            if (recommendations.length === 0) {
+                recommendationsList.innerHTML = '<p>No recommendations found. Try adding more skills or adjusting your preferences.</p>';
+            } else {
+                recommendationsList.innerHTML = recommendations.map(rec => `
+                    <div class="recommendation-card">
+                        <h4>${escapeHtml(rec.title)}</h4>
+                        <div class="company">${escapeHtml(rec.organization)} • ${escapeHtml(rec.location)}</div>
+                        <div style="margin-top: 0.5rem;">
+                            <span class="match-score">${Math.round(rec.match_score * 100)}% Match</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            recommendationsSection.classList.remove('hidden');
+        }
+
+        function showMessage(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.classList.remove('hidden');
+            
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            window.location.href = 'login.html';
+        }
+
+        // Check login status
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            if (!isLoggedIn) {
+                // Redirect to login page if not logged in
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        // Pre-fill name with username
+        function prefillName() {
+            const username = localStorage.getItem('username');
+            if (username) {
+                const nameField = document.getElementById('name');
+                if (nameField && !nameField.value) {
+                    nameField.value = username;
+                }
+            }
+        }
+
+        // Initialize
+        checkLoginStatus();
+        prefillName();
+        initializeCityDropdown();
+        checkExistingProfile();
+    </script>
+</body>
+</html>
