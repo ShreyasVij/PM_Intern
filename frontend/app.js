@@ -284,15 +284,26 @@ function selectCandidate(candidateId){
 // fetch recommendations from backend
 async function fetchRecommendations(candidateId){
   if (!candidateId) return;
-  recommendationsArea.innerHTML = '<div class="small" style="text-align:center;padding:2rem;"><div class="loading" style="position:relative;height:20px;"> AI is analyzing the perfect matches...</div></div>';
+  
+  // Hide expand button while loading
+  document.getElementById('expandRecommendationsBtn').style.display = 'none';
+  
+  recommendationsArea.innerHTML = '<div class="small" style="text-align:center;padding:2rem;"><div class="loading" style="position:relative;height:20px;">AI is analyzing the perfect matches...</div></div>';
   try {
     const res = await fetch(`${API_BASE}/recommendations/${encodeURIComponent(candidateId)}`);
     const json = await res.json();
     if (!res.ok) throw new Error(json.error || 'Failed to fetch recommendations');
     const recs = Array.isArray(json.recommendations) ? json.recommendations : [];
     renderRecommendations(candidateId, recs);
+    
+    // Show expand button if we have recommendations
+    if (recs.length > 0) {
+      document.getElementById('expandRecommendationsBtn').style.display = 'inline-block';
+    }
   } catch (err){
-    recommendationsArea.innerHTML = `<div class="empty"><h4> Oops! Something went wrong</h4><p>${escapeHtml(err.message)}</p><div class="note" style="margin-top:1rem"><strong>💡 Troubleshooting:</strong> If you just created a profile, make sure your backend properly saves it to <code>candidates.json</code> for the AI recommendations to work.</div></div>`;
+    recommendationsArea.innerHTML = `<div class="empty"><h4>Oops! Something went wrong</h4><p>${escapeHtml(err.message)}</p><div class="note" style="margin-top:1rem"><strong>Troubleshooting:</strong> If you just created a profile, make sure your backend properly saves it to <code>candidates.json</code> for the AI recommendations to work.</div></div>`;
+    // Hide expand button on error
+    document.getElementById('expandRecommendationsBtn').style.display = 'none';
   }
 }
 
@@ -333,11 +344,11 @@ function renderRecommendations(candidateId, recs){
 
 // clear recommendations
 function clearRecommendations(){
-  recommendationsArea.innerHTML = '<div class="empty"><h4> Smart Matching</h4><p>Select a candidate to see personalized internship recommendations powered by AI!</p></div>';
+  recommendationsArea.innerHTML = '<div class="empty"><h4>Smart Matching</h4><p>Select a candidate to see personalized internship recommendations powered by AI!</p></div>';
   selectedCandidateLabel.textContent = 'none';
   selectedCandidateId = null;
+  document.getElementById('expandRecommendationsBtn').style.display = 'none';
 }
-
 // clear filters
 function clearCandidateFilters(){
   searchName.value = '';
@@ -582,6 +593,46 @@ function setLoading(isLoading){
   document.getElementById('candidatesClear').disabled = false;
   document.getElementById('internshipsClear').disabled = false;
 }
+function openRecommendationsModal() {
+  const modal = document.getElementById('recommendationsModal');
+  const modalArea = document.getElementById('modalRecommendationsArea');
+  const modalCandidateName = document.getElementById('modalCandidateName');
+  const originalArea = document.getElementById('recommendationsArea');
+  
+  // Copy current recommendations content
+  modalArea.innerHTML = originalArea.innerHTML;
+  
+  // Update candidate name in modal
+  const currentCandidate = candidates.find(c => c.candidate_id === selectedCandidateId);
+  modalCandidateName.textContent = currentCandidate ? 
+    `${currentCandidate.name} (${currentCandidate.candidate_id})` : 'None selected';
+  
+  modal.style.display = 'block';
+  
+  // Prevent body scroll when modal is open
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRecommendationsModal() {
+  const modal = document.getElementById('recommendationsModal');
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById('recommendationsModal');
+  if (event.target === modal) {
+    closeRecommendationsModal();
+  }
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeRecommendationsModal();
+  }
+});
 
 // initial fetch of data (but we do not render lists until user searches)
 loadAll();

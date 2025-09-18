@@ -105,17 +105,22 @@
         </div>
 
         <!-- recommendations area (bottom) - independent scroller -->
-        <div class="recommendations-area" id="recommendationsAreaWrapper">
-          <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
-            <strong style="color:var(--success)"> AI Recommendations</strong>
-          </div>
-          <div id="recommendationsArea" class="small">
-            <div class="empty">
-              <h4> Smart Matching</h4>
-              <p>Select a candidate to see personalized internship recommendations powered by AI!</p>
-            </div>
-          </div>
+    <div class="recommendations-area" id="recommendationsAreaWrapper">
+      <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px;justify-content:space-between;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <strong style="color:var(--success)">AI Recommendations</strong>
         </div>
+        <button class="expand-btn" onclick="openRecommendationsModal()" style="display:none;" id="expandRecommendationsBtn">
+          Full View
+        </button>
+      </div>
+      <div id="recommendationsArea" class="small">
+        <div class="empty">
+          <h4> Smart Matching</h4>
+          <p>Select a candidate to see personalized internship recommendations powered by AI!</p>
+        </div>
+      </div>
+    </div>
       </div>
     </div>
   </div>
@@ -667,5 +672,22 @@
     // initial fetch of data (but we do not render lists until user searches)
     loadAll();
   </script>
+  <div id="recommendationsModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <div>
+        <h2>AI Recommendations - Full View</h2>
+        <div class="small" style="color: var(--text-muted);">
+          Candidate: <span id="modalCandidateName">None selected</span>
+        </div>
+      </div>
+      <button class="close-modal" onclick="closeRecommendationsModal()">&times;</button>
+    </div>
+    <div id="modalRecommendationsArea">
+      <!-- Recommendations content will be copied here -->
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
