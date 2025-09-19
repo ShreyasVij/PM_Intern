@@ -2,33 +2,31 @@
 import json
 import os
 from rapidfuzz import fuzz
-from geopy.geocoders import Nominatim
-from geopy.distance import geodesic
 import difflib
-
-_geolocator = Nominatim(user_agent="internship_locator")
+try:
+    from .distance_matrix import get_distance, normalize_city_name
+except ImportError:
+    from distance_matrix import get_distance, normalize_city_name
 
 # ----------------- City Helpers -----------------
 def _normalize_city(name: str) -> str:
     return (name or "").strip().lower()
 
-def _get_coordinates(city_name: str):
-    """Geocode a city name into (lat, lon)."""
-    if not city_name:
-        return None
-    try:
-        loc = _geolocator.geocode(city_name)
-        if loc:
-            return (loc.latitude, loc.longitude)
-    except Exception as e:
-        print(f"Geocoding error for {city_name}: {e}")
-        return None
-    return None
+def _get_distance_between_cities(city1: str, city2: str) -> float:
+    """Get distance between two cities using hardcoded distance matrix."""
+    if not city1 or not city2:
+        return float('inf')
+    
+    # Normalize city names
+    city1_norm = normalize_city_name(city1)
+    city2_norm = normalize_city_name(city2)
+    
+    return get_distance(city1_norm, city2_norm)
 
 def find_nearest_city(input_city: str, cities: list[dict]):
     """
     Given input city string and list of cities from internships.json,
-    return the best matching city (string match or geodesic nearest).
+    return the best matching city (string match or distance-based nearest).
     """
     print(f"🔍 Finding nearest city for: '{input_city}'")
     db_city_names = [c.get("name") for c in cities if c.get("name")]
@@ -51,20 +49,13 @@ def find_nearest_city(input_city: str, cities: list[dict]):
         idx = norm_db.index(match[0])
         return db_city_names[idx], 0.0
 
-    # --- Step 2: Distance-based ---
-    input_coords = _get_coordinates(input_city)
-    if not input_coords:
-        return None, None
-
+    # --- Step 2: Distance-based using hardcoded distances ---
     nearest_city = None
     min_dist = float("inf")
 
     for city in db_city_names:
-        coords = _get_coordinates(city)
-        if not coords:
-            continue
         try:
-            dist = geodesic(input_coords, coords).km
+            dist = _get_distance_between_cities(input_city, city)
             if dist < min_dist:
                 min_dist = dist
                 nearest_city = city
@@ -111,12 +102,14 @@ def _normalize_skill_list(skills):
 # ----------------- Recommendations -----------------
 def get_recommendations(candidate, internships, top_n: int = 10):
     """
-    Recommendation scoring system:
-    - Skills matched = +2 each
-    - Rare skill bonus = +1
-    - Sector match = +3
-    - Location match = +2 (exact) or +1 (within 50km)
-    - Field of study relevance = +1
+    Enhanced recommendation scoring system:
+    - Skills matched = +3 each (increased from +2)
+    - Rare skill bonus = +2 (increased from +1)
+    - Sector match = +4 (increased from +3)
+    - Location match = +3 (exact) or +2 (within 50km) or +1 (within 200km)
+    - Field of study relevance = +2 (increased from +1)
+    - Education level bonus = +1 (for matching education requirements)
+    - Skill diversity bonus = +1 (for internships requiring diverse skills)
     """
 
     recommendations = []
@@ -126,18 +119,17 @@ def get_recommendations(candidate, internships, top_n: int = 10):
     sector_interests = [s.lower() for s in candidate.get("sector_interests", [])]
     location_pref = (candidate.get("location_preference") or "").strip().lower()
     field_of_study = (candidate.get("field_of_study") or "").strip().lower()
+    education_level = (candidate.get("education_level") or "").strip().lower()
 
-    # 🔹 Pre-calc skill frequencies
+    # 🔹 Pre-calc skill frequencies for rarity scoring
     skill_freq = {}
     total_internships = len(internships or [])
     for internship in internships or []:
         for s in _normalize_skill_list(internship.get("skills_required", [])):
             skill_freq[s] = skill_freq.get(s, 0) + 1
 
-    # 🔹 Candidate coords
-    candidate_coords = None
-    if location_pref:
-        candidate_coords = _get_coordinates(location_pref)
+    # 🔹 Candidate location for distance calculations
+    candidate_location = location_pref
 
     for internship in internships or []:
         internship_id = internship.get("internship_id") or internship.get("id") or None
@@ -157,42 +149,62 @@ def get_recommendations(candidate, internships, top_n: int = 10):
                 if any(fuzz.ratio(cand_skill, s) >= 80 for s in internship_skills_set):
                     matched.append(cand_skill)
 
-        # --- Score ---
+        # --- Enhanced Scoring System ---
         score = 0
-        score += 2 * len(matched)
+        
+        # Base skill matching (increased weight)
+        score += 3 * len(matched)
 
+        # Rare skill bonus (increased weight)
         for skill in matched:
             freq = skill_freq.get(skill, 1)
             rarity = (total_internships / freq)
             if rarity > 5:
-                score += 1
+                score += 2  # Increased from 1
 
+        # Sector interest matching (increased weight)
         if sector in sector_interests:
-            score += 3
+            score += 4  # Increased from 3
 
+        # Location matching (enhanced with distance tiers)
         if location and location_pref:
-            if location == location_pref:
-                score += 2
-            elif candidate_coords:
-                internship_coords = _get_coordinates(location)
-                if internship_coords:
-                    try:
-                        distance = geodesic(candidate_coords, internship_coords).km
-                        if distance <= 50:
-                            score += 1
-                    except Exception:
-                        pass
+            if location.lower() == location_pref.lower():
+                score += 3  # Increased from 2
+            else:
+                try:
+                    distance = _get_distance_between_cities(location_pref, location)
+                    if distance <= 50:
+                        score += 2  # Increased from 1
+                    elif distance <= 200:
+                        score += 1  # New tier for nearby cities
+                except Exception:
+                    pass
 
+        # Field of study relevance (increased weight)
         if field_of_study and field_of_study in sector:
+            score += 2  # Increased from 1
+
+        # Education level bonus (new)
+        if education_level and education_level in title.lower():
             score += 1
 
+        # Skill diversity bonus (new)
+        internship_skills_count = len(internship_skills)
+        if internship_skills_count >= 5:  # Diverse skill requirements
+            score += 1
+
+        # Convert score to percentage (0-100)
+        # Normalize score to percentage based on maximum possible score
+        max_possible_score = 20  # Approximate maximum score for normalization
+        match_percentage = min(100, max(0, (score / max_possible_score) * 100))
+        
         recommendations.append({
             "internship_id": internship_id,
             "title": title,
             "organization": organization,
             "location": internship.get("location", ""),
             "sector": internship.get("sector", ""),
-            "match_score": score,
+            "match_score": match_percentage,  # Now a percentage
             "matched_skills": matched
         })
 

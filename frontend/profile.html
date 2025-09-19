@@ -69,28 +69,38 @@
         }
 
         .skill-tag {
-            background: var(--gradient);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
             font-size: 0.875rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-weight: 500;
+            transition: all 0.2s ease;
         }
 
         .skill-tag .remove {
             cursor: pointer;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1rem;
             line-height: 1;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            opacity: 0.6;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+            margin-left: 0.25rem;
         }
 
         .skill-tag .remove:hover {
             opacity: 1;
+            color: var(--error);
+        }
+
+        .skill-tag:hover {
+            background: var(--bg-secondary);
+            border-color: var(--primary);
         }
 
         .add-skill {
@@ -105,18 +115,20 @@
 
         .add-skill button {
             padding: 0.75rem 1.5rem;
-            background: var(--gradient);
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .add-skill button:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
         }
 
         .form-actions {
@@ -140,33 +152,39 @@
         }
 
         .btn-primary {
-            background: var(--gradient);
+            background: var(--primary);
             color: white;
+            border: none;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-lg);
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
         }
 
         .btn-secondary {
-            background: var(--text-muted);
-            color: white;
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
 
         .btn-secondary:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
+            background: var(--bg-secondary);
+            border-color: var(--primary);
+            transform: translateY(-1px);
         }
 
         .btn-edit {
             background: var(--primary);
             color: white;
+            border: none;
         }
 
         .btn-edit:hover {
             background: var(--primary-hover);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
         }
 
         .navigation {
@@ -176,9 +194,10 @@
             margin-bottom: 2rem;
             background: var(--topbar-bg);
             backdrop-filter: blur(20px);
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
             border-radius: 16px;
             border: 1px solid var(--border);
+            min-height: 60px;
         }
 
         .back-btn {
@@ -188,14 +207,27 @@
             color: var(--text);
             text-decoration: none;
             font-weight: 600;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 12px;
             transition: all 0.3s ease;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
         }
 
         .back-btn:hover {
             background: var(--primary-light);
             color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .navigation h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            text-align: center;
+            flex: 1;
         }
 
         .status-message {
@@ -219,56 +251,7 @@
             border: 1px solid var(--error);
         }
 
-        .recommendations-section {
-            margin-top: 2rem;
-            padding: 2rem;
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 16px;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--border);
-        }
-
-        .recommendations-section h3 {
-            margin-bottom: 1.5rem;
-            color: var(--text);
-            text-align: center;
-        }
-
-        .recommendation-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .recommendation-card:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow);
-        }
-
-        .recommendation-card h4 {
-            margin: 0 0 0.5rem 0;
-            color: var(--text);
-        }
-
-        .recommendation-card .company {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .recommendation-card .match-score {
-            background: var(--gradient);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-        }
+        /* Recommendation styles removed - recommendations are now shown on the main index.html page */
 
         .hidden {
             display: none;
@@ -324,16 +307,19 @@
         }
 
         .skill-display {
-            background: var(--gradient);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
+            background: var(--bg-tertiary);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
             font-size: 0.875rem;
             font-weight: 500;
+            transition: all 0.2s ease;
         }
 
         .edit-toggle {
             text-align: center;
+            margin-top: 2rem;
             margin-bottom: 1rem;
         }
 
@@ -468,7 +454,7 @@
                 ← Back to Home
             </a>
             <h1>Profile Management</h1>
-            <div></div>
+            <div style="width: 120px;"></div>
         </div>
 
         <div id="statusMessage" class="hidden"></div>
@@ -539,15 +525,12 @@
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Profile & Get Recommendations</button>
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
                 </div>
             </form>
         </div>
 
-        <div id="recommendationsSection" class="recommendations-section hidden">
-            <h3>Your Personalized Recommendations</h3>
-            <div id="recommendationsList"></div>
-        </div>
+        <!-- Recommendations removed - they will be shown on the main index.html page -->
     </div>
 
     <script>
@@ -556,22 +539,18 @@
         let currentProfile = null;
         let isEditMode = false;
 
-        // Alphabetically sorted Indian cities
+        // Top 80+ Indian cities (alphabetically sorted)
         const cities = [
-            "Achalpur", "Agra", "Ahmedabad", "Ahmadnagar", "Akot", "Amalner", "Amravati", "Amritsar",
-            "Aurangabad", "Banglore", "Barshi", "Beed", "Bhavnagar", "Bhiwandi", "Bhopal", "Bhubaneswar",
-            "Bhusawal", "Borgaon", "Chandigarh", "Chennai", "Coimbatore", "Delhi", "Dhule", "Digras",
-            "Faridabad", "Ghaziabad", "Gondia", "Guntur", "Gwalior", "Howrah", "Hyderabad", "Ichalkaranji",
-            "Indore", "Jabalpur", "Jaipur", "Jalgaon", "Jalna", "Kalyan-Dombivali", "Kamptee", "Kanpur",
-            "Kochi", "Kolhapur", "Kolkata", "Latur", "Lucknow", "Ludhiana", "Madurai", "Malegaon",
-            "Mangrulpir", "Meerut", "Motala", "Mumbai", "Mysore", "Nagothana", "Nagpur", "Nanded",
-            "Nandgaon", "Nandurbar", "Nashik", "Navi Mumbai", "Noida", "Osmanabad", "Pandharpur",
-            "Pandharkaoda", "Pandhurna", "Panvel", "Parli", "Patna", "Pathri", "Patur", "Pimpri-Chinchwad",
-            "Pune", "Parbhani", "Raipur", "Rajkot", "Rajura", "Ranchi", "Raver", "Sangamner", "Sangli",
-            "Salem", "Satara", "Savner", "Sasvad", "Shahada", "Shirdi", "Shirpur", "Shirur", "Shrigonda",
-            "Shendurjana", "Solapur", "Srinagar", "Talode", "Thane", "Tiruchirappalli", "Udgir", "Ulhasnagar",
-            "Vadnagar", "Vadodara", "Varanasi", "Vasai-Virar", "Vijayawada", "Visakhapatnam", "Wardha",
-            "Warangal", "Warud", "Yavatmal"
+            "Agra", "Ahmedabad", "Ajmer", "Akola", "Aligarh", "Allahabad", "Amravati", "Amritsar",
+            "Aurangabad", "Bangalore", "Bareilly", "Belgaum", "Bhavnagar", "Bhilai", "Bhiwandi", "Bhopal",
+            "Bhubaneswar", "Bikaner", "Bokaro", "Chandigarh", "Chennai", "Coimbatore", "Cuttack", "Delhi",
+            "Dhanbad", "Durg", "Faridabad", "Ghaziabad", "Guntur", "Gurgaon", "Guwahati", "Gwalior",
+            "Howrah", "Hubli", "Hyderabad", "Indore", "Jabalpur", "Jaipur", "Jalandhar", "Jammu",
+            "Jamshedpur", "Jhansi", "Jodhpur", "Kanpur", "Kochi", "Kolhapur", "Kolkata", "Kota",
+            "Lucknow", "Ludhiana", "Madurai", "Mangalore", "Meerut", "Mysore", "Nagpur", "Nashik",
+            "Navi Mumbai", "Noida", "Patna", "Pimpri-Chinchwad", "Pune", "Raipur", "Rajkot", "Ranchi",
+            "Salem", "Srinagar", "Surat", "Thane", "Tiruchirappalli", "Udaipur", "Ujjain", "Vadodara",
+            "Varanasi", "Vasai-Virar", "Vijayawada", "Visakhapatnam", "Warangal"
         ].sort(); // Sort alphabetically
 
         // DOM elements
@@ -580,8 +559,7 @@
         const skillInput = document.getElementById('skillInput');
         const addSkillBtn = document.getElementById('addSkillBtn');
         const statusMessage = document.getElementById('statusMessage');
-        const recommendationsSection = document.getElementById('recommendationsSection');
-        const recommendationsList = document.getElementById('recommendationsList');
+        // Recommendations removed - they will be shown on the main index.html page
         const profileDisplay = document.getElementById('profileDisplay');
         const profileFormSection = document.getElementById('profileFormSection');
         const profileInfo = document.getElementById('profileInfo');
@@ -927,44 +905,99 @@
         profileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            if (skills.length === 0) {
-                showMessage('Please add at least one skill', 'error');
-                return;
-            }
-
-            const formData = new FormData(profileForm);
-            const username = localStorage.getItem('username');
-            const profileData = {
-                name: formData.get('name') || username, // Use username as default name
-                education_level: formData.get('education_level'),
-                field_of_study: formData.get('field_of_study'),
-                location_preference: cityInput.getAttribute('data-value') || cityInput.value,
-                skills_possessed: skills,
-                sector_interests: formData.get('sector_interests') ? formData.get('sector_interests').split(',').map(s => s.trim()).filter(s => s) : []
-            };
-
-            // If editing existing profile, include the candidate_id
-            if (currentProfile && currentProfile.candidate_id) {
-                profileData.candidate_id = currentProfile.candidate_id;
-            }
-
+            // Disable submit button to prevent double submission
+            const submitBtn = profileForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Saving...';
+            
             try {
+                if (skills.length === 0) {
+                    showMessage('Please add at least one skill', 'error');
+                    return;
+                }
+
+                const formData = new FormData(profileForm);
+                const username = localStorage.getItem('username');
+                
+                // Validate required fields
+                if (!formData.get('name')?.trim()) {
+                    showMessage('Please enter your name', 'error');
+                    return;
+                }
+                
+                if (!formData.get('education_level')) {
+                    showMessage('Please select your education level', 'error');
+                    return;
+                }
+                
+                if (!cityInput.getAttribute('data-value') && !cityInput.value.trim()) {
+                    showMessage('Please select a valid city', 'error');
+                    return;
+                }
+
+                const profileData = {
+                    name: formData.get('name').trim(),
+                    education_level: formData.get('education_level'),
+                    field_of_study: formData.get('field_of_study')?.trim() || '',
+                    location_preference: cityInput.getAttribute('data-value') || cityInput.value.trim(),
+                    skills_possessed: skills,
+                    sector_interests: formData.get('sector_interests') ? formData.get('sector_interests').split(',').map(s => s.trim()).filter(s => s) : []
+                };
+
+                // If editing existing profile, include the candidate_id
+                if (currentProfile && currentProfile.candidate_id) {
+                    profileData.candidate_id = currentProfile.candidate_id;
+                }
+
                 showMessage('Saving profile...', 'success');
                 
-                const response = await fetch(`${API_BASE}/profile`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(profileData)
-                });
-
-                const result = await response.json();
+                // Add retry logic for backend refresh scenarios
+                let response;
+                let result;
+                let retryCount = 0;
+                const maxRetries = 3;
+                
+                while (retryCount < maxRetries) {
+                    try {
+                        response = await fetch(`${API_BASE}/profile`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(profileData)
+                        });
+                        
+                        if (response.ok) {
+                            result = await response.json();
+                            break;
+                        } else if (response.status === 503 || response.status === 502) {
+                            // Backend is refreshing, wait and retry
+                            retryCount++;
+                            if (retryCount < maxRetries) {
+                                showMessage(`Backend is refreshing, retrying... (${retryCount}/${maxRetries})`, 'success');
+                                await new Promise(resolve => setTimeout(resolve, 2000 * retryCount)); // Exponential backoff
+                                continue;
+                            }
+                        } else {
+                            result = await response.json();
+                            break;
+                        }
+                    } catch (fetchError) {
+                        retryCount++;
+                        if (retryCount < maxRetries) {
+                            showMessage(`Connection issue, retrying... (${retryCount}/${maxRetries})`, 'success');
+                            await new Promise(resolve => setTimeout(resolve, 2000 * retryCount));
+                            continue;
+                        } else {
+                            throw fetchError;
+                        }
+                    }
+                }
 
                 if (response.ok) {
-                    showMessage('Profile saved successfully!', 'success');
+                    showMessage('Profile saved successfully! You can now view personalized recommendations on the main page.', 'success');
                     currentProfile = result.candidate;
-                    await loadRecommendations(result.candidate.candidate_id);
                     
                     // Switch to display mode
                     displayProfile(result.candidate);
@@ -975,41 +1008,16 @@
                     showMessage(result.error || 'Failed to save profile', 'error');
                 }
             } catch (error) {
+                console.error('Profile save error:', error);
                 showMessage('Error saving profile: ' + error.message, 'error');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             }
         });
 
-        async function loadRecommendations(candidateId) {
-            try {
-                const response = await fetch(`${API_BASE}/recommendations/${candidateId}`);
-                const result = await response.json();
-
-                if (response.ok) {
-                    displayRecommendations(result.recommendations);
-                } else {
-                    showMessage('Failed to load recommendations', 'error');
-                }
-            } catch (error) {
-                showMessage('Error loading recommendations: ' + error.message, 'error');
-            }
-        }
-
-        function displayRecommendations(recommendations) {
-            if (recommendations.length === 0) {
-                recommendationsList.innerHTML = '<p>No recommendations found. Try adding more skills or adjusting your preferences.</p>';
-            } else {
-                recommendationsList.innerHTML = recommendations.map(rec => `
-                    <div class="recommendation-card">
-                        <h4>${escapeHtml(rec.title)}</h4>
-                        <div class="company">${escapeHtml(rec.organization)} • ${escapeHtml(rec.location)}</div>
-                        <div style="margin-top: 0.5rem;">
-                            <span class="match-score">${Math.round(rec.match_score * 100)}% Match</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            recommendationsSection.classList.remove('hidden');
-        }
+        // Recommendation functions removed - recommendations are now shown on the main index.html page
 
         function showMessage(message, type) {
             statusMessage.textContent = message;

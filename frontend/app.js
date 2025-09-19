@@ -91,9 +91,16 @@ async function loadAllData() {
         const json = await res.json();
         allInternships = Array.isArray(json.internships) ? json.internships : [];
         
+        // Only clear the normal search results, not the AI recommendations
         normalRecsCount.textContent = 'No search yet';
         normalRecsList.innerHTML = '<div class="empty"><h3>Find Opportunities</h3><p>Search for titles, companies, skills, or locations!</p></div>';
-        clearAiRecommendations();
+        
+        // Clear search inputs
+        recSearchInput.value = '';
+        recLocationInput.value = '';
+        
+        // Note: Do NOT call clearAiRecommendations() here to preserve user recommendations
+        // Note: loadPersonalizedRecommendations() is NOT called here to avoid reloading user data
     } catch (err) {
         alert('Error loading data: ' + err.message);
     } finally {
@@ -224,7 +231,7 @@ function renderAiRecommendations(recs, baseInternship) {
                     <div class="card-title">${escapeHtml(it.title || '—')}</div>
                     <div class="small">${escapeHtml(it.organization || '')} • ${escapeHtml(it.location || '—')}</div>
                 </div>
-                <div class="small">Similarity: <span class="match">${(r.match_score * 100).toFixed(0)}%</span></div>
+                <div class="small">Similarity: <span class="match">${Math.round(r.match_score)}%</span></div>
             </div>
             <div style="margin-bottom:8px"><strong>Shared Skills:</strong> ${matchedHtml}</div>
             <div class="small" style="color:var(--text-muted); margin-bottom: 8px;">${escapeHtml(it.description || '')}</div>
@@ -243,12 +250,13 @@ function clearAiRecommendations() {
     selectedInternshipIdForAI = null;
 }
 
-// CLEAR FILTERS
+// CLEAR FILTERS - Only clears normal search, preserves AI recommendations
 function clearNormalRecFilters() {
     recSearchInput.value = '';
     recLocationInput.value = '';
     normalRecsLimit = 10;
     renderNormalRecommendations();
+    // Note: AI recommendations are preserved and not cleared
 }
 
 // SHOW MORE HANDLER (removed)
@@ -279,13 +287,16 @@ function checkLoginStatus() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
+    const profileBtn = document.getElementById('profileBtn');
     
     if (isLoggedIn) {
         loginBtn.style.display = 'none';
         logoutBtn.style.display = 'inline-block';
+        if (profileBtn) profileBtn.style.display = 'inline-block';
     } else {
         loginBtn.style.display = 'inline-block';
         logoutBtn.style.display = 'none';
+        if (profileBtn) profileBtn.style.display = 'none';
     }
 }
 
@@ -293,7 +304,7 @@ function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('username');
     checkLoginStatus();
-    // Clear personalized recommendations
+    // Clear personalized recommendations only when user logs out
     clearAiRecommendations();
     // Optionally redirect to login page
     // window.location.href = 'login.html';
@@ -352,7 +363,7 @@ function displayPersonalizedRecommendations(recommendations, candidateName) {
                     <div class="card-title">${escapeHtml(rec.title || '—')}</div>
                     <div class="small">${escapeHtml(rec.organization || '')} • ${escapeHtml(rec.location || '—')}</div>
                 </div>
-                <div class="small">Match: <span class="match">${Math.min(100, Math.round(rec.match_score * 100))}%</span></div>
+                <div class="small">Match: <span class="match">${Math.round(rec.match_score)}%</span></div>
             </div>
             <div class="small" style="color:var(--text-muted); margin-bottom: 8px;">${escapeHtml(rec.description || '')}</div>
             <div class="skills-display">
@@ -366,4 +377,7 @@ function displayPersonalizedRecommendations(recommendations, candidateName) {
 // INITIAL FETCH of data
 loadAllData();
 checkLoginStatus();
-loadPersonalizedRecommendations();
+// Only load personalized recommendations if user is logged in
+if (localStorage.getItem('isLoggedIn') === 'true') {
+    loadPersonalizedRecommendations();
+}

@@ -318,9 +318,9 @@ except Exception:
                 internship_skills = set([s.strip().lower() for s in internship.get("skills_required", []) if isinstance(s, str)])
                 common_skills = candidate_skills & internship_skills
                 
-                # Calculate match score as percentage
+                # Calculate match score as percentage (0-100)
                 if len(internship_skills) > 0:
-                    match_score = len(common_skills) / len(internship_skills)
+                    match_score = (len(common_skills) / len(internship_skills)) * 100
                 else:
                     match_score = 0
                 
@@ -397,8 +397,8 @@ def recommend_by_internship(internship_id):
             
         intern_skills = set([s.strip().lower() for s in internship.get("skills_required", []) if isinstance(s, str)])
         common_skills = base_skills & intern_skills
-        # Calculate match score as percentage of base internship skills
-        match_score = len(common_skills) / len(base_skills) if base_skills else 0
+        # Calculate match score as percentage of base internship skills (0-100)
+        match_score = (len(common_skills) / len(base_skills) * 100) if base_skills else 0
         
         if match_score > 0:
             recommendations.append({
