@@ -22,10 +22,10 @@ def verify_migration():
         print("MIGRATION VERIFICATION")
         print("="*60)
 
-        # Check each collection
+
+        # Check each collection (candidates removed, use profiles only for candidate data)
         collections = {
-            'candidates': 'candidates.json',
-            'internships': 'internships.json', 
+            'internships': 'internships.json',
             'profiles': 'profiles.json',
             'login_info': 'login-info.json',
             'skills_synonyms': 'skills_synonyms.json'
@@ -34,7 +34,7 @@ def verify_migration():
         for collection_name, json_file in collections.items():
             # Count documents in MongoDB
             mongo_count = db[collection_name].count_documents({})
-            
+
             # Count documents in JSON file
             json_path = os.path.join(DATA_DIR, json_file)
             try:

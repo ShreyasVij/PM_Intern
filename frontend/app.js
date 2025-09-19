@@ -110,18 +110,28 @@ async function loadAllData() {
 
 // FILTERING LOGIC for Normal Recommendations
 function getFilteredNormalRecommendations() {
-    const q = (recSearchInput.value || '').trim().toLowerCase();
+    const qRaw = (recSearchInput.value || '').trim().toLowerCase();
     const locQ = (recLocationInput.value || '').trim().toLowerCase();
 
-    if (!q && !locQ) return []; // Only show results after a search
+    if (!qRaw && !locQ) return []; // Only show results after a search
+
+    // Split by comma, trim, filter out empty
+    const qList = qRaw.split(',').map(s => s.trim()).filter(Boolean);
 
     return allInternships.filter(it => {
         const searchCorpus = `${it.title || ''} ${it.organization || ''}`.toLowerCase();
-        let titleOk = q ? searchCorpus.includes(q) : true;
-        
-        if (!titleOk) {
-            const skills = (it.skills_required || []).map(s => s.toLowerCase());
-            if (!skills.some(s => s.includes(q))) return false;
+        const skills = (it.skills_required || []).map(s => s.toLowerCase());
+
+        // If only one search term, keep old behavior (title/org or skill)
+        if (qList.length === 1) {
+            const q = qList[0];
+            let titleOk = q ? searchCorpus.includes(q) : true;
+            if (!titleOk) {
+                if (!skills.some(s => s.includes(q))) return false;
+            }
+        } else if (qList.length > 1) {
+            // For multiple skills, require ALL to be present in skills_required
+            if (!qList.every(skillQ => skills.some(s => s.includes(skillQ)))) return false;
         }
         if (locQ && !((it.location || '').toLowerCase().includes(locQ))) return false;
         return true;
@@ -303,6 +313,7 @@ function checkLoginStatus() {
 function logout() {
     localStorage.removeItem('isLoggedIn');
     localStorage.removeItem('username');
+    localStorage.removeItem('candidate_id'); // Clear candidate_id on logout
     checkLoginStatus();
     // Clear personalized recommendations only when user logs out
     clearAiRecommendations();
@@ -313,19 +324,12 @@ function logout() {
 // Load personalized recommendations for logged-in users
 async function loadPersonalizedRecommendations() {
     const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-    const username = localStorage.getItem('username');
-    
-    if (!isLoggedIn || !username) {
+    const candidateId = localStorage.getItem('candidate_id');
+    if (!isLoggedIn || !candidateId) {
         return;
     }
-    
     try {
-        const response = await fetch(`${API_BASE}/recommendations/current_user`, {
-            headers: {
-                'X-Username': username
-            }
-        });
-        
+        const response = await fetch(`${API_BASE}/recommendations/${candidateId}`);
         if (response.ok) {
             const result = await response.json();
             if (result.recommendations && result.recommendations.length > 0) {
@@ -342,21 +346,17 @@ function displayPersonalizedRecommendations(recommendations, candidateName) {
     const aiPanel = aiRecommendationsArea.closest('.panel');
     const titleElement = aiPanel.querySelector('strong');
     const subtitleElement = aiPanel.querySelector('.small');
-    
     // Update the panel title
     titleElement.textContent = 'Personalized Recommendations';
     subtitleElement.textContent = `Based on ${candidateName}'s profile`;
-    
     // Clear and populate recommendations
     aiRecommendationsArea.innerHTML = '';
-    
     recommendations.forEach(rec => {
         const block = document.createElement('div');
         block.className = 'recommendation';
         // Get the full internship data to show skills
         const fullInternship = allInternships.find(i => i.internship_id === rec.internship_id) || rec;
-        const skills = fullInternship.skills_required || [];
-        
+        const skills = fullInternship.skills_required || rec.skills_required || [];
         block.innerHTML = `
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
                 <div>
@@ -377,7 +377,16 @@ function displayPersonalizedRecommendations(recommendations, candidateName) {
 // INITIAL FETCH of data
 loadAllData();
 checkLoginStatus();
-// Only load personalized recommendations if user is logged in
+// Only load personalized recommendations if user is logged in and candidate_id is set
 if (localStorage.getItem('isLoggedIn') === 'true') {
-    loadPersonalizedRecommendations();
+    // Wait for candidate_id to be set (e.g., after profile creation)
+    const tryLoadRecs = () => {
+        const cid = localStorage.getItem('candidate_id');
+        if (cid) {
+            loadPersonalizedRecommendations();
+        } else {
+            setTimeout(tryLoadRecs, 300); // Poll until candidate_id is set
+        }
+    };
+    tryLoadRecs();
 }

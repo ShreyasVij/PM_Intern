@@ -38,29 +38,23 @@ def migrate_to_mongodb():
         client.admin.command('ismaster')  # Check if connection is successful
         print("✅ Successfully connected to MongoDB.")
 
+
         # Load data from local JSON files
-        candidates_data = load_json_file("candidates.json")
         internships_data = load_json_file("internships.json")
         profiles_data = load_json_file("profiles.json")
-        login_info_data = load_json_file("login-info.json")
+        login_info_data = load_json_file("login_info.json")
         skills_synonyms_data = load_json_file("skills_synonyms.json")
 
         # Migrate data to MongoDB collections
         print("Migrating data to MongoDB...")
-        
-        # Insert candidates
-        if candidates_data:
-            db.candidates.delete_many({})
-            db.candidates.insert_many(candidates_data)
-            print(f"-> Migrated {len(candidates_data)} candidates.")
-        
+
         # Insert internships
         if internships_data:
             db.internships.delete_many({})
             db.internships.insert_many(internships_data)
             print(f"-> Migrated {len(internships_data)} internships.")
 
-        # Insert profiles (raw submissions)
+        # Insert profiles (canonical candidate data)
         if profiles_data:
             db.profiles.delete_many({})
             db.profiles.insert_many(profiles_data)
@@ -75,15 +69,20 @@ def migrate_to_mongodb():
         # Insert skills synonyms mapping
         if skills_synonyms_data:
             db.skills_synonyms.delete_many({})
-            # Convert the skills_synonyms object to an array of key-value pairs
-            skills_array = [{"skill": key, "synonyms": value} for key, value in skills_synonyms_data.items()]
-            db.skills_synonyms.insert_many(skills_array)
-            print(f"-> Migrated {len(skills_array)} skill synonym mappings.")
+            if isinstance(skills_synonyms_data, dict):
+                # Convert dict to array of key-value pairs
+                skills_array = [{"skill": key, "synonyms": value} for key, value in skills_synonyms_data.items()]
+                db.skills_synonyms.insert_many(skills_array)
+                print(f"-> Migrated {len(skills_array)} skill synonym mappings.")
+            elif isinstance(skills_synonyms_data, list):
+                db.skills_synonyms.insert_many(skills_synonyms_data)
+                print(f"-> Migrated {len(skills_synonyms_data)} skill synonym mappings (list format).")
+            else:
+                print("❌ skills_synonyms.json is neither a dict nor a list. Skipping.")
 
         print("\n" + "="*50)
         print("MIGRATION SUMMARY")
         print("="*50)
-        print(f"✅ Candidates: {len(candidates_data) if candidates_data else 0} records")
         print(f"✅ Internships: {len(internships_data) if internships_data else 0} records")
         print(f"✅ Profiles: {len(profiles_data) if profiles_data else 0} records")
         print(f"✅ Login Info: {len(login_info_data) if login_info_data else 0} records")

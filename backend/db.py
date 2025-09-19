@@ -27,9 +27,11 @@ except Exception as e:
 def load_data(collection_name):
     """Loads data from a MongoDB collection or a local JSON file."""
     if db is not None:
+        print(f"[DB] Fetching '{collection_name}' from MongoDB.")
         return list(db[collection_name].find({}))
     else:
         file_path = os.path.join(DATA_DIR, f"{collection_name}.json")
+        print(f"[DB] Fetching '{collection_name}' from JSON file: {file_path}")
         try:
             with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
@@ -38,15 +40,21 @@ def load_data(collection_name):
 
 def save_data(collection_name, data):
     """Saves data to a MongoDB collection or a local JSON file."""
+    # Always write to both MongoDB (if available) and JSON file
     if db is not None:
+        print(f"[DB] Saving '{collection_name}' to MongoDB.")
         db[collection_name].delete_many({})
         if data:
             db[collection_name].insert_many(data)
-    else:
-        file_path = os.path.join(DATA_DIR, f"{collection_name}.json")
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+    # Always write to JSON file as well, converting ObjectId to str
+    file_path = os.path.join(DATA_DIR, f"{collection_name}.json")
+    print(f"[DB] Saving '{collection_name}' to JSON file: {file_path}")
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    # Convert ObjectId to str recursively for JSON serialization
+    from backend.db import convert_object_ids as _convert_object_ids
+    serializable_data = _convert_object_ids(data)
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(serializable_data, f, indent=2, ensure_ascii=False)
 
 def convert_object_ids(data):
     """Recursively converts MongoDB ObjectId to string for JSON serialization."""

@@ -1,3 +1,4 @@
+# --- Fetch profile by username (for login integration) ---
 # backend/app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -10,16 +11,22 @@ from backend.db import load_data, save_data, convert_object_ids
 app = Flask(__name__)
 CORS(app)
 
+
 BASE_DIR = os.path.dirname(__file__)                 # backend/
 DATA_DIR = os.path.join(BASE_DIR, "..", "data")      # ../data
-LOGIN_FILE = os.path.join(DATA_DIR, "login-info.json")
-
-CANDIDATES_FILE = os.path.join(DATA_DIR, "candidates.json")
-INTERNSHIPS_FILE = os.path.join(DATA_DIR, "internships.json")
+LOGIN_FILE = os.path.join(DATA_DIR, "login_info.json")
 PROFILES_FILE = os.path.join(DATA_DIR, "profiles.json")
-
+INTERNSHIPS_FILE = os.path.join(DATA_DIR, "internships.json")
 print(f"🔎 Data folder in use: {DATA_DIR}")  # debug print
 
+@app.route("/api/profiles/by_username/<username>", methods=["GET"])
+def get_profile_by_username(username):
+    profiles = convert_object_ids(load_data("profiles"))
+    # Case-insensitive match
+    candidate = next((p for p in profiles if p.get("name", "").strip().lower() == username.strip().lower()), None)
+    if not candidate:
+        return jsonify({"error": "Profile not found"}), 404
+    return jsonify({"profile": candidate}), 200
 
 # ---------------- Login Info ----------------
 def load_login_data():
@@ -93,19 +100,32 @@ def save_json(file_path, data):
 # ---------------- Normalization Helpers ----------------
 def normalize_profile(raw):
     """
-    Normalize profile/candidate fields to consistent candidate object.
+    Normalize profile fields to consistent candidate object.
     - Ensures candidate_id, name, skills_possessed (lowercased), location_preference.
-    - Matches the structure in candidates.json exactly
+    - Matches the structure in profiles.json exactly
     """
     candidate = {}
     candidate_id = raw.get("candidate_id") or f"CAND_{uuid.uuid4().hex[:8]}"
     candidate["candidate_id"] = candidate_id
 
     candidate["name"] = (raw.get("name") or "").strip()
+    # --- Robustly flatten skills_possessed ---
     skills = raw.get("skills_possessed") or raw.get("skills") or []
+    # Robustly flatten any nested lists (arbitrary depth)
+    def _deep_flatten_skills(sk):
+        if isinstance(sk, list):
+            out = []
+            for item in sk:
+                out.extend(_deep_flatten_skills(item))
+            return out
+        elif isinstance(sk, str):
+            return [sk]
+        else:
+            return []
+    flat_skills = _deep_flatten_skills(skills)
     seen = set()
     norm_skills = []
-    for s in skills:
+    for s in flat_skills:
         if not isinstance(s, str):
             continue
         s2 = s.strip().lower()
@@ -115,16 +135,20 @@ def normalize_profile(raw):
     candidate["skills_possessed"] = norm_skills
 
     candidate["location_preference"] = (raw.get("location_preference") or raw.get("location") or "").strip()
-    
-    # Add all fields that exist in candidates.json structure
-    for key in ("education_level", "field_of_study", "sector_interests"):
+    # Add all fields that exist in profiles.json structure
+    for key in ("education_level", "field_of_study", "sector_interests", "created_at"):
         if raw.get(key) is not None:
-            if key == "sector_interests" and isinstance(raw[key], str):
-                # Convert comma-separated string to list
-                candidate[key] = [s.strip() for s in raw[key].split(',') if s.strip()]
+            if key == "sector_interests":
+                val = raw[key]
+                if isinstance(val, str):
+                    candidate[key] = [s.strip() for s in val.split(',') if s.strip()]
+                elif isinstance(val, list):
+                    # Flatten and clean
+                    candidate[key] = [str(s).strip() for sub in val for s in (sub if isinstance(sub, list) else [sub]) if str(s).strip()]
+                else:
+                    candidate[key] = []
             else:
                 candidate[key] = raw[key]
-    
     return candidate
 
 
@@ -142,74 +166,7 @@ def find_candidate_index_by_name_location(candidates, name, location):
 
 
 # ---------------- Migration ----------------
-def migrate_profiles_into_candidates():
-    """Migrate profiles to candidates in MongoDB"""
-    profiles = convert_object_ids(load_data("profiles"))
-    candidates = convert_object_ids(load_data("candidates"))
 
-    changed_profiles = False
-    changed_candidates = False
-
-    for idx, raw in enumerate(profiles):
-        if not raw.get("candidate_id"):
-            new_id = f"CAND_{uuid.uuid4().hex[:8]}"
-            profiles[idx]["candidate_id"] = new_id
-            changed_profiles = True
-
-        cand_obj = normalize_profile(profiles[idx])
-
-        existing_idx = find_candidate_index_by_id(candidates, cand_obj["candidate_id"])
-        if existing_idx is not None:
-            existing = candidates[existing_idx]
-            existing_skills = [s.strip().lower() for s in existing.get("skills_possessed", []) if isinstance(s, str)]
-            for s in cand_obj.get("skills_possessed", []):
-                if s not in existing_skills:
-                    existing_skills.append(s)
-            existing["skills_possessed"] = existing_skills
-            if not existing.get("name") and cand_obj.get("name"):
-                existing["name"] = cand_obj["name"]
-            if not existing.get("location_preference") and cand_obj.get("location_preference"):
-                existing["location_preference"] = cand_obj["location_preference"]
-            # Update education and interests fields
-            for field in ["education_level", "field_of_study", "sector_interests"]:
-                if cand_obj.get(field) and not existing.get(field):
-                    existing[field] = cand_obj[field]
-            candidates[existing_idx] = existing
-            changed_candidates = True
-        else:
-            dup_idx = find_candidate_index_by_name_location(candidates, cand_obj.get("name"), cand_obj.get("location_preference"))
-            if dup_idx is None:
-                candidates.append(cand_obj)
-                changed_candidates = True
-            else:
-                existing = candidates[dup_idx]
-                existing_skills = [s.strip().lower() for s in existing.get("skills_possessed", []) if isinstance(s, str)]
-                for s in cand_obj.get("skills_possessed", []):
-                    if s not in existing_skills:
-                        existing_skills.append(s)
-                existing["skills_possessed"] = existing_skills
-                if not existing.get("candidate_id"):
-                    existing["candidate_id"] = cand_obj["candidate_id"]
-                if not existing.get("name") and cand_obj.get("name"):
-                    existing["name"] = cand_obj["name"]
-                if not existing.get("location_preference") and cand_obj.get("location_preference"):
-                    existing["location_preference"] = cand_obj["location_preference"]
-                # Update education and interests fields
-                for field in ["education_level", "field_of_study", "sector_interests"]:
-                    if cand_obj.get(field) and not existing.get(field):
-                        existing[field] = cand_obj[field]
-                candidates[dup_idx] = existing
-                changed_candidates = True
-
-    if changed_profiles:
-        save_data("profiles", profiles)
-        print("Updated profiles in MongoDB with generated candidate_id(s).")
-    if changed_candidates:
-        save_data("candidates", candidates)
-        print("Merged profiles into candidates in MongoDB (added/updated entries).")
-
-
-migrate_profiles_into_candidates()
 
 
 # ---------------- Routes ----------------
@@ -218,15 +175,9 @@ def home():
     return "✅ Internship Recommendation Backend is running!"
 
 
-@app.route("/api/candidates", methods=["GET"])
-def get_candidates():
-    candidates = convert_object_ids(load_data("candidates"))
-    normalized = []
-    for c in candidates:
-        norm = dict(c)
-        norm["skills_possessed"] = [s.strip().lower() for s in c.get("skills_possessed", []) if isinstance(s, str)]
-        normalized.append(norm)
-    return jsonify({"candidates": normalized}), 200
+
+# Deprecated: /api/candidates endpoint removed. Use /api/profile endpoints instead.
+
 
 
 @app.route("/api/profile", methods=["POST"])
@@ -236,63 +187,37 @@ def add_profile():
         return jsonify({"error": "No profile data received"}), 400
 
     profiles = convert_object_ids(load_data("profiles"))
+    is_new = False
     if not profile_data.get("candidate_id"):
         profile_data["candidate_id"] = f"CAND_{uuid.uuid4().hex[:8]}"
-    
-    # Add timestamp
+        is_new = True
+    # Add or update timestamp
     profile_data["created_at"] = str(uuid.uuid4().time_low)  # Simple timestamp
-    profiles.append(profile_data)
-    save_data("profiles", profiles)
 
-    candidate_obj = normalize_profile(profile_data)
-    candidates = convert_object_ids(load_data("candidates"))
+    # Always normalize before saving
+    normalized_profile = normalize_profile(profile_data)
 
-    existing_idx = find_candidate_index_by_id(candidates, candidate_obj["candidate_id"])
-    if existing_idx is None:
-        dup_idx = find_candidate_index_by_name_location(candidates, candidate_obj.get("name"), candidate_obj.get("location_preference"))
-        if dup_idx is None:
-            candidates.append(candidate_obj)
-            save_data("candidates", candidates)
-            saved = candidate_obj
-            message = "Profile saved and merged into candidates."
-        else:
-            existing = candidates[dup_idx]
-            existing_skills = [s.strip().lower() for s in existing.get("skills_possessed", []) if isinstance(s, str)]
-            for s in candidate_obj.get("skills_possessed", []):
-                if s not in existing_skills:
-                    existing_skills.append(s)
-            existing["skills_possessed"] = existing_skills
-            if not existing.get("candidate_id"):
-                existing["candidate_id"] = candidate_obj["candidate_id"]
-            # Update education and interests fields
-            for field in ["education_level", "field_of_study", "sector_interests"]:
-                if candidate_obj.get(field) and not existing.get(field):
-                    existing[field] = candidate_obj[field]
-            candidates[dup_idx] = existing
-            save_data("candidates", candidates)
-            saved = existing
-            message = "Profile saved and merged into an existing candidate record."
+    # Check if candidate exists
+    idx = find_candidate_index_by_id(profiles, normalized_profile["candidate_id"])
+    if idx is not None:
+        # Update existing profile
+        profiles[idx] = normalized_profile
+        message = "Profile updated."
     else:
-        candidates[existing_idx] = candidate_obj
-        save_data("candidates", candidates)
-        saved = candidate_obj
-        message = "Profile saved and candidates list updated."
+        # Add new profile
+        profiles.append(normalized_profile)
+        message = "Profile created."
+    save_data("profiles", profiles)
+    return jsonify({"message": message, "candidate": normalized_profile}), 201
 
-    return jsonify({"message": message, "candidate": saved}), 201
 
 
 @app.route("/api/profile/<candidate_id>", methods=["GET"])
 def get_profile(candidate_id):
-    candidates = convert_object_ids(load_data("candidates"))
-    candidate = next((c for c in candidates if c.get("candidate_id") == candidate_id), None)
-    
-    if not candidate:
-        profiles = convert_object_ids(load_data("profiles"))
-        candidate = next((p for p in profiles if p.get("candidate_id") == candidate_id), None)
-    
+    profiles = convert_object_ids(load_data("profiles"))
+    candidate = next((p for p in profiles if p.get("candidate_id") == candidate_id), None)
     if not candidate:
         return jsonify({"error": "Profile not found"}), 404
-    
     return jsonify({"profile": candidate}), 200
 
 
@@ -340,41 +265,20 @@ except Exception:
             return recommendations[:10]
 
 
+
 @app.route("/api/recommendations/<candidate_id>", methods=["GET"])
 def recommend_internships(candidate_id):
-    candidates = convert_object_ids(load_data("candidates"))
+    profiles = convert_object_ids(load_data("profiles"))
     internships = convert_object_ids(load_data("internships"))
-
-    cand_map = {}
-    for c in candidates:
-        cid = c.get("candidate_id")
-        if not cid:
-            continue
-        skills = [s.strip().lower() for s in c.get("skills_possessed", []) if isinstance(s, str)]
-        candidate_copy = dict(c)
-        candidate_copy["skills_possessed"] = skills
-        cand_map[cid] = candidate_copy
-
-    candidate = cand_map.get(candidate_id)
-
-    if not candidate:
-        profiles = convert_object_ids(load_data("profiles"))
-        raw = next((p for p in profiles if p.get("candidate_id") == candidate_id), None)
-        if raw:
-            candidate = normalize_profile(raw)
-        else:
-            name_match = next((c for c in candidates if (c.get("name") or "").strip().lower() == candidate_id.strip().lower()), None)
-            if name_match:
-                candidate = normalize_profile(name_match)
-
+    candidate = next((p for p in profiles if p.get("candidate_id") == candidate_id), None)
     if not candidate:
         return jsonify({"error": "Candidate not found"}), 404
-
-    recommendations = get_recommendations(candidate, internships)
-
+    # Always robustly normalize before recommendations
+    candidate_norm = normalize_profile(candidate)
+    recommendations = get_recommendations(candidate_norm, internships)
     return jsonify({
-        "candidate": candidate.get("name"),
-        "candidate_id": candidate.get("candidate_id"),
+        "candidate": candidate_norm.get("name"),
+        "candidate_id": candidate_norm.get("candidate_id"),
         "recommendations": recommendations
     }), 200
 
@@ -456,5 +360,5 @@ def get_current_user_recommendations():
 
 if __name__ == "__main__":
     # Initialize MongoDB collections if needed
-    migrate_profiles_into_candidates()
+
     app.run(debug=True, port=3000)

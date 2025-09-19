@@ -1,204 +1,1012 @@
-{
-    "python": "Python, python",
-    "java": "java, Java, coffee",
-    "c++": "c++",
-    "javascript": "javascript",
-    "nodejs": "nodejs",
-    "html": "hypertext_mark-up_language, hypertext_markup_language, HTML",
-    "css": "Cs, atomic_number_55, caesium, cesium",
-    "sql": "sql",
-    "machine learning": "machine learning",
-    "data science": "data science",
-    "deep learning": "deep learning",
-    "artificial intelligence": "artificial intelligence",
-    "react": "react, oppose, respond",
-    "angular": "angular, angulate",
-    "vuejs": "vuejs",
-    "flutter": "fleet, to-do, dart, hoo-hah, waver, flap, quiver, disruption, hurly_burly, flapping, flutter, disturbance, bat, fluttering, palpitate, hoo-ha, kerfuffle, flicker, flit, flitter, commotion",
-    "swift": "Dean_Swift, Jonathan_Swift, western_fence_lizard, fleet, Sceloporus_occidentalis, Swift, Gustavus_Franklin_Swift, swift, blue-belly",
-    "go": "give-up_the_ghost, extend, sound, last, disco_biscuit, run_short, kick_the_bucket, start, whirl, operate, move, plump, lead, give_out, pass_away, croak, Adam, hold_up, get, break_down, function, run_low, choke, go_away, live, hug_drug, survive, die, conk, drop_dead, blend_in, break, hold_out, rifle, belong, give_way, get_going, crack, offer, go, cash_in_one's_chips, snuff_it, live_on, go_game, decease, tour, become, fit, travel, turn, proceed, work, pop_off, expire, pass, X, run, spell, conk_out, depart, fling, go_bad, endure, exit, fail, XTC, buy_the_farm, blend, ecstasy, perish, cristal, locomote",
-    "ruby": "ruddy, carmine, ruby-red, crimson, red, cherry, scarlet, reddish, blood-red, cherry-red, deep_red, ruby, cerise",
-    "rust": "corrode, rust_fungus, rust-brown, eat, rusty, rusting, rust",
-    "kotlin": "kotlin",
-    "typescript": "typescript",
-    "android": "android, humanoid, mechanical_man",
-    "ios": "Io",
-    "django": "django",
-    "node.js": "node.js",
-    "sql database": "sql database",
-    "nosql": "nosql",
-    "mongodb": "mongodb",
-    "postgresql": "postgresql",
-    "sqlite": "sqlite",
-    "blockchain": "blockchain",
-    "cryptocurrency": "cryptocurrency",
-    "cloud computing": "cloud computing",
-    "docker": "dock_worker, loader, stevedore, dock-walloper, docker, longshoreman, dockworker, lumper, dockhand",
-    "kubernetes": "kubernetes",
-    "aws": "aws",
-    "azure": "azure, sky-blue, sapphire, lazuline, bright_blue, cerulean",
-    "gcp": "gcp",
-    "devops": "devops",
-    "scrum": "scrum, scrummage",
-    "agile": "quick, nimble, agile, spry",
-    "html5": "html5",
-    "web development": "web development",
-    "css3": "css3",
-    "api": "api",
-    "git": "bum, scum_bag, skunk, so-and-so, stinkpot, dirty_dog, crumb, lowlife, git, rotter, rat, puke, stinker",
-    "gitlab": "gitlab",
-    "github": "github",
-    "sdlc": "sdlc",
-    "selenium": "Se, selenium, atomic_number_34",
-    "ui/ux": "ui/ux",
-    "tensorflow": "tensorflow",
-    "pytorch": "pytorch",
-    "keras": "Kera",
-    "flask": "flask, flaskful",
-    "json": "json",
-    "xml": "xml",
-    "rest api": "rest api",
-    "graphql": "graphql",
-    "apache": "Apache, apache",
-    "nginx": "nginx",
-    "hadoop": "hadoop",
-    "spark": "Spark, actuate, trigger, spark_off, trigger_off, activate, discharge, set_off, electric_arc, glint, touch_off, electric_discharge, Muriel_Spark, Dame_Muriel_Spark, twinkle, light, sparkle, arc, spark, trip, flicker, Muriel_Sarah_Spark",
-    "fastapi": "fastapi",
-    "pandas": "coon_bear, Ailurus_fulgens, Ailuropoda_melanoleuca, cat_bear, panda, red_panda, giant_panda, panda_bear, lesser_panda, bear_cat",
-    "numpy": "numpy",
-    "scipy": "scipy",
-    "matplotlib": "matplotlib",
-    "seaborn": "seaborn",
-    "tableau": "tableau_vivant, tableau",
-    "excel": "stand_out, excel, surpass",
-    "r programming": "r programming",
-    "stata": "stata",
-    "sas": "Special_Air_Service, Sturmabteilung, SA, SAS, Storm_Troops",
-    "matlab": "matlab",
-    "power bi": "power bi",
-    "azure devops": "azure devops",
-    "jenkins": "jenkins",
-    "jira": "jira",
-    "project management": "project management",
-    "sql server": "sql server",
-    "nosql database": "nosql database",
-    "postgres": "postgres",
-    "solidity": "solidity, solidness",
-    "ionic": "Ionic_dialect, Ionic, Classical_Greek, Attic, ionic",
-    "redux": "redux",
-    "vue": "vue",
-    "express": "express, express_mail, verbalize, carry, state, utter, convey, press_out, verbalise, give_tongue_to, show, evince, extract, limited, expressage",
-    "ansible": "ansible",
-    "terraform": "terraform",
-    "go language": "go language",
-    "lambda": "lambda",
-    "cloud": "cloud, defile, mottle, taint, befog, swarm, fog, sully, becloud, mist, corrupt, overcast, dapple, obscure, obnubilate, haze_over",
-    "cassandra": "Cassandra",
-    "kafka": "Kafka, Franz_Kafka",
-    "big data": "big data",
-    "data engineer": "data engineer",
-    "ai engineer": "ai engineer",
-    "data analyst": "data analyst",
-    "machine learning engineer": "machine learning engineer",
-    "ethical hacking": "ethical hacking",
-    "penetration testing": "penetration testing",
-    "security testing": "security testing",
-    "network security": "network security",
-    "java spring": "java spring",
-    "spring boot": "spring boot",
-    "web scraping": "web scraping",
-    "web automation": "web automation",
-    "cloud engineer": "cloud engineer",
-    "rpa": "rpa",
-    "powerapps": "powerapps",
-    "microsoft dynamics": "microsoft dynamics",
-    "aws lambda": "aws lambda",
-    "python scripting": "python scripting",
-    "vue.js": "vue.js",
-    "angular 2": "angular 2",
-    "laravel": "laravel",
-    "java ee": "java ee",
-    "scala": "scala",
-    "android development": "android development",
-    "ios development": "ios development",
-    "containerization": "containerization",
-    "version control": "version control",
-    "linux": "Linux",
-    "unix": "UNIX_system, UNIX_operating_system, UNIX",
-    "bash": "whap, bonk, whop, do, bop, belt, smash, brawl, bang, knock, sock, bash",
-    "shell scripting": "shell scripting",
-    "scrum master": "scrum master",
-    "apache kafka": "apache kafka",
-    "apache spark": "apache spark",
-    "oracle database": "oracle database",
-    "data mining": "data mining",
-    "cloud native": "cloud native",
-    "ar/vr": "ar/vr",
-    "ui design": "ui design",
-    "ux design": "ux design",
-    "react native": "react native",
-    "software testing": "software testing",
-    "qa engineer": "qa engineer",
-    "angularjs": "angularjs",
-    "r": "universal_gas_constant, roentgen, R, radius, r, gas_constant",
-    "data visualization": "data visualization",
-    "digital marketing": "digital marketing",
-    "seo": "seo",
-    "sem": "sem",
-    "wordpress": "wordpress",
-    "crm": "crm",
-    "salesforce": "salesforce",
-    "mlops": "mlops",
-    "etl": "etl",
-    "graph database": "graph database",
-    "oracle": "prophet, oracle, prophesier, seer, vaticinator",
-    "nosql databases": "nosql databases",
-    "open source": "open source",
-    "data wrangling": "data wrangling",
-    "etl processes": "etl processes",
-    "data pipelines": "data pipelines",
-    "chef": "chef",
-    "puppet": "creature, marionette, tool, puppet",
-    "openstack": "openstack",
-    "virtualization": "virtualization",
-    "cloud architecture": "cloud architecture",
-    "load balancing": "load balancing",
-    "java developer": "java developer",
-    "web developer": "web developer",
-    "software engineer": "software engineer",
-    "software development": "software development",
-    "testing": "essay, screen, examine, try, quiz, test, testing, try_out, prove, examination",
-    "debugging": "debug",
-    "devsecops": "devsecops",
-    "cryptography": "cryptology, secret_writing, cryptanalysis, coding, steganography, cryptography, cryptanalytics",
-    "math": "maths, mathematics, math",
-    "algorithms": "algorithm, algorithmic_program, algorithmic_rule",
-    "computer science": "computer science",
-    "data structures": "data structures",
-    "low-level programming": "low-level programming",
-    "embedded systems": "embedded systems",
-    "hardware design": "hardware design",
-    "reverse engineering": "reverse engineering",
-    "chip design": "chip design",
-    "compiler": "compiling_program, compiler",
-    "database administrator": "database administrator",
-    "database development": "database development",
-    "data modeling": "data modeling",
-    "object-oriented programming": "object-oriented programming",
-    "multithreading": "multithreading",
-    "os administration": "os administration",
-    "networking": "network",
-    "network design": "network design",
-    "cloud migration": "cloud migration",
-    "business analyst": "business analyst",
-    "erp": "erp",
-    "data security": "data security",
-    "business intelligence": "business intelligence",
-    "business strategy": "business strategy",
-    "analytics": "analytics",
-    "operations management": "operations management",
-    "artificial neural networks": "artificial neural networks",
-    "cloud infrastructure": "cloud infrastructure",
-    "internet of things": "internet of things",
-    "iot": "iot"
-}
+[
+  {
+    "_id": "68cd9be4d29963184798c260",
+    "skill": "python",
+    "synonyms": "Python, python"
+  },
+  {
+    "_id": "68cd9be4d29963184798c261",
+    "skill": "java",
+    "synonyms": "java, Java, coffee"
+  },
+  {
+    "_id": "68cd9be4d29963184798c262",
+    "skill": "c++",
+    "synonyms": "c++"
+  },
+  {
+    "_id": "68cd9be4d29963184798c263",
+    "skill": "javascript",
+    "synonyms": "javascript"
+  },
+  {
+    "_id": "68cd9be4d29963184798c264",
+    "skill": "nodejs",
+    "synonyms": "nodejs"
+  },
+  {
+    "_id": "68cd9be4d29963184798c265",
+    "skill": "html",
+    "synonyms": "hypertext_mark-up_language, hypertext_markup_language, HTML"
+  },
+  {
+    "_id": "68cd9be4d29963184798c266",
+    "skill": "css",
+    "synonyms": "Cs, atomic_number_55, caesium, cesium"
+  },
+  {
+    "_id": "68cd9be4d29963184798c267",
+    "skill": "sql",
+    "synonyms": "sql"
+  },
+  {
+    "_id": "68cd9be4d29963184798c268",
+    "skill": "machine learning",
+    "synonyms": "machine learning"
+  },
+  {
+    "_id": "68cd9be4d29963184798c269",
+    "skill": "data science",
+    "synonyms": "data science"
+  },
+  {
+    "_id": "68cd9be4d29963184798c26a",
+    "skill": "deep learning",
+    "synonyms": "deep learning"
+  },
+  {
+    "_id": "68cd9be4d29963184798c26b",
+    "skill": "artificial intelligence",
+    "synonyms": "artificial intelligence"
+  },
+  {
+    "_id": "68cd9be4d29963184798c26c",
+    "skill": "react",
+    "synonyms": "react, oppose, respond"
+  },
+  {
+    "_id": "68cd9be4d29963184798c26d",
+    "skill": "angular",
+    "synonyms": "angular, angulate"
+  },
+  {
+    "_id": "68cd9be4d29963184798c26e",
+    "skill": "vuejs",
+    "synonyms": "vuejs"
+  },
+  {
+    "_id": "68cd9be4d29963184798c26f",
+    "skill": "flutter",
+    "synonyms": "fleet, to-do, dart, hoo-hah, waver, flap, quiver, disruption, hurly_burly, flapping, flutter, disturbance, bat, fluttering, palpitate, hoo-ha, kerfuffle, flicker, flit, flitter, commotion"
+  },
+  {
+    "_id": "68cd9be4d29963184798c270",
+    "skill": "swift",
+    "synonyms": "Dean_Swift, Jonathan_Swift, western_fence_lizard, fleet, Sceloporus_occidentalis, Swift, Gustavus_Franklin_Swift, swift, blue-belly"
+  },
+  {
+    "_id": "68cd9be4d29963184798c271",
+    "skill": "go",
+    "synonyms": "give-up_the_ghost, extend, sound, last, disco_biscuit, run_short, kick_the_bucket, start, whirl, operate, move, plump, lead, give_out, pass_away, croak, Adam, hold_up, get, break_down, function, run_low, choke, go_away, live, hug_drug, survive, die, conk, drop_dead, blend_in, break, hold_out, rifle, belong, give_way, get_going, crack, offer, go, cash_in_one's_chips, snuff_it, live_on, go_game, decease, tour, become, fit, travel, turn, proceed, work, pop_off, expire, pass, X, run, spell, conk_out, depart, fling, go_bad, endure, exit, fail, XTC, buy_the_farm, blend, ecstasy, perish, cristal, locomote"
+  },
+  {
+    "_id": "68cd9be4d29963184798c272",
+    "skill": "ruby",
+    "synonyms": "ruddy, carmine, ruby-red, crimson, red, cherry, scarlet, reddish, blood-red, cherry-red, deep_red, ruby, cerise"
+  },
+  {
+    "_id": "68cd9be4d29963184798c273",
+    "skill": "rust",
+    "synonyms": "corrode, rust_fungus, rust-brown, eat, rusty, rusting, rust"
+  },
+  {
+    "_id": "68cd9be4d29963184798c274",
+    "skill": "kotlin",
+    "synonyms": "kotlin"
+  },
+  {
+    "_id": "68cd9be4d29963184798c275",
+    "skill": "typescript",
+    "synonyms": "typescript"
+  },
+  {
+    "_id": "68cd9be4d29963184798c276",
+    "skill": "android",
+    "synonyms": "android, humanoid, mechanical_man"
+  },
+  {
+    "_id": "68cd9be4d29963184798c277",
+    "skill": "ios",
+    "synonyms": "Io"
+  },
+  {
+    "_id": "68cd9be4d29963184798c278",
+    "skill": "django",
+    "synonyms": "django"
+  },
+  {
+    "_id": "68cd9be4d29963184798c279",
+    "skill": "node.js",
+    "synonyms": "node.js"
+  },
+  {
+    "_id": "68cd9be4d29963184798c27a",
+    "skill": "sql database",
+    "synonyms": "sql database"
+  },
+  {
+    "_id": "68cd9be4d29963184798c27b",
+    "skill": "nosql",
+    "synonyms": "nosql"
+  },
+  {
+    "_id": "68cd9be4d29963184798c27c",
+    "skill": "mongodb",
+    "synonyms": "mongodb"
+  },
+  {
+    "_id": "68cd9be4d29963184798c27d",
+    "skill": "postgresql",
+    "synonyms": "postgresql"
+  },
+  {
+    "_id": "68cd9be4d29963184798c27e",
+    "skill": "sqlite",
+    "synonyms": "sqlite"
+  },
+  {
+    "_id": "68cd9be4d29963184798c27f",
+    "skill": "blockchain",
+    "synonyms": "blockchain"
+  },
+  {
+    "_id": "68cd9be4d29963184798c280",
+    "skill": "cryptocurrency",
+    "synonyms": "cryptocurrency"
+  },
+  {
+    "_id": "68cd9be4d29963184798c281",
+    "skill": "cloud computing",
+    "synonyms": "cloud computing"
+  },
+  {
+    "_id": "68cd9be4d29963184798c282",
+    "skill": "docker",
+    "synonyms": "dock_worker, loader, stevedore, dock-walloper, docker, longshoreman, dockworker, lumper, dockhand"
+  },
+  {
+    "_id": "68cd9be4d29963184798c283",
+    "skill": "kubernetes",
+    "synonyms": "kubernetes"
+  },
+  {
+    "_id": "68cd9be4d29963184798c284",
+    "skill": "aws",
+    "synonyms": "aws"
+  },
+  {
+    "_id": "68cd9be4d29963184798c285",
+    "skill": "azure",
+    "synonyms": "azure, sky-blue, sapphire, lazuline, bright_blue, cerulean"
+  },
+  {
+    "_id": "68cd9be4d29963184798c286",
+    "skill": "gcp",
+    "synonyms": "gcp"
+  },
+  {
+    "_id": "68cd9be4d29963184798c287",
+    "skill": "devops",
+    "synonyms": "devops"
+  },
+  {
+    "_id": "68cd9be4d29963184798c288",
+    "skill": "scrum",
+    "synonyms": "scrum, scrummage"
+  },
+  {
+    "_id": "68cd9be4d29963184798c289",
+    "skill": "agile",
+    "synonyms": "quick, nimble, agile, spry"
+  },
+  {
+    "_id": "68cd9be4d29963184798c28a",
+    "skill": "html5",
+    "synonyms": "html5"
+  },
+  {
+    "_id": "68cd9be4d29963184798c28b",
+    "skill": "web development",
+    "synonyms": "web development"
+  },
+  {
+    "_id": "68cd9be4d29963184798c28c",
+    "skill": "css3",
+    "synonyms": "css3"
+  },
+  {
+    "_id": "68cd9be4d29963184798c28d",
+    "skill": "api",
+    "synonyms": "api"
+  },
+  {
+    "_id": "68cd9be4d29963184798c28e",
+    "skill": "git",
+    "synonyms": "bum, scum_bag, skunk, so-and-so, stinkpot, dirty_dog, crumb, lowlife, git, rotter, rat, puke, stinker"
+  },
+  {
+    "_id": "68cd9be4d29963184798c28f",
+    "skill": "gitlab",
+    "synonyms": "gitlab"
+  },
+  {
+    "_id": "68cd9be4d29963184798c290",
+    "skill": "github",
+    "synonyms": "github"
+  },
+  {
+    "_id": "68cd9be4d29963184798c291",
+    "skill": "sdlc",
+    "synonyms": "sdlc"
+  },
+  {
+    "_id": "68cd9be4d29963184798c292",
+    "skill": "selenium",
+    "synonyms": "Se, selenium, atomic_number_34"
+  },
+  {
+    "_id": "68cd9be4d29963184798c293",
+    "skill": "ui/ux",
+    "synonyms": "ui/ux"
+  },
+  {
+    "_id": "68cd9be4d29963184798c294",
+    "skill": "tensorflow",
+    "synonyms": "tensorflow"
+  },
+  {
+    "_id": "68cd9be4d29963184798c295",
+    "skill": "pytorch",
+    "synonyms": "pytorch"
+  },
+  {
+    "_id": "68cd9be4d29963184798c296",
+    "skill": "keras",
+    "synonyms": "Kera"
+  },
+  {
+    "_id": "68cd9be4d29963184798c297",
+    "skill": "flask",
+    "synonyms": "flask, flaskful"
+  },
+  {
+    "_id": "68cd9be4d29963184798c298",
+    "skill": "json",
+    "synonyms": "json"
+  },
+  {
+    "_id": "68cd9be4d29963184798c299",
+    "skill": "xml",
+    "synonyms": "xml"
+  },
+  {
+    "_id": "68cd9be4d29963184798c29a",
+    "skill": "rest api",
+    "synonyms": "rest api"
+  },
+  {
+    "_id": "68cd9be4d29963184798c29b",
+    "skill": "graphql",
+    "synonyms": "graphql"
+  },
+  {
+    "_id": "68cd9be4d29963184798c29c",
+    "skill": "apache",
+    "synonyms": "Apache, apache"
+  },
+  {
+    "_id": "68cd9be4d29963184798c29d",
+    "skill": "nginx",
+    "synonyms": "nginx"
+  },
+  {
+    "_id": "68cd9be4d29963184798c29e",
+    "skill": "hadoop",
+    "synonyms": "hadoop"
+  },
+  {
+    "_id": "68cd9be4d29963184798c29f",
+    "skill": "spark",
+    "synonyms": "Spark, actuate, trigger, spark_off, trigger_off, activate, discharge, set_off, electric_arc, glint, touch_off, electric_discharge, Muriel_Spark, Dame_Muriel_Spark, twinkle, light, sparkle, arc, spark, trip, flicker, Muriel_Sarah_Spark"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a0",
+    "skill": "fastapi",
+    "synonyms": "fastapi"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a1",
+    "skill": "pandas",
+    "synonyms": "coon_bear, Ailurus_fulgens, Ailuropoda_melanoleuca, cat_bear, panda, red_panda, giant_panda, panda_bear, lesser_panda, bear_cat"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a2",
+    "skill": "numpy",
+    "synonyms": "numpy"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a3",
+    "skill": "scipy",
+    "synonyms": "scipy"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a4",
+    "skill": "matplotlib",
+    "synonyms": "matplotlib"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a5",
+    "skill": "seaborn",
+    "synonyms": "seaborn"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a6",
+    "skill": "tableau",
+    "synonyms": "tableau_vivant, tableau"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a7",
+    "skill": "excel",
+    "synonyms": "stand_out, excel, surpass"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a8",
+    "skill": "r programming",
+    "synonyms": "r programming"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2a9",
+    "skill": "stata",
+    "synonyms": "stata"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2aa",
+    "skill": "sas",
+    "synonyms": "Special_Air_Service, Sturmabteilung, SA, SAS, Storm_Troops"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ab",
+    "skill": "matlab",
+    "synonyms": "matlab"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ac",
+    "skill": "power bi",
+    "synonyms": "power bi"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ad",
+    "skill": "azure devops",
+    "synonyms": "azure devops"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ae",
+    "skill": "jenkins",
+    "synonyms": "jenkins"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2af",
+    "skill": "jira",
+    "synonyms": "jira"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b0",
+    "skill": "project management",
+    "synonyms": "project management"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b1",
+    "skill": "sql server",
+    "synonyms": "sql server"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b2",
+    "skill": "nosql database",
+    "synonyms": "nosql database"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b3",
+    "skill": "postgres",
+    "synonyms": "postgres"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b4",
+    "skill": "solidity",
+    "synonyms": "solidity, solidness"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b5",
+    "skill": "ionic",
+    "synonyms": "Ionic_dialect, Ionic, Classical_Greek, Attic, ionic"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b6",
+    "skill": "redux",
+    "synonyms": "redux"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b7",
+    "skill": "vue",
+    "synonyms": "vue"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b8",
+    "skill": "express",
+    "synonyms": "express, express_mail, verbalize, carry, state, utter, convey, press_out, verbalise, give_tongue_to, show, evince, extract, limited, expressage"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2b9",
+    "skill": "ansible",
+    "synonyms": "ansible"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ba",
+    "skill": "terraform",
+    "synonyms": "terraform"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2bb",
+    "skill": "go language",
+    "synonyms": "go language"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2bc",
+    "skill": "lambda",
+    "synonyms": "lambda"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2bd",
+    "skill": "cloud",
+    "synonyms": "cloud, defile, mottle, taint, befog, swarm, fog, sully, becloud, mist, corrupt, overcast, dapple, obscure, obnubilate, haze_over"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2be",
+    "skill": "cassandra",
+    "synonyms": "Cassandra"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2bf",
+    "skill": "kafka",
+    "synonyms": "Kafka, Franz_Kafka"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c0",
+    "skill": "big data",
+    "synonyms": "big data"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c1",
+    "skill": "data engineer",
+    "synonyms": "data engineer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c2",
+    "skill": "ai engineer",
+    "synonyms": "ai engineer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c3",
+    "skill": "data analyst",
+    "synonyms": "data analyst"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c4",
+    "skill": "machine learning engineer",
+    "synonyms": "machine learning engineer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c5",
+    "skill": "ethical hacking",
+    "synonyms": "ethical hacking"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c6",
+    "skill": "penetration testing",
+    "synonyms": "penetration testing"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c7",
+    "skill": "security testing",
+    "synonyms": "security testing"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c8",
+    "skill": "network security",
+    "synonyms": "network security"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2c9",
+    "skill": "java spring",
+    "synonyms": "java spring"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ca",
+    "skill": "spring boot",
+    "synonyms": "spring boot"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2cb",
+    "skill": "web scraping",
+    "synonyms": "web scraping"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2cc",
+    "skill": "web automation",
+    "synonyms": "web automation"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2cd",
+    "skill": "cloud engineer",
+    "synonyms": "cloud engineer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ce",
+    "skill": "rpa",
+    "synonyms": "rpa"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2cf",
+    "skill": "powerapps",
+    "synonyms": "powerapps"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d0",
+    "skill": "microsoft dynamics",
+    "synonyms": "microsoft dynamics"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d1",
+    "skill": "aws lambda",
+    "synonyms": "aws lambda"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d2",
+    "skill": "python scripting",
+    "synonyms": "python scripting"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d3",
+    "skill": "vue.js",
+    "synonyms": "vue.js"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d4",
+    "skill": "angular 2",
+    "synonyms": "angular 2"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d5",
+    "skill": "laravel",
+    "synonyms": "laravel"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d6",
+    "skill": "java ee",
+    "synonyms": "java ee"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d7",
+    "skill": "scala",
+    "synonyms": "scala"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d8",
+    "skill": "android development",
+    "synonyms": "android development"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2d9",
+    "skill": "ios development",
+    "synonyms": "ios development"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2da",
+    "skill": "containerization",
+    "synonyms": "containerization"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2db",
+    "skill": "version control",
+    "synonyms": "version control"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2dc",
+    "skill": "linux",
+    "synonyms": "Linux"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2dd",
+    "skill": "unix",
+    "synonyms": "UNIX_system, UNIX_operating_system, UNIX"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2de",
+    "skill": "bash",
+    "synonyms": "whap, bonk, whop, do, bop, belt, smash, brawl, bang, knock, sock, bash"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2df",
+    "skill": "shell scripting",
+    "synonyms": "shell scripting"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e0",
+    "skill": "scrum master",
+    "synonyms": "scrum master"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e1",
+    "skill": "apache kafka",
+    "synonyms": "apache kafka"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e2",
+    "skill": "apache spark",
+    "synonyms": "apache spark"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e3",
+    "skill": "oracle database",
+    "synonyms": "oracle database"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e4",
+    "skill": "data mining",
+    "synonyms": "data mining"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e5",
+    "skill": "cloud native",
+    "synonyms": "cloud native"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e6",
+    "skill": "ar/vr",
+    "synonyms": "ar/vr"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e7",
+    "skill": "ui design",
+    "synonyms": "ui design"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e8",
+    "skill": "ux design",
+    "synonyms": "ux design"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2e9",
+    "skill": "react native",
+    "synonyms": "react native"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ea",
+    "skill": "software testing",
+    "synonyms": "software testing"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2eb",
+    "skill": "qa engineer",
+    "synonyms": "qa engineer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ec",
+    "skill": "angularjs",
+    "synonyms": "angularjs"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ed",
+    "skill": "r",
+    "synonyms": "universal_gas_constant, roentgen, R, radius, r, gas_constant"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ee",
+    "skill": "data visualization",
+    "synonyms": "data visualization"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ef",
+    "skill": "digital marketing",
+    "synonyms": "digital marketing"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f0",
+    "skill": "seo",
+    "synonyms": "seo"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f1",
+    "skill": "sem",
+    "synonyms": "sem"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f2",
+    "skill": "wordpress",
+    "synonyms": "wordpress"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f3",
+    "skill": "crm",
+    "synonyms": "crm"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f4",
+    "skill": "salesforce",
+    "synonyms": "salesforce"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f5",
+    "skill": "mlops",
+    "synonyms": "mlops"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f6",
+    "skill": "etl",
+    "synonyms": "etl"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f7",
+    "skill": "graph database",
+    "synonyms": "graph database"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f8",
+    "skill": "oracle",
+    "synonyms": "prophet, oracle, prophesier, seer, vaticinator"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2f9",
+    "skill": "nosql databases",
+    "synonyms": "nosql databases"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2fa",
+    "skill": "open source",
+    "synonyms": "open source"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2fb",
+    "skill": "data wrangling",
+    "synonyms": "data wrangling"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2fc",
+    "skill": "etl processes",
+    "synonyms": "etl processes"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2fd",
+    "skill": "data pipelines",
+    "synonyms": "data pipelines"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2fe",
+    "skill": "chef",
+    "synonyms": "chef"
+  },
+  {
+    "_id": "68cd9be4d29963184798c2ff",
+    "skill": "puppet",
+    "synonyms": "creature, marionette, tool, puppet"
+  },
+  {
+    "_id": "68cd9be4d29963184798c300",
+    "skill": "openstack",
+    "synonyms": "openstack"
+  },
+  {
+    "_id": "68cd9be4d29963184798c301",
+    "skill": "virtualization",
+    "synonyms": "virtualization"
+  },
+  {
+    "_id": "68cd9be4d29963184798c302",
+    "skill": "cloud architecture",
+    "synonyms": "cloud architecture"
+  },
+  {
+    "_id": "68cd9be4d29963184798c303",
+    "skill": "load balancing",
+    "synonyms": "load balancing"
+  },
+  {
+    "_id": "68cd9be4d29963184798c304",
+    "skill": "java developer",
+    "synonyms": "java developer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c305",
+    "skill": "web developer",
+    "synonyms": "web developer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c306",
+    "skill": "software engineer",
+    "synonyms": "software engineer"
+  },
+  {
+    "_id": "68cd9be4d29963184798c307",
+    "skill": "software development",
+    "synonyms": "software development"
+  },
+  {
+    "_id": "68cd9be4d29963184798c308",
+    "skill": "testing",
+    "synonyms": "essay, screen, examine, try, quiz, test, testing, try_out, prove, examination"
+  },
+  {
+    "_id": "68cd9be4d29963184798c309",
+    "skill": "debugging",
+    "synonyms": "debug"
+  },
+  {
+    "_id": "68cd9be4d29963184798c30a",
+    "skill": "devsecops",
+    "synonyms": "devsecops"
+  },
+  {
+    "_id": "68cd9be4d29963184798c30b",
+    "skill": "cryptography",
+    "synonyms": "cryptology, secret_writing, cryptanalysis, coding, steganography, cryptography, cryptanalytics"
+  },
+  {
+    "_id": "68cd9be4d29963184798c30c",
+    "skill": "math",
+    "synonyms": "maths, mathematics, math"
+  },
+  {
+    "_id": "68cd9be4d29963184798c30d",
+    "skill": "algorithms",
+    "synonyms": "algorithm, algorithmic_program, algorithmic_rule"
+  },
+  {
+    "_id": "68cd9be4d29963184798c30e",
+    "skill": "computer science",
+    "synonyms": "computer science"
+  },
+  {
+    "_id": "68cd9be4d29963184798c30f",
+    "skill": "data structures",
+    "synonyms": "data structures"
+  },
+  {
+    "_id": "68cd9be4d29963184798c310",
+    "skill": "low-level programming",
+    "synonyms": "low-level programming"
+  },
+  {
+    "_id": "68cd9be4d29963184798c311",
+    "skill": "embedded systems",
+    "synonyms": "embedded systems"
+  },
+  {
+    "_id": "68cd9be4d29963184798c312",
+    "skill": "hardware design",
+    "synonyms": "hardware design"
+  },
+  {
+    "_id": "68cd9be4d29963184798c313",
+    "skill": "reverse engineering",
+    "synonyms": "reverse engineering"
+  },
+  {
+    "_id": "68cd9be4d29963184798c314",
+    "skill": "chip design",
+    "synonyms": "chip design"
+  },
+  {
+    "_id": "68cd9be4d29963184798c315",
+    "skill": "compiler",
+    "synonyms": "compiling_program, compiler"
+  },
+  {
+    "_id": "68cd9be4d29963184798c316",
+    "skill": "database administrator",
+    "synonyms": "database administrator"
+  },
+  {
+    "_id": "68cd9be4d29963184798c317",
+    "skill": "database development",
+    "synonyms": "database development"
+  },
+  {
+    "_id": "68cd9be4d29963184798c318",
+    "skill": "data modeling",
+    "synonyms": "data modeling"
+  },
+  {
+    "_id": "68cd9be4d29963184798c319",
+    "skill": "object-oriented programming",
+    "synonyms": "object-oriented programming"
+  },
+  {
+    "_id": "68cd9be4d29963184798c31a",
+    "skill": "multithreading",
+    "synonyms": "multithreading"
+  },
+  {
+    "_id": "68cd9be4d29963184798c31b",
+    "skill": "os administration",
+    "synonyms": "os administration"
+  },
+  {
+    "_id": "68cd9be4d29963184798c31c",
+    "skill": "networking",
+    "synonyms": "network"
+  },
+  {
+    "_id": "68cd9be4d29963184798c31d",
+    "skill": "network design",
+    "synonyms": "network design"
+  },
+  {
+    "_id": "68cd9be4d29963184798c31e",
+    "skill": "cloud migration",
+    "synonyms": "cloud migration"
+  },
+  {
+    "_id": "68cd9be4d29963184798c31f",
+    "skill": "business analyst",
+    "synonyms": "business analyst"
+  },
+  {
+    "_id": "68cd9be4d29963184798c320",
+    "skill": "erp",
+    "synonyms": "erp"
+  },
+  {
+    "_id": "68cd9be4d29963184798c321",
+    "skill": "data security",
+    "synonyms": "data security"
+  },
+  {
+    "_id": "68cd9be4d29963184798c322",
+    "skill": "business intelligence",
+    "synonyms": "business intelligence"
+  },
+  {
+    "_id": "68cd9be4d29963184798c323",
+    "skill": "business strategy",
+    "synonyms": "business strategy"
+  },
+  {
+    "_id": "68cd9be4d29963184798c324",
+    "skill": "analytics",
+    "synonyms": "analytics"
+  },
+  {
+    "_id": "68cd9be4d29963184798c325",
+    "skill": "operations management",
+    "synonyms": "operations management"
+  },
+  {
+    "_id": "68cd9be4d29963184798c326",
+    "skill": "artificial neural networks",
+    "synonyms": "artificial neural networks"
+  },
+  {
+    "_id": "68cd9be4d29963184798c327",
+    "skill": "cloud infrastructure",
+    "synonyms": "cloud infrastructure"
+  },
+  {
+    "_id": "68cd9be4d29963184798c328",
+    "skill": "internet of things",
+    "synonyms": "internet of things"
+  },
+  {
+    "_id": "68cd9be4d29963184798c329",
+    "skill": "iot",
+    "synonyms": "iot"
+  }
+]

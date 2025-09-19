@@ -73,8 +73,28 @@ def _load_synonyms():
     path = os.path.join(base_dir, "data", "skills_synonyms.json")
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
+            data = json.load(f)
+            # Handle both list format (current) and dict format
+            if isinstance(data, list):
+                # Convert list of objects to dict
+                synonyms_dict = {}
+                for item in data:
+                    if isinstance(item, dict) and "skill" in item:
+                        skill = item["skill"].lower().strip()
+                        synonyms_dict[skill] = skill
+                        # Add synonyms if they exist
+                        if "synonyms" in item and item["synonyms"]:
+                            for syn in item["synonyms"].split(","):
+                                syn_clean = syn.strip().lower()
+                                if syn_clean:
+                                    synonyms_dict[syn_clean] = skill
+                return synonyms_dict
+            elif isinstance(data, dict):
+                return data
+            else:
+                return {}
+    except Exception as e:
+        print(f"[ERROR] Failed to load skills_synonyms.json: {e}")
         return {}
 
 _SKILL_SYNONYMS = _load_synonyms()
@@ -82,6 +102,7 @@ _SKILL_SYNONYMS = _load_synonyms()
 def _normalize_skill(skill: str) -> str:
     """Lowercase, strip, and map synonyms."""
     if not isinstance(skill, str):
+        print(f"[DEBUG] Non-string skill passed to _normalize_skill: {repr(skill)} (type: {type(skill)})")
         return ""
     s = skill.strip().lower()
     return _SKILL_SYNONYMS.get(s, s)
@@ -90,9 +111,24 @@ def _normalize_skill_list(skills):
     """Return a list of cleaned, lowercase skill strings (unique, ordered)."""
     if not skills:
         return []
+    # Deeply flatten skills (arbitrary depth)
+    def _deep_flatten(sk):
+        if isinstance(sk, list):
+            out = []
+            for item in sk:
+                out.extend(_deep_flatten(item))
+            return out
+        elif isinstance(sk, str):
+            return [sk]
+        else:
+            return []
+    flat_skills = _deep_flatten(skills)
     seen = set()
     out = []
-    for s in skills:
+    for s in flat_skills:
+        if not isinstance(s, str):
+            print(f"[DEBUG] Non-string skill found in skills_possessed: {repr(s)} (type: {type(s)})")
+            continue
         norm = _normalize_skill(s)
         if norm and norm not in seen:
             seen.add(norm)
@@ -102,34 +138,22 @@ def _normalize_skill_list(skills):
 # ----------------- Recommendations -----------------
 def get_recommendations(candidate, internships, top_n: int = 10):
     """
-    Enhanced recommendation scoring system:
-    - Skills matched = +3 each (increased from +2)
-    - Rare skill bonus = +2 (increased from +1)
-    - Sector match = +4 (increased from +3)
-    - Location match = +3 (exact) or +2 (within 50km) or +1 (within 200km)
-    - Field of study relevance = +2 (increased from +1)
-    - Education level bonus = +1 (for matching education requirements)
-    - Skill diversity bonus = +1 (for internships requiring diverse skills)
+    Modern scoring system:
+    - Skills matched: up to 50 points (proportional to % matched)
+    - Location proximity: up to 25 points (same city: 25, ≤50km: 20, ≤200km: 10, else 0)
+    - Sector match: 15 points
+    - Field of study: 5 points
+    - Education level: 5 points
+    Max score: 100
     """
 
     recommendations = []
     candidate_skills = _normalize_skill_list(candidate.get("skills_possessed", []))
     candidate_skill_set = set(candidate_skills)
-
     sector_interests = [s.lower() for s in candidate.get("sector_interests", [])]
     location_pref = (candidate.get("location_preference") or "").strip().lower()
     field_of_study = (candidate.get("field_of_study") or "").strip().lower()
     education_level = (candidate.get("education_level") or "").strip().lower()
-
-    # 🔹 Pre-calc skill frequencies for rarity scoring
-    skill_freq = {}
-    total_internships = len(internships or [])
-    for internship in internships or []:
-        for s in _normalize_skill_list(internship.get("skills_required", [])):
-            skill_freq[s] = skill_freq.get(s, 0) + 1
-
-    # 🔹 Candidate location for distance calculations
-    candidate_location = location_pref
 
     for internship in internships or []:
         internship_id = internship.get("internship_id") or internship.get("id") or None
@@ -149,62 +173,51 @@ def get_recommendations(candidate, internships, top_n: int = 10):
                 if any(fuzz.ratio(cand_skill, s) >= 80 for s in internship_skills_set):
                     matched.append(cand_skill)
 
-        # --- Enhanced Scoring System ---
+        # --- New Scoring System ---
         score = 0
-        
-        # Base skill matching (increased weight)
-        score += 3 * len(matched)
 
-        # Rare skill bonus (increased weight)
-        for skill in matched:
-            freq = skill_freq.get(skill, 1)
-            rarity = (total_internships / freq)
-            if rarity > 5:
-                score += 2  # Increased from 1
+        # Skill match: up to 50 points
+        skill_score = 0
+        if internship_skills:
+            skill_score = (len(matched) / len(internship_skills)) * 50
+        score += skill_score
 
-        # Sector interest matching (increased weight)
-        if sector in sector_interests:
-            score += 4  # Increased from 3
-
-        # Location matching (enhanced with distance tiers)
+        # Location proximity: up to 25 points
+        loc_score = 0
         if location and location_pref:
-            if location.lower() == location_pref.lower():
-                score += 3  # Increased from 2
+            if location == location_pref:
+                loc_score = 25
             else:
                 try:
                     distance = _get_distance_between_cities(location_pref, location)
                     if distance <= 50:
-                        score += 2  # Increased from 1
+                        loc_score = 20
                     elif distance <= 200:
-                        score += 1  # New tier for nearby cities
+                        loc_score = 10
                 except Exception:
                     pass
+        score += loc_score
 
-        # Field of study relevance (increased weight)
-        if field_of_study and field_of_study in sector:
-            score += 2  # Increased from 1
+        # Sector match: 15 points
+        sector_score = 15 if sector in sector_interests else 0
+        score += sector_score
 
-        # Education level bonus (new)
-        if education_level and education_level in title.lower():
-            score += 1
+        # Field of study: 5 points
+        field_score = 5 if field_of_study and field_of_study in sector else 0
+        score += field_score
 
-        # Skill diversity bonus (new)
-        internship_skills_count = len(internship_skills)
-        if internship_skills_count >= 5:  # Diverse skill requirements
-            score += 1
+        # Education level: 5 points
+        edu_score = 5 if education_level and education_level in title.lower() else 0
+        score += edu_score
 
-        # Convert score to percentage (0-100)
-        # Normalize score to percentage based on maximum possible score
-        max_possible_score = 20  # Approximate maximum score for normalization
-        match_percentage = min(100, max(0, (score / max_possible_score) * 100))
-        
+        match_percentage = min(100, max(0, round(score, 1)))
         recommendations.append({
             "internship_id": internship_id,
             "title": title,
             "organization": organization,
             "location": internship.get("location", ""),
             "sector": internship.get("sector", ""),
-            "match_score": match_percentage,  # Now a percentage
+            "match_score": match_percentage,
             "matched_skills": matched
         })
 

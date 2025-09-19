@@ -375,9 +375,26 @@
           // Store login state
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', username);
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1000);
+
+          // Fetch profile by username to get candidate_id
+          fetch(`http://127.0.0.1:3000/api/profiles/by_username/${encodeURIComponent(username)}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(profileData => {
+              if (profileData && profileData.profile && profileData.profile.candidate_id) {
+                localStorage.setItem('candidate_id', profileData.profile.candidate_id);
+              } else {
+                localStorage.removeItem('candidate_id');
+              }
+              setTimeout(() => {
+                window.location.href = "index.html";
+              }, 1000);
+            })
+            .catch(() => {
+              localStorage.removeItem('candidate_id');
+              setTimeout(() => {
+                window.location.href = "index.html";
+              }, 1000);
+            });
         } else {
           message.textContent = data.error || "Login failed";
           message.className = "message-error";
@@ -415,6 +432,9 @@
           // Store login state
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', username);
+
+          // No profile yet, so clear candidate_id
+          localStorage.removeItem('candidate_id');
           setTimeout(() => {
             window.location.href = "index.html";
           }, 1000);

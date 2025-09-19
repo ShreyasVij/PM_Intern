@@ -1,201 +1,55 @@
 [
   {
-    "name": "John",
+    "_id": "68cdb0a0dbfa1fa7e421ae07",
+    "candidate_id": "CAND_2e8ea747",
+    "name": "dhairya",
     "skills_possessed": [
-      "java",
-      "cpp"
+      "java"
     ],
-    "location_preference": "delhi",
-    "candidate_id": "CAND_f1e873e4"
-  },
-  {
-    "candidate_id": "CAND1758042704896",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758043542105",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758043556805",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758043565819",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758043821372",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758044005190",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758044832146",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758044839068",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758045149987",
-    "name": "Harry Woods",
-    "skills_possessed": [
-      "content writing",
-      "aws",
-      "data analysis",
-      "javascript"
-    ],
-    "location_preference": "Mumbai"
-  },
-  {
-    "candidate_id": "CAND1758125344805",
-    "name": "Sanchit",
-    "skills_possessed": [
-      "java",
-      "python"
-    ],
-    "location_preference": "mohali`"
-  },
-  {
-    "name": "Dhairya Sood",
-    "education_level": "Undergraduate",
-    "field_of_study": "ece",
-    "location_preference": "Patna",
-    "skills_possessed": [
-      "java",
-      "aws"
-    ],
+    "location_preference": "Chennai",
+    "education_level": "Postgraduate",
+    "field_of_study": "electronics",
     "sector_interests": [
       "tech"
     ],
-    "candidate_id": "CAND_8cb9a715",
-    "created_at": "636376858"
+    "created_at": "480228334"
   },
   {
-    "name": "Raghav Muni",
-    "education_level": "Postgraduate",
-    "field_of_study": "Design",
-    "location_preference": "Thane",
-    "skills_possessed": [
-      "content writing",
-      "social media",
-      "sales",
-      "javascript"
-    ],
-    "sector_interests": [
-      "Sales"
-    ],
-    "candidate_id": "CAND0396",
-    "created_at": "3773417963"
-  },
-  {
-    "name": "Raghav Muni",
-    "education_level": "Postgraduate",
-    "field_of_study": "Design",
-    "location_preference": "Thane",
-    "skills_possessed": [
-      "content writing",
-      "social media",
-      "sales",
-      "javascript",
-      "html"
-    ],
-    "sector_interests": [
-      "Sales"
-    ],
-    "candidate_id": "CAND0396",
-    "created_at": "3893683583"
-  },
-  {
+    "_id": "68cdb0d3dbfa1fa7e421ae09",
+    "candidate_id": "CAND_000079f2",
     "name": "sanchi",
-    "education_level": "Undergraduate",
-    "field_of_study": "electronics",
-    "location_preference": "Mumbai",
     "skills_possessed": [
       "java",
-      "aws",
       "docker",
-      "git"
+      "aws",
+      "python",
+      "react",
+      "js"
     ],
+    "location_preference": "Guwahati",
+    "education_level": "Postgraduate",
+    "field_of_study": "electronics",
     "sector_interests": [
       "tech",
       "finance"
     ],
-    "candidate_id": "CAND_b867aec7",
-    "created_at": "352000729"
+    "created_at": "955922981"
   },
   {
-    "name": "dhaorya",
-    "education_level": "Undergraduate",
-    "field_of_study": "",
-    "location_preference": "Chandigarh",
+    "candidate_id": "CAND_79d92b8e",
+    "name": "poongs",
     "skills_possessed": [
-      "java"
+      "java",
+      "docker",
+      "aws"
     ],
+    "location_preference": "Jodhpur",
+    "education_level": "Postgraduate",
+    "field_of_study": "Design",
     "sector_interests": [
-      "tech"
+      "finance"
     ],
-    "candidate_id": "CAND_b56ce5fb",
-    "created_at": "115936120"
+    "created_at": "633292876",
+    "_id": "68cdb2772572d6918e6e5e31"
   }
 ]

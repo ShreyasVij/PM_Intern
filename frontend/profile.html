@@ -758,36 +758,25 @@
 
         // Check if user has existing profile
         async function checkExistingProfile() {
-            const username = localStorage.getItem('username');
-            if (!username) {
-                // If not logged in, show empty form
+            const candidateId = localStorage.getItem('candidate_id');
+            if (!candidateId) {
+                // If not logged in or no candidate_id, show empty form
                 profileDisplay.classList.add('hidden');
                 profileFormSection.classList.remove('hidden');
                 return;
             }
-
             try {
-                // Try to find profile by exact username match in candidates
-                const response = await fetch(`${API_BASE}/candidates`);
+                // Fetch the current user's profile by candidate_id
+                const response = await fetch(`${API_BASE}/profile/${candidateId}`);
                 const result = await response.json();
-                
-                if (response.ok) {
-                    const candidates = result.candidates || [];
-                    // Look for exact username match, not partial match
-                    const existingProfile = candidates.find(c => 
-                        c.name && c.name.toLowerCase() === username.toLowerCase()
-                    );
-                    
-                    if (existingProfile) {
-                        currentProfile = existingProfile;
-                        displayProfile(existingProfile);
-                        return;
-                    }
+                if (response.ok && result.profile) {
+                    currentProfile = result.profile;
+                    displayProfile(result.profile);
+                    return;
                 }
             } catch (error) {
                 console.log('No existing profile found');
             }
-            
             // If no profile found, show empty form
             profileDisplay.classList.add('hidden');
             profileFormSection.classList.remove('hidden');
@@ -998,7 +987,10 @@
                 if (response.ok) {
                     showMessage('Profile saved successfully! You can now view personalized recommendations on the main page.', 'success');
                     currentProfile = result.candidate;
-                    
+                    // Store candidate_id for personalized recommendations
+                    if (result.candidate && result.candidate.candidate_id) {
+                        localStorage.setItem('candidate_id', result.candidate.candidate_id);
+                    }
                     // Switch to display mode
                     displayProfile(result.candidate);
                     profileFormSection.classList.add('hidden');
