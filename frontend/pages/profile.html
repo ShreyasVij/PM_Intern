@@ -1206,6 +1206,12 @@
                         if (response.ok) {
                             result = await response.json();
                             break;
+                        } else if (response.status === 401) {
+                            // Session missing/expired — prompt login
+                            showMessage('Authentication required. Please log in again.', 'error');
+                            // Redirect to login after a brief pause
+                            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+                            return;
                         } else if (response.status === 503 || response.status === 502) {
                             // Backend is refreshing, wait and retry
                             retryCount++;
@@ -1343,20 +1349,42 @@
             }
         }
 
+        // Server-side login status check to ensure session is valid
+        async function ensureServerAuth() {
+            try {
+                const res = await fetch(`${API_BASE}/auth/status`, { credentials: 'include' });
+                if (!res.ok) throw new Error('status failed');
+                const json = await res.json();
+                const loggedIn = !!(json && (json.logged_in || (json.data && json.data.logged_in)));
+                if (!loggedIn) {
+                    showMessage('Authentication required', 'error');
+                    setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+                    return false;
+                }
+                return true;
+            } catch (e) {
+                showMessage('Authentication required', 'error');
+                setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+                return false;
+            }
+        }
+
         // Initialize
-        currentProfile = null; // Clear any cached profile data
-        checkLoginStatus();
-        prefillName();
-        initializeCityDropdown();
-        // Load skills suggestions asynchronously before checking existing profile
-        loadSkillsSuggestions()
-            .then(() => {
+        (async function initProfilePage(){
+            currentProfile = null; // Clear any cached profile data
+            // Quick local check (fast), then verify with server
+            checkLoginStatus();
+            const ok = await ensureServerAuth();
+            if (!ok) return;
+            prefillName();
+            initializeCityDropdown();
+            // Load skills suggestions asynchronously before checking existing profile
+            try {
+                await loadSkillsSuggestions();
                 filterSkillsList('');
-            })
-            .catch(() => {
-                // Even if suggestions fail, proceed
-            });
-        checkExistingProfile();
+            } catch { /* proceed even if suggestions fail */ }
+            checkExistingProfile();
+        })();
     </script>
 </body>
 </html>

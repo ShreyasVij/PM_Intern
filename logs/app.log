@@ -3917,3 +3917,61 @@ werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on 
 2025-09-20 18:19:39,914 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
 2025-09-20 18:19:49,759 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
 2025-09-20 18:19:50,970 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:44:10,529 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-20 18:44:10,532 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-20 18:44:10,546 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-20 18:44:10,550 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-20 18:44:11,308 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-20 18:44:11,312 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-20 18:44:11,325 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-20 18:44:11,328 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-20 18:44:27,375 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:52:33,188 - app - INFO - signup:77 - User dhairya7 saved to MongoDB
+2025-09-20 18:52:33,189 - app - INFO - signup:86 - User dhairya7 saved to JSON file
+2025-09-20 18:52:34,263 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:53:07,607 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:53:13,485 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:55:12,159 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-20 18:55:12,164 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-20 18:55:12,210 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-20 18:55:12,213 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-20 18:56:38,516 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-20 18:56:38,521 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-20 18:56:38,545 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-20 18:56:38,548 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-20 18:56:41,301 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:56:55,905 - app - INFO - signup:77 - User dhairya10 saved to MongoDB
+2025-09-20 18:56:55,907 - app - INFO - signup:86 - User dhairya10 saved to JSON file
+2025-09-20 18:56:57,094 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:57:07,223 - app - INFO - create_or_update_profile:102 - Upserted profile for dhairya10 in MongoDB
+2025-09-20 18:57:07,226 - app - INFO - create_or_update_profile:117 - Saved profile for dhairya10 to JSON file
+2025-09-20 18:57:11,457 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:57:13,879 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:57:24,060 - app - INFO - create_or_update_profile:102 - Upserted profile for dhairya10 in MongoDB
+2025-09-20 18:57:24,061 - app - INFO - create_or_update_profile:117 - Saved profile for dhairya10 to JSON file
+2025-09-20 18:57:25,513 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:57:30,397 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:57:32,695 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:58:09,362 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-20 18:58:09,365 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-20 18:58:09,377 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-20 18:58:09,379 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-20 18:58:10,171 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-20 18:58:10,176 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-20 18:58:10,192 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-20 18:58:10,194 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-20 18:58:18,577 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:58:34,741 - app - INFO - signup:77 - User sanchitk saved to MongoDB
+2025-09-20 18:58:34,742 - app - INFO - signup:86 - User sanchitk saved to JSON file
+2025-09-20 18:58:35,875 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:58:45,780 - app - INFO - create_or_update_profile:102 - Upserted profile for sanchitk in MongoDB
+2025-09-20 18:58:45,782 - app - INFO - create_or_update_profile:117 - Saved profile for sanchitk to JSON file
+2025-09-20 18:58:47,378 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:58:50,752 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:58:55,664 - app - INFO - create_or_update_profile:102 - Upserted profile for sanchitk in MongoDB
+2025-09-20 18:58:55,666 - app - INFO - create_or_update_profile:117 - Saved profile for sanchitk to JSON file
+2025-09-20 18:58:57,135 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:58:59,106 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-20 18:59:03,841 - app - INFO - create_or_update_profile:102 - Upserted profile for sanchitk in MongoDB
+2025-09-20 18:59:03,843 - app - INFO - create_or_update_profile:117 - Saved profile for sanchitk to JSON file
+2025-09-20 18:59:06,943 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB

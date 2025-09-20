@@ -88,8 +88,12 @@ def signup():
             app_logger.error(f"Failed to save user to JSON: {e}")
             return error_response("Failed to create user", 500)
         
+        # Auto-login on signup so profile creation can proceed without extra step
+        session['username'] = username
+        session['logged_in'] = True
+        
         return success_response(
-            {"username": username, "message": "User created successfully"},
+            {"username": username, "logged_in": True, "message": "User created successfully"},
             "Registration successful"
         )
         
