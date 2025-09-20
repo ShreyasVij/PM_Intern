@@ -73,6 +73,7 @@ let hasLoadedInternships = false;       // True after first successful /internsh
 let internshipsLoadInFlight = false;    // True while /internships fetch is running
 let hasLoadedPersonalized = false;      // True after first successful personalized recs
 let personalizedLoadInFlight = false;   // True while personalized recs fetch is running
+let personalizedRetryAttempted = false; // One-time retry guard when initial result is empty
 
 // Right panel mode state: 'personalized' or 'similar'
 let rightPanelMode = 'similar';
@@ -121,6 +122,14 @@ async function loadAllData() {
     internshipsLoadInFlight = true;
     
     isLoadingData = true;
+    // Clear AI panel at the start only when in Similar mode, to avoid wiping out freshly rendered personalized content later
+    try {
+        if (rightPanelMode === 'similar') {
+            clearAiRecommendations();
+        }
+    } catch (e) {
+        console.warn('Failed to clear AI panel at start:', e);
+    }
     
     setLoading(true, document.querySelector('.panel')); // Load only left panel initially
     try {
@@ -153,10 +162,7 @@ async function loadAllData() {
         // Clear search inputs
         recSearchInput.value = '';
         recLocationInput.value = '';
-        
-        // Clear AI recommendations on data reload to prevent state confusion
-        clearAiRecommendations();
-        // Note: loadPersonalizedRecommendations() is NOT called here to avoid reloading user data
+        // Do not clear the AI panel here—this would overwrite personalized results rendered right after login
     } catch (err) {
         console.error('Error loading data:', err);
         alert('Error loading data: ' + err.message);
@@ -414,7 +420,17 @@ async function loadPersonalizedRecommendations() {
             const result = await response.json();
             const recs = Array.isArray(result.recommendations) ? result.recommendations : [];
             displayPersonalizedRecommendations(recs, result.candidate || 'your');
-            hasLoadedPersonalized = true;
+            // If the first response is empty, do a one-time short retry to
+            // avoid races right after login/profile save.
+            if (recs.length === 0 && !personalizedRetryAttempted) {
+                personalizedRetryAttempted = true;
+                setTimeout(() => {
+                    // Allow retry even if hasLoadedPersonalized isn't set yet
+                    loadPersonalizedRecommendations();
+                }, 600);
+            } else {
+                hasLoadedPersonalized = true;
+            }
         }
     } catch (error) {
         console.log('No personalized recommendations available');
@@ -621,6 +637,16 @@ document.addEventListener('DOMContentLoaded', function() {
         lastDataLoad: lastDataLoad ? new Date(parseInt(lastDataLoad)).toLocaleTimeString() : 'none',
         internshipsLoaded: allInternships.length
     });
+
+    // Decide initial right-panel mode BEFORE loading data to ensure correct clear behavior
+    const initiallyLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    rightPanelMode = initiallyLoggedIn ? 'personalized' : 'similar';
+    // Reflect initial mode in UI immediately
+    updateModeUI();
+    // If logged in and we already have a candidate_id, start loading personalized recs immediately
+    if (initiallyLoggedIn && localStorage.getItem('candidate_id')) {
+        loadPersonalizedRecommendations();
+    }
 
     if (!isInitialized && (shouldLoadFreshData || needsDataLoad)) {
         // Load general data first, then personalized recommendations

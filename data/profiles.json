@@ -80,17 +80,16 @@
     "username": "dhairya2",
     "name": "dhairya2",
     "skills_possessed": [
-      "java",
-      "docker"
+      "java"
     ],
-    "location_preference": "Agra",
+    "location_preference": "Ahmedabad",
     "education_level": "Undergraduate",
     "field_of_study": "ece",
     "sector_interests": [
       "tech"
     ],
     "created_at": "2025-09-20T08:29:58.584789",
-    "updated_at": "2025-09-20T08:39:44.774833"
+    "updated_at": "2025-09-20T12:49:38.057599"
   },
   {
     "candidate_id": "CAND_7854bde5",
