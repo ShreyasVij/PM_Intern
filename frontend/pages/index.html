@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>PM Intern Matcher — Enhanced</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
 
@@ -43,7 +43,6 @@
                 <strong style="font-size:1.2rem;color:var(--text)">Internship Search</strong>
                 <div class="small">Discover opportunities by title, skill, or location</div>
             </div>
-            <button id="reloadBtn" class="btn ghost">Reload Data</button>
         </div>
 
         <div>
@@ -72,6 +71,10 @@
                 <strong style="font-size:1.2rem;color:var(--success)">AI Recommendations</strong>
                 <div class="small">Based on: <b id="selectedAiTriggerLabel">none</b></div>
             </div>
+            <div class="toggle-group" style="display:flex; gap:0.5rem; align-items:center;">
+                <button id="togglePersonalized" class="btn ghost btn-sm" title="Show recommendations based on your profile">Personalized</button>
+                <button id="toggleSimilar" class="btn btn-sm" title="Show internships similar to a selected one">Similar</button>
+            </div>
         </div>
         
         <div class="cards-scroller" id="aiRecommendationsArea">
@@ -83,6 +86,6 @@
     </div>
 </div>
 
-<script src="app.js"></script>
+<script src="../assets/js/app.js"></script>
 </body>
 </html>

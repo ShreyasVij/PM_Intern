@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login | PM Intern</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
   <style>
     body {
       margin: 0;
@@ -354,16 +354,20 @@
       });
     });
 
-    // Login form
+  // Resolve base URL from current origin
+  const ORIGIN = window.location.origin;
+
+  // Login form
     document.getElementById("loginForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const username = document.getElementById("login-username").value;
       const password = document.getElementById("login-password").value;
 
       try {
-        const res = await fetch("http://127.0.0.1:3000/login", {
+        const res = await fetch(`${ORIGIN}/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include',
           body: JSON.stringify({ username, password })
         });
 
@@ -377,22 +381,42 @@
           localStorage.setItem('username', username);
 
           // Fetch profile by username to get candidate_id
-          fetch(`http://127.0.0.1:3000/api/profiles/by_username/${encodeURIComponent(username)}`)
+          fetch(`${ORIGIN}/api/profiles/by_username/${encodeURIComponent(username)}`, {
+            credentials: 'include'
+          })
             .then(r => r.ok ? r.json() : null)
             .then(profileData => {
-              if (profileData && profileData.profile && profileData.profile.candidate_id) {
-                localStorage.setItem('candidate_id', profileData.profile.candidate_id);
-              } else {
-                localStorage.removeItem('candidate_id');
+              let candidateId = null;
+              if (profileData) {
+                // Handle different response formats
+                if (profileData.candidate_id) {
+                  candidateId = profileData.candidate_id;
+                } else if (profileData.data && profileData.data.candidate_id) {
+                  candidateId = profileData.data.candidate_id;
+                } else if (profileData.profile && profileData.profile.candidate_id) {
+                  candidateId = profileData.profile.candidate_id;
+                }
               }
-              setTimeout(() => {
-                window.location.href = "index.html";
-              }, 1000);
+              
+              if (candidateId) {
+                localStorage.setItem('candidate_id', candidateId);
+                // User has profile, go to index
+                setTimeout(() => {
+                  window.location.href = "index.html";
+                }, 1000);
+              } else {
+                // User doesn't have profile, redirect to profile creation
+                localStorage.removeItem('candidate_id');
+                setTimeout(() => {
+                  window.location.href = "profile.html";
+                }, 1000);
+              }
             })
             .catch(() => {
+              // No profile found, redirect to profile creation
               localStorage.removeItem('candidate_id');
               setTimeout(() => {
-                window.location.href = "index.html";
+                window.location.href = "profile.html";
               }, 1000);
             });
         } else {
@@ -405,7 +429,7 @@
       }
     });
 
-    // Signup form
+  // Signup form
     document.getElementById("signupForm").addEventListener("submit", async (e) => {
       e.preventDefault();
       const username = document.getElementById("signup-username").value;
@@ -418,9 +442,10 @@
       }
 
       try {
-        const res = await fetch("http://127.0.0.1:3000/signup", {
+        const res = await fetch(`${ORIGIN}/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: 'include',
           body: JSON.stringify({ username, password })
         });
 
@@ -433,10 +458,10 @@
           localStorage.setItem('isLoggedIn', 'true');
           localStorage.setItem('username', username);
 
-          // No profile yet, so clear candidate_id
+          // No profile yet, so clear candidate_id and redirect to profile creation
           localStorage.removeItem('candidate_id');
           setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = "profile.html";
           }, 1000);
         } else {
           message.textContent = data.error || "Signup failed";

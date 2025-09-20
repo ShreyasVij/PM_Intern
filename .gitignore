@@ -1,2 +1,68 @@
+####################################
+# Python
+####################################
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.so
+.tox/
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Virtual environments
 venv/
+env/
+.venv/
+
+####################################
+# Environments / Secrets
+####################################
+.env
+.env.*
+!.env.example
+
+####################################
+# Logs & runtime artifacts
+####################################
+logs/
+*.log
+
+####################################
+# OS / Editor
+####################################
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+
+####################################
+# Node / Frontend caches (if any)
+####################################
+node_modules/
+dist/
+.parcel-cache/
+.cache/
+
+####################################
+# Build / Packaging
+####################################
+build/
+dist/
+*.egg-info/
+
+####################################
+# Misc / Temp
+####################################
+*.swp
+*.swo
+*.tmp
+~$*
+
+# Legacy specific caches
 backend/__pycache__/

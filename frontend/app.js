@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // CONFIG
-const API_BASE = "http://127.0.0.1:3000/api";
+const API_BASE = `${window.location.origin}/api`;
 document.getElementById('apiBaseDisplay').textContent = API_BASE;
 
 // STATE
@@ -145,7 +145,6 @@ function renderNormalRecommendations() {
     if (!filtered.length) {
         normalRecsCount.textContent = '0 results';
         normalRecsList.innerHTML = '<div class="empty"><h3>No opportunities found</h3><p>Try different search terms or locations!</p></div>';
-        normalRecsShowMore.style.display = 'none';
         return;
     }
     normalRecsCount.textContent = `${filtered.length} result${filtered.length === 1 ? '' : 's'}`;
@@ -221,7 +220,7 @@ async function fetchAiRecommendations(baseInternship) {
 function renderAiRecommendations(recs, baseInternship) {
     aiRecommendationsArea.innerHTML = '';
     if (!recs.length) {
-        aiRecommendationsArea.innerHTML = '<div class="empty"><h4>No AI Matches Found</h4><p>Our AI couldn\'t find similar internships. Try another one!</p></div>';
+        aiRecommendationsArea.innerHTML = '<div class="empty"><h4>No matches found</h4><p>None of your profile skills matched current internships. Try adding more skills or editing your profile.</p></div>';
         return;
     }
     
@@ -329,12 +328,10 @@ async function loadPersonalizedRecommendations() {
         return;
     }
     try {
-        const response = await fetch(`${API_BASE}/recommendations/${candidateId}`);
+        const response = await fetch(`${API_BASE}/recommendations/${candidateId}?t=${Date.now()}`);
         if (response.ok) {
             const result = await response.json();
-            if (result.recommendations && result.recommendations.length > 0) {
-                displayPersonalizedRecommendations(result.recommendations, result.candidate);
-            }
+            displayPersonalizedRecommendations(result.recommendations || [], result.candidate || 'your');
         }
     } catch (error) {
         console.log('No personalized recommendations available');
@@ -351,6 +348,10 @@ function displayPersonalizedRecommendations(recommendations, candidateName) {
     subtitleElement.textContent = `Based on ${candidateName}'s profile`;
     // Clear and populate recommendations
     aiRecommendationsArea.innerHTML = '';
+    if (!recommendations.length) {
+        aiRecommendationsArea.innerHTML = '<div class="empty"><h4>No personalized matches yet</h4><p>We couldn\'t find internships matching your current skills. Try adding or editing skills in your profile.</p></div>';
+        return;
+    }
     recommendations.forEach(rec => {
         const block = document.createElement('div');
         block.className = 'recommendation';

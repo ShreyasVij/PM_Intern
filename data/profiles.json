@@ -36,6 +36,7 @@
     "created_at": "955922981"
   },
   {
+    "_id": "68cdb2772572d6918e6e5e31",
     "candidate_id": "CAND_79d92b8e",
     "name": "poongs",
     "skills_possessed": [
@@ -49,7 +50,64 @@
     "sector_interests": [
       "finance"
     ],
-    "created_at": "633292876",
-    "_id": "68cdb2772572d6918e6e5e31"
+    "created_at": "633292876"
+  },
+  {
+    "candidate_id": "CAND_c3c77e66",
+    "name": "shreyas",
+    "skills_possessed": [
+      "java",
+      "docker",
+      "git",
+      "aws",
+      "js",
+      "react",
+      "machine learning",
+      "data science"
+    ],
+    "location_preference": "Navi Mumbai",
+    "education_level": "Undergraduate",
+    "field_of_study": "ece",
+    "sector_interests": [
+      "tech",
+      "finance"
+    ],
+    "created_at": "2267046165",
+    "_id": "68ce42bdce627c7879e0b2cf"
+  },
+  {
+    "candidate_id": "CAND_8424023e",
+    "username": "dhairya2",
+    "name": "dhairya2",
+    "skills_possessed": [
+      "java",
+      "docker"
+    ],
+    "location_preference": "Agra",
+    "education_level": "Undergraduate",
+    "field_of_study": "ece",
+    "sector_interests": [
+      "tech"
+    ],
+    "created_at": "2025-09-20T08:29:58.584789",
+    "updated_at": "2025-09-20T08:39:44.774833"
+  },
+  {
+    "candidate_id": "CAND_7854bde5",
+    "username": "dhairya3",
+    "name": "dhairya4",
+    "skills_possessed": [
+      "angular",
+      "cypress",
+      "autocad"
+    ],
+    "location_preference": "Delhi",
+    "education_level": "Undergraduate",
+    "field_of_study": "ece",
+    "sector_interests": [
+      "tech"
+    ],
+    "created_at": "2025-09-20T08:49:16.274215",
+    "updated_at": "2025-09-20T12:21:52.067510"
   }
 ]

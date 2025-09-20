@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile | PM Intern</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <style>
         .profile-container {
             max-width: 900px;
@@ -353,6 +353,12 @@
             position: relative;
             width: 100%;
         }
+        /* Ensure skills dropdown shares row with button without overlaying it */
+        .add-skill .searchable-dropdown {
+            flex: 1 1 auto;
+            width: auto;
+            min-width: 0;
+        }
 
         .searchable-dropdown input {
             width: 100%;
@@ -513,7 +519,11 @@
                         <!-- Skills will be added here dynamically -->
                     </div>
                     <div class="add-skill">
-                        <input type="text" id="skillInput" placeholder="Add a skill (e.g., Python, Project Management)">
+                        <div class="searchable-dropdown" id="skillsDropdownWrapper">
+                            <input type="text" id="skillInput" placeholder="Type to search skills..." autocomplete="off">
+                            <div class="dropdown-arrow">▼</div>
+                            <div class="dropdown-options" id="skillsDropdown"></div>
+                        </div>
                         <button type="button" id="addSkillBtn">Add Skill</button>
                     </div>
                 </div>
@@ -534,10 +544,13 @@
     </div>
 
     <script>
-        const API_BASE = "http://127.0.0.1:3000/api";
+    const API_BASE = `${window.location.origin}/api`;
         let skills = [];
-        let currentProfile = null;
+    let currentProfile = null;
         let isEditMode = false;
+    // Skill suggestions derived from internships
+    let allSkillSuggestions = []; // original case for display
+    let allSkillSuggestionsLower = new Set(); // for fast filtering and duplicates
 
         // Top 80+ Indian cities (alphabetically sorted)
         const cities = [
@@ -565,10 +578,16 @@
         const profileInfo = document.getElementById('profileInfo');
         const editToggleBtn = document.getElementById('editToggleBtn');
         
-        // City dropdown elements
+    // City dropdown elements
         const cityInput = document.getElementById('location_preference');
         const cityDropdown = document.getElementById('cityDropdown');
         const searchableDropdown = document.querySelector('.searchable-dropdown');
+
+    // Skills dropdown elements
+    const skillsDropdownWrapper = document.getElementById('skillsDropdownWrapper');
+    const skillsDropdown = document.getElementById('skillsDropdown');
+    let filteredSkills = [];
+    let selectedSkillIndex = -1;
 
         // Theme toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -756,6 +775,115 @@
             });
         }
 
+        // Load unique skills from internships API (one-time)
+        async function loadSkillsSuggestions() {
+            try {
+                const res = await fetch(`${API_BASE}/internships`);
+                if (!res.ok) throw new Error('Failed to load internships for skills');
+                const json = await res.json();
+                let internships = [];
+                if (Array.isArray(json)) internships = json;
+                else if (Array.isArray(json.internships)) internships = json.internships;
+                else if (Array.isArray(json.data)) internships = json.data;
+                const map = new Map(); // lower -> display
+                // Curated popular technical skills to supplement dataset
+                const curatedSkills = [
+                    'Python', 'JavaScript', 'TypeScript', 'Java', 'C++', 'C#', 'Go', 'Rust',
+                    'HTML', 'CSS', 'Tailwind CSS', 'Bootstrap', 'React', 'Next.js', 'Angular', 'Vue.js', 'Svelte',
+                    'Node.js', 'Express.js', 'Django', 'Flask', 'Spring Boot', 'FastAPI',
+                    'SQL', 'MySQL', 'PostgreSQL', 'SQLite', 'NoSQL', 'MongoDB', 'Redis',
+                    'REST APIs', 'GraphQL', 'gRPC',
+                    'Git', 'GitHub', 'Docker', 'Kubernetes', 'CI/CD', 'Jenkins', 'GitLab CI',
+                    'AWS', 'Azure', 'GCP', 'Firebase', 'Cloud Functions',
+                    'Linux', 'Bash', 'Powershell',
+                    'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'scikit-learn', 'TensorFlow', 'PyTorch', 'OpenCV', 'NLTK',
+                    'Apache Spark', 'Hadoop', 'Kafka',
+                    'Terraform', 'Ansible', 'Prometheus', 'Grafana',
+                    'Selenium', 'Cypress', 'Playwright', 'Jest', 'Mocha', 'PyTest',
+                    'Agile', 'Scrum', 'JIRA', 'Figma', 'UX/UI', 'Microservices', 'OOP', 'DSA'
+                ];
+                for (const s of curatedSkills) {
+                    const disp = (s || '').trim();
+                    if (!disp) continue;
+                    const key = disp.toLowerCase();
+                    if (!map.has(key)) map.set(key, disp);
+                }
+                for (const it of internships) {
+                    const arr = Array.isArray(it.skills_required) ? it.skills_required : [];
+                    for (const raw of arr) {
+                        if (typeof raw !== 'string') continue;
+                        const s = raw.trim();
+                        if (!s) continue;
+                        const key = s.toLowerCase();
+                        if (!map.has(key)) map.set(key, s);
+                    }
+                }
+                allSkillSuggestions = Array.from(map.values()).sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+                allSkillSuggestionsLower = new Set(map.keys());
+            } catch (e) {
+                console.warn('Could not load skills suggestions:', e);
+                allSkillSuggestions = [];
+                allSkillSuggestionsLower = new Set();
+            }
+        }
+
+        // Skills dropdown rendering and behavior
+        function renderSkillOptions() {
+            skillsDropdown.innerHTML = '';
+            if (!filteredSkills.length) {
+                skillsDropdown.innerHTML = '<div class="no-results">No skills found</div>';
+                return;
+            }
+            filteredSkills.forEach((skill, index) => {
+                const option = document.createElement('div');
+                option.className = 'dropdown-option';
+                option.textContent = skill;
+                option.dataset.value = skill;
+                if (index === selectedSkillIndex) {
+                    option.classList.add('highlighted');
+                    option.scrollIntoView({ block: 'nearest' });
+                }
+                option.addEventListener('click', () => {
+                    selectSkillSuggestion(skill);
+                });
+                skillsDropdown.appendChild(option);
+            });
+        }
+
+        function openSkillsDropdown() {
+            skillsDropdownWrapper.classList.add('open');
+            renderSkillOptions();
+        }
+
+        function closeSkillsDropdown() {
+            skillsDropdownWrapper.classList.remove('open');
+            selectedSkillIndex = -1;
+        }
+
+        function filterSkillsList(query) {
+            const q = (query || '').trim().toLowerCase();
+            const existing = new Set(skills.map(s => s.toLowerCase()));
+            if (!q) {
+                filteredSkills = allSkillSuggestions.filter(s => !existing.has(s.toLowerCase()));
+            } else {
+                filteredSkills = allSkillSuggestions.filter(s => s.toLowerCase().includes(q) && !existing.has(s.toLowerCase()));
+            }
+            selectedSkillIndex = -1;
+            renderSkillOptions();
+        }
+
+        function selectSkillSuggestion(displaySkill) {
+            const val = (displaySkill || '').trim().toLowerCase();
+            if (val && !skills.includes(val)) {
+                skills.push(val);
+                renderSkills();
+            }
+            // Clear input for next entry
+            skillInput.value = '';
+            filterSkillsList('');
+            openSkillsDropdown();
+        }
+
         // Check if user has existing profile
         async function checkExistingProfile() {
             const candidateId = localStorage.getItem('candidate_id');
@@ -766,16 +894,40 @@
                 return;
             }
             try {
-                // Fetch the current user's profile by candidate_id
-                const response = await fetch(`${API_BASE}/profile/${candidateId}`);
+                // Fetch the current user's profile by candidate_id with cache-busting
+                const cacheBuster = new Date().getTime();
+                const response = await fetch(`${API_BASE}/profile/${candidateId}?t=${cacheBuster}`, {
+                    credentials: 'include',
+                    cache: 'no-cache'
+                });
                 const result = await response.json();
-                if (response.ok && result.profile) {
-                    currentProfile = result.profile;
-                    displayProfile(result.profile);
-                    return;
+                console.log('Profile fetch response:', result); // Debug log
+                if (response.ok && result) {
+                    // Handle different response formats
+                    let profileData = null;
+                    if (result.candidate_id) {
+                        // Direct profile format
+                        profileData = result;
+                    } else if (result.profile) {
+                        // Wrapped profile format
+                        profileData = result.profile;
+                    } else if (result.data && result.data.candidate_id) {
+                        // Data wrapper format
+                        profileData = result.data;
+                    }
+                    
+                    if (profileData) {
+                        currentProfile = profileData;
+                        displayProfile(profileData);
+                        profileDisplay.classList.remove('hidden');
+                        profileFormSection.classList.add('hidden');
+                        editToggleBtn.textContent = 'Edit Profile';
+                        isEditMode = false;
+                        return;
+                    }
                 }
             } catch (error) {
-                console.log('No existing profile found');
+                console.log('No existing profile found:', error);
             }
             // If no profile found, show empty form
             profileDisplay.classList.add('hidden');
@@ -828,14 +980,57 @@
                 editToggleBtn.textContent = 'Edit Profile';
                 isEditMode = false;
             } else {
-                // Switch to edit mode
-                if (currentProfile) {
-                    populateForm(currentProfile);
+                // Switch to edit mode - fetch fresh data first
+                const candidateId = localStorage.getItem('candidate_id');
+                if (candidateId) {
+                    // Fetch fresh profile data before editing
+                    fetch(`${API_BASE}/profile/${candidateId}?t=${new Date().getTime()}`, {
+                        credentials: 'include',
+                        cache: 'no-cache'
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        console.log('Fresh profile data for editing:', result);
+                        // Handle different response formats
+                        let profileData = null;
+                        if (result.candidate_id) {
+                            profileData = result;
+                        } else if (result.profile) {
+                            profileData = result.profile;
+                        } else if (result.data && result.data.candidate_id) {
+                            profileData = result.data;
+                        }
+                        
+                        if (profileData) {
+                            currentProfile = profileData;
+                            populateForm(profileData);
+                            profileDisplay.classList.add('hidden');
+                            profileFormSection.classList.remove('hidden');
+                            editToggleBtn.textContent = 'Cancel Edit';
+                            isEditMode = true;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching fresh profile data:', error);
+                        // Fallback to cached data
+                        if (currentProfile) {
+                            populateForm(currentProfile);
+                        }
+                        profileDisplay.classList.add('hidden');
+                        profileFormSection.classList.remove('hidden');
+                        editToggleBtn.textContent = 'Cancel Edit';
+                        isEditMode = true;
+                    });
+                } else {
+                    // No candidate_id, fallback to cached data
+                    if (currentProfile) {
+                        populateForm(currentProfile);
+                    }
+                    profileDisplay.classList.add('hidden');
+                    profileFormSection.classList.remove('hidden');
+                    editToggleBtn.textContent = 'Cancel Edit';
+                    isEditMode = true;
                 }
-                profileDisplay.classList.add('hidden');
-                profileFormSection.classList.remove('hidden');
-                editToggleBtn.textContent = 'Cancel Edit';
-                isEditMode = true;
             }
         }
 
@@ -860,10 +1055,55 @@
 
         // Add skill functionality
         addSkillBtn.addEventListener('click', addSkill);
-        skillInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addSkill();
+        // Skills dropdown events
+        skillInput.addEventListener('input', (e) => {
+            filterSkillsList(e.target.value);
+            openSkillsDropdown();
+        });
+        skillInput.addEventListener('focus', () => {
+            filterSkillsList(skillInput.value);
+            openSkillsDropdown();
+        });
+        skillInput.addEventListener('blur', () => {
+            setTimeout(() => closeSkillsDropdown(), 200);
+        });
+        // Use keydown to handle arrows and enter
+        skillInput.addEventListener('keydown', (e) => {
+            if (!skillsDropdownWrapper.classList.contains('open')) {
+                if (e.key === 'ArrowDown' || e.key === 'Enter') {
+                    e.preventDefault();
+                    openSkillsDropdown();
+                    return;
+                }
+            }
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    selectedSkillIndex = Math.min(selectedSkillIndex + 1, filteredSkills.length - 1);
+                    renderSkillOptions();
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    selectedSkillIndex = Math.max(selectedSkillIndex - 1, -1);
+                    renderSkillOptions();
+                    break;
+                case 'Enter':
+                    e.preventDefault();
+                    if (selectedSkillIndex >= 0 && filteredSkills[selectedSkillIndex]) {
+                        selectSkillSuggestion(filteredSkills[selectedSkillIndex]);
+                    } else {
+                        // Add whatever is typed
+                        addSkill();
+                    }
+                    break;
+                case 'Escape':
+                    closeSkillsDropdown();
+                    break;
+            }
+        });
+        document.addEventListener('click', (e) => {
+            if (!skillsDropdownWrapper.contains(e.target)) {
+                closeSkillsDropdown();
             }
         });
 
@@ -873,6 +1113,9 @@
                 skills.push(skill);
                 skillInput.value = '';
                 renderSkills();
+                // Refresh suggestion list and close dropdown to avoid overlaying button
+                filterSkillsList('');
+                closeSkillsDropdown();
             }
         }
 
@@ -908,6 +1151,7 @@
 
                 const formData = new FormData(profileForm);
                 const username = localStorage.getItem('username');
+                console.log('Saving profile for username:', username); // Debug log
                 
                 // Validate required fields
                 if (!formData.get('name')?.trim()) {
@@ -939,6 +1183,7 @@
                     profileData.candidate_id = currentProfile.candidate_id;
                 }
 
+                console.log('Profile data to save:', profileData); // Debug log
                 showMessage('Saving profile...', 'success');
                 
                 // Add retry logic for backend refresh scenarios
@@ -954,6 +1199,7 @@
                             headers: {
                                 'Content-Type': 'application/json'
                             },
+                            credentials: 'include',
                             body: JSON.stringify(profileData)
                         });
                         
@@ -985,14 +1231,57 @@
                 }
 
                 if (response.ok) {
+                    console.log('Profile save successful, result:', result); // Debug log
                     showMessage('Profile saved successfully! You can now view personalized recommendations on the main page.', 'success');
-                    currentProfile = result.candidate;
-                    // Store candidate_id for personalized recommendations
-                    if (result.candidate && result.candidate.candidate_id) {
-                        localStorage.setItem('candidate_id', result.candidate.candidate_id);
+
+                    console.log('Profile save response:', result); // Debug log
+
+                    // Handle different response formats for candidate_id
+                    let candidateId = null;
+                    if (result.candidate_id) {
+                        candidateId = result.candidate_id;
+                    } else if (result.data && result.data.candidate_id) {
+                        candidateId = result.data.candidate_id;
+                    } else if (result.candidate && result.candidate.candidate_id) {
+                        candidateId = result.candidate.candidate_id;
                     }
-                    // Switch to display mode
-                    displayProfile(result.candidate);
+
+                    // Store candidate_id for personalized recommendations
+                    if (candidateId) {
+                        localStorage.setItem('candidate_id', candidateId);
+                        console.log('Stored candidate_id in localStorage:', candidateId);
+                    }
+
+                    // Clear any cached data to ensure fresh data on next load
+                    localStorage.removeItem('lastDataLoad');
+
+                    // Fetch the fresh profile from backend to avoid stale/minimal POST response
+                    const submittedProfile = profileData; // keep the form submission as fallback
+                    try {
+                        const cacheBuster = Date.now();
+                        const freshRes = await fetch(`${API_BASE}/profile/${candidateId}?t=${cacheBuster}`, {
+                            credentials: 'include',
+                            cache: 'no-cache'
+                        });
+                        if (freshRes.ok) {
+                            const freshData = await freshRes.json();
+                            let loadedProfile = null;
+                            if (freshData.candidate_id) loadedProfile = freshData;
+                            else if (freshData.profile) loadedProfile = freshData.profile;
+                            else if (freshData.data && freshData.data.candidate_id) loadedProfile = freshData.data;
+                            currentProfile = loadedProfile || { ...submittedProfile, candidate_id };
+                        } else {
+                            // Fallback: use submitted data if server GET fails
+                            currentProfile = { ...submittedProfile, candidate_id };
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch fresh profile; using submitted data', e);
+                        currentProfile = { ...submittedProfile, candidate_id };
+                    }
+
+                    // Switch to display mode with fresh profile
+                    displayProfile(currentProfile);
+                    profileDisplay.classList.remove('hidden');
                     profileFormSection.classList.add('hidden');
                     editToggleBtn.textContent = 'Edit Profile';
                     isEditMode = false;
@@ -1055,9 +1344,18 @@
         }
 
         // Initialize
+        currentProfile = null; // Clear any cached profile data
         checkLoginStatus();
         prefillName();
         initializeCityDropdown();
+        // Load skills suggestions asynchronously before checking existing profile
+        loadSkillsSuggestions()
+            .then(() => {
+                filterSkillsList('');
+            })
+            .catch(() => {
+                // Even if suggestions fail, proceed
+            });
         checkExistingProfile();
     </script>
 </body>

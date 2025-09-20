@@ -1,13 +1,18 @@
-# backend/db.py
+# app/core/database.py
+"""
+Database manager with improved structure
+Refactored from backend/db.py
+"""
+
 import json
 import os
 from pymongo import MongoClient, errors
 from bson import ObjectId
 import time
 
-# Try to import config, fallback to environment variables
+# Try to import config and logger, fallback to environment variables
 try:
-    from backend.config import get_config
+    from app.config import get_config
     config = get_config()
     MONGO_URI = config.MONGO_URI
     DB_NAME = config.DB_NAME
@@ -17,13 +22,12 @@ except ImportError:
     import os
     MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
     DB_NAME = os.getenv('DB_NAME', 'internship_recommender')
-    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     POOL_SIZE = int(os.getenv('MONGODB_POOL_SIZE', 10))
 
-# Try to import logger, fallback to print
 try:
-    from backend.utils.logger import db_logger
+    from app.utils.logger import db_logger
     log = db_logger.info
     log_error = db_logger.error
     log_warning = db_logger.warning
@@ -59,14 +63,14 @@ class DatabaseManager:
             
             # Test connection
             self._client.admin.command('ping')
-            log(f"✅ Successfully connected to MongoDB: {DB_NAME}")
+            log(f"Successfully connected to MongoDB: {DB_NAME}")
             
         except errors.ServerSelectionTimeoutError:
-            log_error("❌ MongoDB connection timeout. Is MongoDB running?")
+            log_error("MongoDB connection timeout. Is MongoDB running?")
             self._client = None
             self._db = None
         except Exception as e:
-            log_error(f"❌ MongoDB connection failed: {e}")
+            log_error(f"MongoDB connection failed: {e}")
             self._client = None
             self._db = None
     
@@ -197,8 +201,8 @@ def save_data(collection_name, data):
     
     # Save to JSON (always)
     try:
+        os.makedirs(DATA_DIR, exist_ok=True)
         json_file = os.path.join(DATA_DIR, f"{collection_name}.json")
-        os.makedirs(os.path.dirname(json_file), exist_ok=True)
         
         # Ensure data is JSON serializable
         json_data = convert_object_ids(data)

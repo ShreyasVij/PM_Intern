@@ -1,162 +1,202 @@
 # PM Intern Recommender 🎯
 
-A sophisticated web-based internship recommendation system that leverages machine learning and intelligent matching algorithms to help students discover personalized internship opportunities based on their skills, location preferences, educational background, and career interests.
+A sophisticated, production-ready internship recommendation system that connects students with personalized internship opportunities through advanced machine learning algorithms, intelligent matching, and a modern, scalable architecture.
 
-## 🌟 Features Overview
+## ✨ Overview
 
-### 🏠 Home Page (`index.html`)
-- **Advanced Search & Filtering**: Multi-criteria search across internship titles, companies, required skills, and locations
-- **AI-Powered Recommendations**: Intelligent "Find Similar" functionality using machine learning algorithms
-- **Interactive Theme Toggle**: Seamless dark/light mode switching with persistent preferences
-- **Real-time Data**: Live internship listings with up-to-date information
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+PM Intern Recommender is a professional-grade web application featuring a **modular Flask backend** with **dual database support** (MongoDB + JSON fallback), **comprehensive error handling**, **standardized API responses**, and a **responsive frontend** with organized asset management.
 
-### 👤 Profile Management (`profile.html`)
-- **Comprehensive Profile Builder**: 
-  - Personal information (name, education level)
-  - Location preferences with 100+ Indian cities
-  - Dynamic skills management with autocomplete
-  - Sector interests selection
-  - Field of study specification
-- **Real-time Validation**: Instant feedback on profile completeness
-- **Personalized Recommendations**: AI-driven internship matching based on profile data
-- **Profile Persistence**: Automatic saving with MongoDB and JSON backup
-- **Progress Tracking**: Visual indicators for profile completion
+## 🚀 Quick Start
 
-### 🔐 Authentication System (`login.html`)
-- **Secure User Registration**: Account creation with validation
-- **Robust Login System**: Session-based authentication
+### Installation
+```bash
+git clone <repository-url>
+cd PM_Intern
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+```
+
+### Configuration
+```bash
+copy .env.example .env
+# Edit .env with your database settings
+```
+
+### Run the Application
+```bash
+python run.py --debug
+```
+
+Frontend (served by the backend) is available at:
+
+- http://127.0.0.1:3000/frontend/pages/index.html
+
+API base (same origin) is:
+
+- http://127.0.0.1:3000/api
+
+## 🌟 Key Features
+
+### 🏠 **Smart Internship Discovery**
+- **Advanced Search & Filtering**: Multi-criteria search across titles, companies, skills, and locations
+- **AI-Powered Recommendations**: ML-driven "Find Similar" functionality with personalized scoring
+- **Real-time Results**: Live internship listings with instant search feedback
+- **Interactive UI**: Dark/light theme toggle with persistent preferences
+
+### 👤 **Comprehensive Profile Management**
+- **Profile Builder**: Personal info, education, location preferences, skills, and interests
+- **Smart Autocomplete**: Dynamic skills management with intelligent suggestions
+- **Progress Tracking**: Visual indicators for profile completion and optimization
+- **Data Persistence**: Automatic saving with MongoDB and JSON backup systems
+
+### 🔐 **Secure Authentication**
+- **User Registration & Login**: Secure account creation and session management
 - **Password Security**: Industry-standard hashing with Werkzeug
-- **Session Management**: Persistent login state across browser sessions
-- **Error Handling**: User-friendly error messages and validation feedback
+- **Session Persistence**: Maintained login state across browser sessions
+- **Validation & Error Handling**: User-friendly feedback and robust error management
 
-### 🤖 AI Recommendation Engine
+### 🤖 **Advanced AI Recommendation Engine**
 - **Multi-factor Scoring Algorithm**:
-  - Skills matching (up to 50 points)
-  - Location proximity with geographic calculations (up to 25 points)
-  - Sector alignment (15 points)
-  - Field of study relevance (5 points)
-  - Education level compatibility (5 points)
-- **Skill Normalization**: Advanced synonym mapping and skill standardization
-- **Geographic Intelligence**: Distance-based scoring using geopy and geographic calculations
-- **Fuzzy Matching**: RapidFuzz integration for flexible text matching
+  - Skills matching (weighted up to 50 points)
+  - Geographic proximity with distance calculations (25 points)
+  - Sector alignment and field compatibility (20 points)
+  - Education level matching (5 points)
+- **Intelligent Processing**: Skill normalization, synonym mapping, and fuzzy text matching
+- **Performance Optimized**: Efficient algorithms with response caching
 
-## 🛠️ Technical Architecture
+## 🏗️ Architecture
 
-### Frontend Stack
-- **HTML5**: Semantic markup with accessibility features
-- **CSS3**: 
-  - CSS custom properties for theming
-  - Flexbox and Grid layouts
-  - Responsive design patterns
-  - Animation and transitions
-- **Vanilla JavaScript**: 
-  - Modern ES6+ features
-  - Fetch API for backend communication
-  - Local storage for session management
-  - Event-driven architecture
+### **New Modular Structure (v2.0)**
+```
+PM_Intern/
+├── app/                    # 🚀 Runtime Application
+│   ├── main.py            # Flask factory & routing
+│   ├── config.py          # Environment configuration
+│   ├── api/               # Modular API endpoints
+│   ├── core/              # Business logic & database
+│   ├── utils/             # Shared utilities
+│   └── models/            # Data models & schemas
+├── scripts/               # 🔧 Maintenance Tools
+├── frontend/              # 🎨 Organized Client Assets
+│   ├── pages/            # HTML templates
+│   ├── assets/           # CSS, JS, images
+│   └── components/       # Reusable UI components
+├── docs/                  # 📚 Professional Documentation
+│   ├── architecture/     # System design docs
+│   ├── guides/           # Development guides
+│   └── api/              # API references
+└── data/                  # 💾 JSON data storage
+```
 
-### Backend Stack
-- **Python 3.11+** with Flask framework
-- **Flask-CORS**: Cross-origin resource sharing
-- **PyMongo**: MongoDB integration
-- **Werkzeug**: Security utilities and password hashing
-- **Geopy**: Geographic calculations and distance measurements
-- **Scikit-learn**: Machine learning utilities
-- **Pandas & NumPy**: Data processing and analysis
+### **Technology Stack**
 
-### Database & Storage
-- **Primary Storage**: MongoDB for scalable data management
-- **Backup Storage**: JSON files for data persistence and migration
-- **Dual-write System**: Ensures data consistency across storage layers
-- **Data Collections**:
-  - `profiles`: User profile information
-  - `internships`: Job posting details
-  - `login_info`: Authentication credentials
-  - `skills_synonyms`: Skill normalization mappings
+#### Backend
+- **Python 3.8+** with Flask framework
+- **MongoDB** primary database with **JSON fallback**
+- **Flask-CORS** for cross-origin support
+- **Modular Architecture** with separation of concerns
+- **Comprehensive Error Handling** and logging
+- **Standardized API Responses** with success/error patterns
 
-### API Architecture
-RESTful API design with comprehensive endpoint coverage:
+#### Frontend
+- **HTML5** with semantic markup
+- **Modern CSS3** with custom properties and responsive design
+- **Vanilla JavaScript** with ES6+ features and Fetch API
+- **Component-based Architecture** for reusable UI elements
+- **Organized Asset Management** with dedicated folders
+ - Responsive design patterns; subtle animations/transitions
 
-#### Authentication Endpoints
-- `POST /signup` - User registration with validation
-- `POST /login` - User authentication and session creation
+#### Data Layer
+- **MongoDB** for scalable primary storage
+- **JSON Files** for backup and development
+- **Dual-write System** ensuring data consistency
+- **Connection Pooling** and health checks
 
-#### Profile Management
-- `POST /api/profile` - Create/update user profiles with normalization
-- `GET /api/profile/<candidate_id>` - Retrieve user profile data
-- `GET /api/profiles/by_username/<username>` - Fetch profile by username
+### **API Design**
 
-#### Internship & Recommendations
-- `GET /api/internships` - Retrieve all available internships
-- `GET /api/recommendations/<candidate_id>` - Get AI-powered personalized recommendations
-- `GET /api/recommendations/by_internship/<internship_id>` - Find similar internships
-- `GET /api/recommendations/current_user` - Current user recommendations
+#### **Authentication**
+- `POST /signup` - User registration (legacy-compatible alias for `/api/auth/signup`)
+- `POST /login` - User authentication and session management (alias for `/api/auth/login`)
+- `POST /logout` - Logout (alias for `/api/auth/logout`)
 
-## 🚀 Installation & Setup
+#### **Core API Endpoints**
+- `GET /api/internships` - Get internship listings with filtering
+- `GET /api/recommendations/{candidate_id}` - Get personalized recommendations
+- `GET /api/recommendations/by_internship/{internship_id}` - Get internships similar to a selected one
 
-### Prerequisites
-- Python 3.11 or higher
-- MongoDB Community Server
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Git (for cloning)
+#### **Profile Management**
+- `POST /api/profile` - Create/update user profiles
+- `GET /api/profile/{candidate_id}` - Retrieve profile data
+- `GET /api/profiles/by_username/{username}` - Fetch by username
 
-### Step-by-Step Installation
+#### **Health & Monitoring**
+- `GET /health` - Application health check and status
+- Comprehensive error responses with standardized format
+- Request/response logging and monitoring
 
-1. **Clone the Repository**:
+## 🚀 Getting Started
+
+### **Prerequisites**
+- Python 3.8+ 
+- MongoDB (optional - JSON fallback available)
+- Modern web browser
+- Git
+
+### **Installation**
+
+1. **Clone the Repository**
    ```bash
-   git clone https://github.com/DhairyaSood/PM_Intern.git
+   git clone <repository-url>
    cd PM_Intern
    ```
 
-2. **Create Virtual Environment**:
+2. **Setup Environment**
    ```bash
    python -m venv venv
-   
-   # Windows
-   venv\Scripts\activate
-   
-   # macOS/Linux
-   source venv/bin/activate
+   venv\Scripts\activate  # Windows
+   # source venv/bin/activate  # Linux/Mac
    ```
 
-3. **Install Dependencies**:
+3. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
 4. **Setup MongoDB**:
-   - Install MongoDB Community Server
-   - Start MongoDB service
-   - Default connection: `mongodb://localhost:27017/`
-
-5. **Initialize Database**:
-   ```bash
-   cd backend
-   python migrate_data.py
+   (Optional) Ensure a MongoDB instance is available; otherwise the app will fallback to JSON files.
    ```
 
-6. **Start Backend Server**:
+4. **Configuration** (Optional)
    ```bash
-   python -m backend.app
-   ```
-   Server runs on `http://127.0.0.1:3000`
-
-7. **Launch Frontend**:
-   - Open `frontend/index.html` in your browser
-   - Or use a local web server:
-   ```bash
-   # Using Python
-   cd frontend
-   python -m http.server 5500
-   
-   # Using Node.js (if available)
-   npx serve .
+   copy .env.example .env  # Windows
+   # Edit .env for MongoDB connection (fallback to JSON if not configured)
    ```
 
-## 📊 Data Structure
+5. **Run Application**
+   ```bash
+   python run.py --debug
+   ```
 
-### User Profile Schema
+6. **Access Application**
+   - Open browser to `http://127.0.0.1:3000/frontend/pages/index.html`
+   - Application ready! 🎉
+
+### **Development Commands**
+```bash
+# Development mode with auto-reload
+python run.py --debug
+
+# Production mode
+python run.py --port 8000
+
+# Custom environment
+python run.py --env production
+```
+
+## 📊 Data Structure & API
+
+### **Profile Schema**
 ```json
 {
   "candidate_id": "CAND_xxxxxxxx",
@@ -164,14 +204,10 @@ RESTful API design with comprehensive endpoint coverage:
   "skills_possessed": ["skill1", "skill2"],
   "location_preference": "string",
   "education_level": "Undergraduate|Postgraduate",
-  "field_of_study": "string",
-  "sector_interests": ["sector1", "sector2"],
-  "created_at": "timestamp",
-  "_id": "mongodb_object_id"
 }
 ```
 
-### Internship Schema
+### **Internship Schema**
 ```json
 {
   "internship_id": "INTxxxx",
@@ -187,22 +223,14 @@ RESTful API design with comprehensive endpoint coverage:
 }
 ```
 
-## 🔧 Configuration
-
-### Environment Variables
-Create a `.env` file in the backend directory:
-```env
-MONGO_URI=mongodb://localhost:27017/
-DB_NAME=internship_recommender
-FLASK_ENV=development
-SECRET_KEY=your_secret_key_here
-```
-
-### MongoDB Configuration
-Default settings in `backend/migrate_data.py`:
-```python
-MONGO_URI = 'mongodb://localhost:27017/'
-DB_NAME = 'internship_recommender'
+### **API Response Format**
+```json
+{
+  "success": true,
+  "data": {...},
+  "message": "Operation successful",
+  "timestamp": "2024-01-01T00:00:00Z"
+}
 ```
 
 ## 🎯 Usage Guide
@@ -216,66 +244,67 @@ DB_NAME = 'internship_recommender'
 
 2. **Profile Optimization**:
    - Add all relevant skills (system supports skill synonyms)
-   - Specify location preferences accurately
-   - Select appropriate education level and field of study
-   - Choose sector interests that align with career goals
+### **For Users**
 
-3. **Finding Opportunities**:
-   - Use the search functionality for specific requirements
-   - Check personalized recommendations on your profile page
-   - Explore similar internships using the AI recommendation feature
-   - Filter results based on location, skills, or company
+1. **Create Account & Profile**
+   - Register with unique username/password
+   - Complete profile with skills, location, education
+   - Set sector interests and field of study
 
-### For Developers
+2. **Discover Internships**
+   - Browse internship listings on home page
+   - Use advanced search and filtering
+   - Get personalized recommendations from your profile
+   - Use "Find Similar" feature for targeted discovery
 
-1. **Adding New Features**:
-   - Backend: Extend `backend/app.py` with new endpoints
-   - Frontend: Add functionality in `frontend/app.js`
-   - Database: Update schemas in `backend/migrate_data.py`
+3. **Profile Optimization**
+   - Keep skills updated and relevant
+   - Specify accurate location preferences
+   - Complete all profile sections for better recommendations
 
-2. **Customizing Recommendations**:
-   - Modify scoring algorithm in `backend/ml_model.py`
-   - Adjust weights for different factors
-   - Add new matching criteria
+### **For Developers**
 
-3. **Data Management**:
-   - Use `backend/migrate_data.py` for data migrations
-   - Update `data/skills_synonyms.json` for skill normalization
-   - Backup data regularly using the dual-storage system
-
-## 🧪 Testing
-
-### Manual Testing
-1. **User Flow Testing**:
-   - Complete signup → profile creation → recommendation viewing
-   - Test search and filtering functionality
-   - Verify theme switching and data persistence
-
-2. **API Testing**:
+1. **Development Setup**
    ```bash
-   # Test user registration
-   curl -X POST http://127.0.0.1:3000/signup \
-     -H "Content-Type: application/json" \
-     -d '{"username":"testuser","password":"testpass"}'
-   
-   # Test recommendations
-   curl http://127.0.0.1:3000/api/recommendations/CAND_xxxxxxxx
+   python run.py --debug
+   # Access frontend at http://127.0.0.1:3000/frontend/pages/index.html
    ```
 
-### Data Validation
-- Run `backend/verify_migration.py` to check data integrity
-- Use `backend/test_education_interests.py` for specific validations
+2. **Adding Features**
+   - Create new API endpoints in `app/api/`
+   - Add frontend components in `frontend/components/`
+   - Use standardized response helpers from `app/utils/`
 
-## 🔒 Security Features
+3. **Database Operations**
+   ```python
+   from app.core.database import get_db_connection
+   db = get_db_connection()
+   # MongoDB operations with JSON fallback
+   ```
 
-- **Password Security**: Werkzeug-based hashing with salt
-- **Input Validation**: Server-side validation for all user inputs
-- **CORS Protection**: Configured for development and production
-- **Session Management**: Secure session handling
-- **Error Handling**: Graceful error responses without sensitive information exposure
-- **Data Sanitization**: XSS and injection prevention
+## 🧪 Testing & Validation
 
-## 🚀 Performance Optimizations
+### **Health Checks**
+```bash
+curl http://127.0.0.1:3000/health
+# Returns application status and version
+```
+
+### **API Testing**
+```bash
+# Test internships endpoint
+curl http://127.0.0.1:3000/api/internships
+
+# Test recommendations
+curl http://127.0.0.1:3000/api/recommendations/CAND_xxxxxxxx
+```
+
+### **Data Validation**
+- Automatic data integrity checks
+- Input validation and sanitization
+- Error logging and monitoring
+
+## 🔒 Security & Performance
 
 - **Efficient Algorithms**: O(n log n) sorting for recommendations
 - **Caching**: Skill synonym caching for faster lookups
@@ -295,47 +324,83 @@ DB_NAME = 'internship_recommender'
 - **Resume Builder**: Integrated CV creation tools
 - **Interview Preparation**: Resources and practice modules
 
-### Technical Improvements
-- **Microservices Architecture**: Service decomposition
-- **GraphQL Integration**: More efficient data fetching
-- **Redis Caching**: Performance enhancement
-- **Docker Containerization**: Simplified deployment
-- **CI/CD Pipeline**: Automated testing and deployment
-- **API Rate Limiting**: Enhanced security measures
+### **Security Features**
+- **Password Security**: Werkzeug-based hashing with salt
+- **Input Validation**: Server-side validation and sanitization
+- **CORS Protection**: Configured for secure cross-origin requests
+- **Session Management**: Secure session handling with proper timeouts
+- **Error Handling**: Graceful error responses without information leakage
+- **Request Logging**: Comprehensive request/response monitoring
 
-## 📝 Contributing
+### **Performance Optimizations**
+- **Database Connection Pooling**: Efficient MongoDB connections
+- **Dual Storage System**: MongoDB primary + JSON fallback for reliability
+- **Modular Architecture**: Reduced loading times and improved maintainability
+- **Optimized Frontend**: Organized assets and component-based structure
+- **Efficient Algorithms**: Optimized recommendation scoring and matching
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature-name`
-3. Commit changes: `git commit -m 'Add feature'`
-4. Push to branch: `git push origin feature-name`
-5. Submit a pull request
+## 📚 Documentation
 
-### Code Standards
-- Python: Follow PEP 8 guidelines
-- JavaScript: Use ES6+ features and consistent formatting
-- Documentation: Update README for significant changes
-- Testing: Add tests for new functionality
+### **Complete Documentation Available**
+- 📖 **[Development Guide](docs/guides/DEVELOPMENT_GUIDE.md)**: Setup, workflows, and best practices
+- 🏗️ **[Architecture Documentation](docs/architecture/)**: System design and comparisons
+- 🔧 **[API Reference](docs/api/API_REFERENCE.md)**: Complete endpoint documentation
+- 📋 **[Project Guides](docs/guides/)**: Implementation and troubleshooting guides
+
+### **Quick Links**
+- **Getting Started**: See [Development Guide](docs/guides/DEVELOPMENT_GUIDE.md)
+- **API Documentation**: Check [API Reference](docs/api/API_REFERENCE.md)
+- **Architecture Details**: View [Architecture Docs](docs/architecture/)
+
+## 🚀 Deployment & Production
+
+### **Production Checklist**
+- [ ] Set `DEBUG=False` in environment
+- [ ] Configure MongoDB connection
+- [ ] Set secure `SECRET_KEY`
+- [ ] Configure CORS for production domains
+- [ ] Set up reverse proxy (nginx recommended)
+- [ ] Configure application logging
+
+### **Docker Support**
+```dockerfile
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 3000
+CMD ["python", "run.py", "--port", "3000"]
+```
+
+## 🤝 Contributing
+
+1. **Fork the repository**
+2. **Create feature branch**: `git checkout -b feature-name`
+3. **Make changes** following code standards
+4. **Add tests** for new functionality
+5. **Update documentation** as needed
+6. **Submit pull request**
+
+### **Code Standards**
+- **Python**: Follow PEP 8 guidelines
+- **JavaScript**: Use ES6+ features and consistent formatting
+- **Documentation**: Update README and docs for significant changes
+- **Testing**: Add comprehensive tests for new features
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🤝 Support
-
-For support, bug reports, or feature requests:
-- Create an issue on GitHub
-- Contact: [Your Contact Information]
-- Documentation: Check this README and code comments
-
 ## 🙏 Acknowledgments
 
-- MongoDB for database technology
-- Flask community for web framework
-- Scikit-learn for machine learning utilities
-- Geopy for geographic calculations
-- Contributors and testers
+- **Flask Community** for the excellent web framework
+- **MongoDB** for scalable database technology
+- **Open Source Libraries**: scikit-learn, geopy, and other dependencies
+- **Contributors** and community feedback
 
 ---
+
+**PM Intern Recommender v2.0** - Professional Internship Matching Platform 🎯
 
 **Made with ❤️ for connecting students with their dream internships**

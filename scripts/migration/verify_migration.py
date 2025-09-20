@@ -27,7 +27,7 @@ def verify_migration():
         collections = {
             'internships': 'internships.json',
             'profiles': 'profiles.json',
-            'login_info': 'login-info.json',
+            'login_info': 'login_info.json',
             'skills_synonyms': 'skills_synonyms.json'
         }
 

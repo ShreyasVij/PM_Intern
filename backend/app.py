@@ -1,6 +1,6 @@
 # --- Fetch profile by username (for login integration) ---
 # backend/app.py
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 import json
 import os
@@ -9,7 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from backend.db import load_data, save_data, convert_object_ids
 
 app = Flask(__name__)
-CORS(app)
+app.secret_key = 'your-secret-key-change-in-production'  # Add secret key for sessions
+CORS(app, supports_credentials=True)  # Enable credentials for CORS
 
 
 BASE_DIR = os.path.dirname(__file__)                 # backend/
@@ -54,6 +55,11 @@ def signup():
     hashed_password = generate_password_hash(creds["password"])
     users.append({"username": creds["username"], "password": hashed_password})
     save_login_data(users)
+    
+    # Set session state for immediate login
+    session['logged_in'] = True
+    session['username'] = creds["username"]
+    
     return jsonify({"message": "Signup successful"}), 201
 
 
@@ -69,15 +75,27 @@ def login():
             # Check if password is hashed or plain text (for backward compatibility)
             if u["password"].startswith("scrypt:") or u["password"].startswith("$2b$"):  # hashed password
                 if check_password_hash(u["password"], creds["password"]):
+                    # Set session state
+                    session['logged_in'] = True
+                    session['username'] = u["username"]
                     return jsonify({"message": "Login successful", "username": u["username"]}), 200
             else:  # plain text (legacy)
                 if u["password"] == creds["password"]:
                     # Update to hashed password
                     u["password"] = generate_password_hash(creds["password"])
                     save_login_data(users)
+                    # Set session state
+                    session['logged_in'] = True
+                    session['username'] = u["username"]
                     return jsonify({"message": "Login successful", "username": u["username"]}), 200
 
     return jsonify({"error": "Invalid username or password"}), 401
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session.clear()
+    return jsonify({"message": "Logout successful"}), 200
 
 
 # ---------------- Data Helpers ----------------

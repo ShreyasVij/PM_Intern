@@ -1,17 +1,31 @@
-# backend/migrate_data.py
+# scripts/migration/migrate_data.py
+"""
+Data migration script - moved from backend/migrate_data.py
+Updated to work with new project structure
+"""
+
 import json
 import os
+import sys
+
+# Add project root to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+sys.path.insert(0, project_root)
+
+try:
+    from app.config import get_config
+    config = get_config()
+    MONGO_URI = config.MONGO_URI
+    DB_NAME = config.DB_NAME
+    DATA_DIR = config.DATA_DIR
+except ImportError:
+    # Fallback to environment variables
+    MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+    DB_NAME = os.getenv('DB_NAME', 'internship_recommender')
+    DATA_DIR = os.path.join(project_root, "data")
+
 from pymongo import MongoClient
 
-# --- Configuration ---
-# Adjust the MongoDB connection string if needed
-MONGO_URI = 'mongodb://localhost:27017/'
-DB_NAME = 'internship_recommender'
-
-BASE_DIR = os.path.dirname(__file__)
-DATA_DIR = os.path.join(BASE_DIR, "..", "data")
-
-# --- Helper Functions ---
 def load_json_file(file_name):
     """Loads data from a local JSON file."""
     file_path = os.path.join(DATA_DIR, file_name)
@@ -21,24 +35,27 @@ def load_json_file(file_name):
             print(f"✅ Successfully loaded {file_name}")
             return data
     except FileNotFoundError:
-        print(f"❌ File not found: {file_name}")
-        return []
+        print(f"❌ File not found: {file_path}")
+        return None
     except json.JSONDecodeError as e:
-        print(f"❌ Invalid JSON in {file_name}: {e}")
-        return []
+        print(f"❌ JSON decode error in {file_name}: {e}")
+        return None
     except Exception as e:
         print(f"❌ Error loading {file_name}: {e}")
-        return []
+        return None
 
 def migrate_to_mongodb():
-    """Connects to MongoDB and migrates data from JSON files."""
+    """Migrate all JSON data to MongoDB."""
+    
     try:
-        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        # Connect to MongoDB
+        client = MongoClient(MONGO_URI)
         db = client[DB_NAME]
-        client.admin.command('ismaster')  # Check if connection is successful
+        
+        # Test connection
+        client.admin.command('ping')
         print("✅ Successfully connected to MongoDB.")
-
-
+        
         # Load data from local JSON files
         internships_data = load_json_file("internships.json")
         profiles_data = load_json_file("profiles.json")
@@ -95,4 +112,3 @@ def migrate_to_mongodb():
 
 if __name__ == "__main__":
     migrate_to_mongodb()
-    
