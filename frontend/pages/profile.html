@@ -52,6 +52,29 @@
             backdrop-filter: blur(10px);
         }
 
+        /* Custom select with consistent arrow */
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .custom-select-wrapper select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding-right: 2.5rem; /* space for arrow */
+            background-image: none;
+        }
+        .custom-select-wrapper .select-arrow {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
@@ -503,8 +526,17 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="state_preference">Preferred State/Union Territory *</label>
+                    <div class="searchable-dropdown" id="stateDropdownWrapper">
+                        <input type="text" id="state_preference" name="state_preference" placeholder="Type to search states..." required autocomplete="off">
+                        <div class="dropdown-arrow">▼</div>
+                        <div class="dropdown-options" id="stateDropdown"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label for="location_preference">Preferred Location (City) *</label>
-                    <div class="searchable-dropdown">
+                    <div class="searchable-dropdown" id="cityDropdownWrapper">
                         <input type="text" id="location_preference" name="location_preference" placeholder="Type to search cities..." required autocomplete="off">
                         <div class="dropdown-arrow">▼</div>
                         <div class="dropdown-options" id="cityDropdown">
@@ -552,19 +584,22 @@
     let allSkillSuggestions = []; // original case for display
     let allSkillSuggestionsLower = new Set(); // for fast filtering and duplicates
 
-        // Top 80+ Indian cities (alphabetically sorted)
-        const cities = [
-            "Agra", "Ahmedabad", "Ajmer", "Akola", "Aligarh", "Allahabad", "Amravati", "Amritsar",
-            "Aurangabad", "Bangalore", "Bareilly", "Belgaum", "Bhavnagar", "Bhilai", "Bhiwandi", "Bhopal",
-            "Bhubaneswar", "Bikaner", "Bokaro", "Chandigarh", "Chennai", "Coimbatore", "Cuttack", "Delhi",
-            "Dhanbad", "Durg", "Faridabad", "Ghaziabad", "Guntur", "Gurgaon", "Guwahati", "Gwalior",
-            "Howrah", "Hubli", "Hyderabad", "Indore", "Jabalpur", "Jaipur", "Jalandhar", "Jammu",
-            "Jamshedpur", "Jhansi", "Jodhpur", "Kanpur", "Kochi", "Kolhapur", "Kolkata", "Kota",
-            "Lucknow", "Ludhiana", "Madurai", "Mangalore", "Meerut", "Mysore", "Nagpur", "Nashik",
-            "Navi Mumbai", "Noida", "Patna", "Pimpri-Chinchwad", "Pune", "Raipur", "Rajkot", "Ranchi",
-            "Salem", "Srinagar", "Surat", "Thane", "Tiruchirappalli", "Udaipur", "Ujjain", "Vadodara",
-            "Varanasi", "Vasai-Virar", "Vijayawada", "Visakhapatnam", "Warangal"
-        ].sort(); // Sort alphabetically
+        // Cities list will be fetched from backend (/api/cities); fallback to minimal list
+        let cities = ["Delhi", "Mumbai", "Bengaluru", "Chennai", "Kolkata", "Hyderabad", "Pune"].sort();
+        // Full official list (28 States + 8 UTs) as robust fallback
+        const FULL_STATES_UTS = [
+            // States (28)
+            "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+            "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+            "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+            "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+            "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+            "Uttar Pradesh", "Uttarakhand", "West Bengal",
+            // Union Territories (8)
+            "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+            "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+        ];
+        let states = [];
 
         // DOM elements
         const profileForm = document.getElementById('profileForm');
@@ -579,9 +614,12 @@
         const editToggleBtn = document.getElementById('editToggleBtn');
         
     // City dropdown elements
-        const cityInput = document.getElementById('location_preference');
+    const cityInput = document.getElementById('location_preference');
         const cityDropdown = document.getElementById('cityDropdown');
-        const searchableDropdown = document.querySelector('.searchable-dropdown');
+    const cityDropdownWrapper = document.getElementById('cityDropdownWrapper');
+    const stateInput = document.getElementById('state_preference');
+    const stateDropdown = document.getElementById('stateDropdown');
+    const stateDropdownWrapper = document.getElementById('stateDropdownWrapper');
 
     // Skills dropdown elements
     const skillsDropdownWrapper = document.getElementById('skillsDropdownWrapper');
@@ -632,7 +670,117 @@
             }
         });
 
-        // City dropdown functionality
+        // Load cities from backend
+        async function loadCitiesFromServer() {
+            try {
+                const res = await fetch(`${API_BASE}/cities`, { credentials: 'include' });
+                if (!res.ok) throw new Error('Failed to load cities');
+                const json = await res.json();
+                if (json && Array.isArray(json.cities)) {
+                    cities = json.cities.slice().sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+                }
+            } catch (e) {
+                console.warn('City list fallback in effect:', e);
+            }
+        }
+
+        async function loadStatesFromServer() {
+            try {
+                const res = await fetch(`${API_BASE}/states`, { credentials: 'include' });
+                if (!res.ok) throw new Error('Failed to load states');
+                const json = await res.json();
+                if (json && Array.isArray(json.states)) {
+                    const incoming = json.states.slice();
+                    // If API returns incomplete list, fall back to the full constant
+                    states = (incoming.length >= 30 ? incoming : FULL_STATES_UTS).sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+                } else {
+                    states = FULL_STATES_UTS.slice().sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+                }
+            } catch (e) {
+                console.warn('States list failed to load:', e);
+                // Fallback to full official list
+                states = FULL_STATES_UTS.slice().sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+            }
+            // Sanity check: should have 36 entries (28 states + 8 UTs)
+            if (states.length < 30) {
+                console.warn('State/UT list seems incomplete. Loaded count:', states.length);
+            }
+        }
+
+        function initializeStateDropdown() {
+            let filteredStates = [...states];
+            let selectedIdx = -1;
+
+            function renderStateOptions() {
+                stateDropdown.innerHTML = '';
+                if (!filteredStates.length) {
+                    stateDropdown.innerHTML = '<div class="no-results">No states found</div>';
+                    return;
+                }
+                filteredStates.forEach((st, idx) => {
+                    const opt = document.createElement('div');
+                    opt.className = 'dropdown-option';
+                    opt.textContent = st;
+                    opt.dataset.value = st;
+                    if (idx === selectedIdx) {
+                        opt.classList.add('highlighted');
+                        opt.scrollIntoView({ block: 'nearest' });
+                    }
+                    opt.addEventListener('click', () => selectState(st));
+                    stateDropdown.appendChild(opt);
+                });
+            }
+
+            function filterStates(q) {
+                const query = (q || '').trim().toLowerCase();
+                if (!query) filteredStates = [...states];
+                else filteredStates = states.filter(s => s.toLowerCase().includes(query));
+                selectedIdx = -1;
+                renderStateOptions();
+            }
+
+            function open() { stateDropdownWrapper.classList.add('open'); renderStateOptions(); }
+            function close() { stateDropdownWrapper.classList.remove('open'); selectedIdx = -1; }
+
+            async function validateTypedState() {
+                const typed = (stateInput.value || '').trim();
+                if (!typed) { stateInput.removeAttribute('data-value'); return; }
+                // Enforce allowed-only: must exactly match one of the known states (case-insensitive)
+                const match = states.find(s => s.toLowerCase() === typed.toLowerCase());
+                if (match) {
+                    stateInput.setAttribute('data-value', match);
+                    stateInput.value = match; // normalize case
+                } else {
+                    showMessage('Please select a valid State/UT from the list.', 'error');
+                    stateInput.removeAttribute('data-value');
+                }
+            }
+
+            function selectState(st) {
+                stateInput.value = st;
+                stateInput.setAttribute('data-value', st);
+                close();
+            }
+
+            // Events
+            stateInput.addEventListener('input', (e) => { filterStates(e.target.value); open(); if (!(states.some(s => s.toLowerCase() === e.target.value.toLowerCase()))) stateInput.removeAttribute('data-value'); });
+            stateInput.addEventListener('focus', open);
+            stateInput.addEventListener('blur', () => { setTimeout(close, 200); validateTypedState(); });
+            stateInput.addEventListener('keydown', (e) => {
+                if (!stateDropdownWrapper.classList.contains('open')) {
+                    if (e.key === 'ArrowDown' || e.key === 'Enter') { e.preventDefault(); open(); return; }
+                }
+                switch (e.key) {
+                    case 'ArrowDown': e.preventDefault(); selectedIdx = Math.min(selectedIdx + 1, filteredStates.length - 1); renderStateOptions(); break;
+                    case 'ArrowUp': e.preventDefault(); selectedIdx = Math.max(selectedIdx - 1, -1); renderStateOptions(); break;
+                    case 'Enter': e.preventDefault(); if (selectedIdx >= 0 && filteredStates[selectedIdx]) selectState(filteredStates[selectedIdx]); break;
+                    case 'Escape': close(); break;
+                }
+            });
+            document.addEventListener('click', (e) => { if (!stateDropdownWrapper.contains(e.target)) close(); });
+        }
+
+        // City dropdown functionality (scrollable + free input)
         function initializeCityDropdown() {
             let filteredCities = [...cities];
             let selectedIndex = -1;
@@ -656,17 +804,34 @@
                         option.scrollIntoView({ block: 'nearest' });
                     }
                     
-                    option.addEventListener('click', () => {
-                        selectCity(city);
+                    option.addEventListener('click', async () => {
+                        await selectCity(city);
                     });
                     
                     cityDropdown.appendChild(option);
                 });
             }
 
-            function selectCity(city) {
+            async function selectCity(city) {
                 cityInput.value = city;
-                cityInput.setAttribute('data-value', city);
+                // Validate selection to get normalized key
+                try {
+                    const res = await fetch(`${API_BASE}/cities/validate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ city })
+                    });
+                    const json = await res.json();
+                    if (res.ok && json && json.ok) {
+                        cityInput.setAttribute('data-value', json.normalized);
+                    } else {
+                        // Fallback to raw display
+                        cityInput.setAttribute('data-value', city);
+                    }
+                } catch {
+                    cityInput.setAttribute('data-value', city);
+                }
                 searchableDropdown.classList.remove('open');
                 selectedIndex = -1;
             }
@@ -685,12 +850,12 @@
             }
 
             function openDropdown() {
-                searchableDropdown.classList.add('open');
+                cityDropdownWrapper.classList.add('open');
                 renderOptions();
             }
 
             function closeDropdown() {
-                searchableDropdown.classList.remove('open');
+                cityDropdownWrapper.classList.remove('open');
                 selectedIndex = -1;
             }
 
@@ -699,6 +864,10 @@
                 const query = e.target.value;
                 filterCities(query);
                 openDropdown();
+                // Light client guard against very short entries
+                if (query && query.trim().length > 0 && query.trim().length < 3) {
+                    cityInput.removeAttribute('data-value');
+                }
             });
 
             cityInput.addEventListener('focus', () => {
@@ -710,10 +879,12 @@
                 setTimeout(() => {
                     closeDropdown();
                 }, 200);
+                // Validate the free-typed city with backend; if valid, set normalized key into data-value
+                validateTypedCity();
             });
 
             cityInput.addEventListener('keydown', (e) => {
-                if (!searchableDropdown.classList.contains('open')) {
+                if (!cityDropdownWrapper.classList.contains('open')) {
                     if (e.key === 'ArrowDown' || e.key === 'Enter') {
                         e.preventDefault();
                         openDropdown();
@@ -746,33 +917,56 @@
 
             // Click outside to close
             document.addEventListener('click', (e) => {
-                if (!searchableDropdown.contains(e.target)) {
+                if (!cityDropdownWrapper.contains(e.target)) {
                     closeDropdown();
                 }
             });
 
-            // Prevent invalid input
-            cityInput.addEventListener('keypress', (e) => {
-                // Allow typing, but we'll validate on blur
-            });
+            // Allow typing freely; server-side validation will handle correctness
 
-            cityInput.addEventListener('blur', () => {
-                const value = cityInput.value;
-                if (value && !cities.includes(value)) {
-                    // Find closest match
-                    const closest = cities.find(city => 
-                        city.toLowerCase().startsWith(value.toLowerCase())
-                    );
-                    if (closest) {
-                        cityInput.value = closest;
-                        cityInput.setAttribute('data-value', closest);
+            async function validateTypedCity() {
+                const typed = (cityInput.value || '').trim();
+                const state = (stateInput.getAttribute('data-value') || '').trim();
+                if (!typed) {
+                    cityInput.removeAttribute('data-value');
+                    return;
+                }
+                if (typed.length < 3) {
+                    showMessage('City name is too short. Please enter at least 3 characters.', 'error');
+                    cityInput.removeAttribute('data-value');
+                    return;
+                }
+                if (!state) {
+                    showMessage('Please select a State/UT before choosing a city.', 'error');
+                    cityInput.removeAttribute('data-value');
+                    return;
+                }
+                try {
+                    const res = await fetch(`${API_BASE}/cities/validate`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ city: typed, state })
+                    });
+                    const json = await res.json();
+                    if (res.ok && json && json.ok) {
+                        // Keep user-friendly display, store normalized key for backend
+                        cityInput.setAttribute('data-value', json.normalized);
+                        // Ensure our local cities list includes this display label
+                        if (!cities.includes(json.display)) {
+                            cities.push(json.display);
+                            cities.sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+                        }
                     } else {
-                        // Clear invalid input
-                        cityInput.value = '';
+                        showMessage('City not found. Please check the spelling or enter nearest famous city.', 'error');
                         cityInput.removeAttribute('data-value');
                     }
+                } catch (e) {
+                    console.warn('City validation failed:', e);
+                    // Do not block the user; keep value but no data-value tag
+                    cityInput.removeAttribute('data-value');
                 }
-            });
+            }
         }
 
         // Load unique skills from internships API (one-time)
@@ -951,7 +1145,7 @@
                 </div>
                 <div class="info-item">
                     <label>Location Preference</label>
-                    <div class="value">${escapeHtml(profile.location_preference || 'Not specified')}</div>
+                    <div class="value">${escapeHtml(profile.location_preference || 'Not specified')}${profile.state_preference ? ', ' + escapeHtml(profile.state_preference) : ''}</div>
                 </div>
                 <div class="info-item">
                     <label>Skills</label>
@@ -1045,6 +1239,12 @@
             cityInput.value = cityValue;
             if (cityValue) {
                 cityInput.setAttribute('data-value', cityValue);
+            }
+            // Set state
+            const stateVal = profile.state_preference || '';
+            if (stateVal) {
+                stateInput.value = stateVal;
+                stateInput.setAttribute('data-value', stateVal);
             }
             
             document.getElementById('sector_interests').value = (profile.sector_interests || []).join(', ');
@@ -1164,16 +1364,55 @@
                     return;
                 }
                 
-                if (!cityInput.getAttribute('data-value') && !cityInput.value.trim()) {
+                // City validation: if user typed a city but no normalized data-value, validate with server now
+                const typedCity = cityInput.value.trim();
+                const selectedState = (stateInput.getAttribute('data-value') || '').trim();
+                let normalizedCity = cityInput.getAttribute('data-value');
+                if (!typedCity) {
                     showMessage('Please select a valid city', 'error');
                     return;
+                }
+                if (!selectedState) {
+                    showMessage('Please select your State/UT', 'error');
+                    return;
+                }
+                if (!normalizedCity) {
+                    try {
+                        const vr = await fetch(`${API_BASE}/cities/validate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ city: typedCity, state: selectedState })
+                        });
+                        const vjson = await vr.json();
+                        if (vr.ok && vjson && vjson.ok) {
+                            normalizedCity = vjson.normalized;
+                            cityInput.setAttribute('data-value', normalizedCity);
+                            // Also normalize display if server returns a nicer display
+                            if (vjson.display && vjson.display !== typedCity) {
+                                cityInput.value = vjson.display;
+                            }
+                            // Add to local list for future selection in this session
+                            if (!cities.includes(vjson.display)) {
+                                cities.push(vjson.display);
+                                cities.sort((a,b)=>a.localeCompare(b, undefined, {sensitivity:'base'}));
+                            }
+                        } else {
+                            showMessage('City not found. Please check the spelling or enter nearest famous city.', 'error');
+                            return;
+                        }
+                    } catch (err) {
+                        showMessage('Unable to validate city. Check connection and try again.', 'error');
+                        return;
+                    }
                 }
 
                 const profileData = {
                     name: formData.get('name').trim(),
                     education_level: formData.get('education_level'),
                     field_of_study: formData.get('field_of_study')?.trim() || '',
-                    location_preference: cityInput.getAttribute('data-value') || cityInput.value.trim(),
+                    location_preference: normalizedCity || typedCity,
+                    state_preference: selectedState,
                     skills_possessed: skills,
                     sector_interests: formData.get('sector_interests') ? formData.get('sector_interests').split(',').map(s => s.trim()).filter(s => s) : []
                 };
@@ -1377,6 +1616,8 @@
             const ok = await ensureServerAuth();
             if (!ok) return;
             prefillName();
+            await Promise.all([loadStatesFromServer(), loadCitiesFromServer()]);
+            initializeStateDropdown();
             initializeCityDropdown();
             // Load skills suggestions asynchronously before checking existing profile
             try {

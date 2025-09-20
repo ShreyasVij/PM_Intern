@@ -7,6 +7,18 @@ import os
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 from backend.db import load_data, save_data, convert_object_ids
+try:
+    # distance utilities for city listing/validation
+    from backend.distance_matrix import CITY_COORDINATES, get_coordinates, normalize_city_name
+except Exception:
+    try:
+        from distance_matrix import CITY_COORDINATES, get_coordinates, normalize_city_name
+    except Exception:
+        CITY_COORDINATES = {}
+        def get_coordinates(city: str):
+            return None
+        def normalize_city_name(city: str) -> str:
+            return (city or "").strip().lower()
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-in-production'  # Add secret key for sessions
@@ -18,7 +30,7 @@ DATA_DIR = os.path.join(BASE_DIR, "..", "data")      # ../data
 LOGIN_FILE = os.path.join(DATA_DIR, "login_info.json")
 PROFILES_FILE = os.path.join(DATA_DIR, "profiles.json")
 INTERNSHIPS_FILE = os.path.join(DATA_DIR, "internships.json")
-print(f"🔎 Data folder in use: {DATA_DIR}")  # debug print
+print(f"Data folder in use: {DATA_DIR}")  # debug print
 
 @app.route("/api/profiles/by_username/<username>", methods=["GET"])
 def get_profile_by_username(username):
@@ -152,7 +164,9 @@ def normalize_profile(raw):
             norm_skills.append(s2)
     candidate["skills_possessed"] = norm_skills
 
+    # New: Persist state with city for location context
     candidate["location_preference"] = (raw.get("location_preference") or raw.get("location") or "").strip()
+    candidate["state_preference"] = (raw.get("state_preference") or raw.get("state_ut") or raw.get("state") or "").strip()
     # Add all fields that exist in profiles.json structure
     for key in ("education_level", "field_of_study", "sector_interests", "created_at"):
         if raw.get(key) is not None:
@@ -243,6 +257,100 @@ def get_profile(candidate_id):
 def get_internships():
     internships = convert_object_ids(load_data("internships"))
     return jsonify({"internships": internships}), 200
+
+
+# ---------------- Cities (list & validation/persistence) ----------------
+@app.route("/api/cities", methods=["GET"])
+def list_cities():
+    """Return a list of known cities from the distance matrix.
+    Display names are title-cased with hyphen/space preserved.
+    """
+    try:
+        keys = list((CITY_COORDINATES or {}).keys())
+    except Exception:
+        keys = []
+
+    DISPLAY_NAME_OVERRIDES = {
+        # Ensure UT city display matches official/current naming
+        "pondicherry": "Puducherry",
+    }
+
+    def display_name(key: str) -> str:
+        if not isinstance(key, str):
+            return ""
+        if key in DISPLAY_NAME_OVERRIDES:
+            return DISPLAY_NAME_OVERRIDES[key]
+        # Title-case each hyphen/space separated part
+        parts = []
+        for chunk in key.split(" "):
+            parts.append("-".join(p.capitalize() for p in chunk.split("-")))
+        return " ".join(parts)
+
+    cities = sorted([display_name(k) for k in keys if k], key=lambda s: s.lower())
+    return jsonify({"cities": cities}), 200
+
+
+OFFICIAL_STATES_UTS = [
+    # States
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand",
+    "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+    "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+    "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+    "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    # Union Territories
+    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+]
+
+@app.route("/api/states", methods=["GET"])
+def list_states():
+    """Return official Indian States and Union Territories."""
+    return jsonify({"states": sorted(OFFICIAL_STATES_UTS, key=lambda s: s.lower())}), 200
+
+
+@app.route("/api/cities/validate", methods=["POST"])
+def validate_city():
+    """Validate a city by resolving coordinates (uses geopy fallback inside get_coordinates).
+    If found, returns normalized key and lat/lon. This also persists the city in-memory and
+    (by design of get_coordinates) appends to the source for future runs.
+    Body: { "city": "..." }
+    """
+    try:
+        data = request.get_json(silent=True) or {}
+        raw_city = (data.get("city") or "").strip()
+        raw_state = (data.get("state") or data.get("state_ut") or "").strip()
+        if not raw_city:
+            return jsonify({"ok": False, "error": "city is required"}), 400
+
+        # Try resolve with optional state context
+        coords = get_coordinates(raw_city, state=raw_state or None)
+        if not coords:
+            # Try with normalized variant as a last resort
+            norm = normalize_city_name(raw_city)
+            coords = get_coordinates(norm, state=raw_state or None)
+        if not coords:
+            return jsonify({"ok": False, "error": "city not found"}), 404
+
+        norm_key = normalize_city_name(raw_city)
+
+        # Build display name from normalized key
+        def display_name(key: str) -> str:
+            parts = []
+            for chunk in key.split(" "):
+                parts.append("-".join(p.capitalize() for p in chunk.split("-")))
+            return " ".join(parts)
+
+        return jsonify({
+            "ok": True,
+            "normalized": norm_key,
+            "display": display_name(norm_key),
+            "lat": coords[0],
+            "lon": coords[1],
+            "state": raw_state
+        }), 200
+    except Exception as e:
+        return jsonify({"ok": False, "error": str(e)}), 500
 
 
 # ---------------- Recommendations ----------------
