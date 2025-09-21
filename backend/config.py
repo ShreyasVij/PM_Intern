@@ -52,15 +52,9 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     
-    # Override with production-safe defaults
+    # Override with production-safe defaults (validated in get_config)
     SECRET_KEY = os.getenv('SECRET_KEY')
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
-    
-    if not SECRET_KEY or SECRET_KEY == 'dev-secret-key-change-in-production':
-        raise ValueError("SECRET_KEY must be set in production")
-    
-    if not JWT_SECRET_KEY or JWT_SECRET_KEY == 'jwt-secret-key-change-in-production':
-        raise ValueError("JWT_SECRET_KEY must be set in production")
 
 class TestingConfig(Config):
     """Testing configuration."""
@@ -77,6 +71,18 @@ config = {
 }
 
 def get_config():
-    """Get configuration based on environment."""
+    """Get configuration based on environment.
+
+    Defer production-only validation to runtime when selecting ProductionConfig,
+    so importing this module in development/testing won't fail.
+    """
     env = os.getenv('FLASK_ENV', 'development')
-    return config.get(env, config['default'])
+    cfg = config.get(env, config['default'])
+    if env == 'production':
+        secret_key = os.getenv('SECRET_KEY')
+        jwt_secret = os.getenv('JWT_SECRET_KEY')
+        if not secret_key or secret_key == 'dev-secret-key-change-in-production':
+            raise ValueError("SECRET_KEY must be set in production")
+        if not jwt_secret or jwt_secret == 'jwt-secret-key-change-in-production':
+            raise ValueError("JWT_SECRET_KEY must be set in production")
+    return cfg

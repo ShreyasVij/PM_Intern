@@ -8,6 +8,12 @@ from flask import jsonify
 from app.core.database import db_manager
 from app.utils.logger import app_logger
 from app.utils.response_helpers import success_response, error_response
+try:
+    # Prefer the improved ML logic
+    from backend.ml_model import get_recommendations as ml_get_recommendations
+except Exception as _e:
+    ml_get_recommendations = None
+    app_logger.error(f"Failed to import ML recommender: {__name__}: {_e}")
 
 def get_candidate_recommendations(candidate_id):
     """Get recommendations for a specific candidate"""
@@ -22,8 +28,23 @@ def get_candidate_recommendations(candidate_id):
         if not internships:
             return error_response("No internships available", 404)
         
-        # Generate recommendations
-        recommendations = generate_recommendations(candidate, internships)
+        # Generate recommendations using improved ML logic
+        recommendations = []
+        if ml_get_recommendations is not None:
+            ml_recs = ml_get_recommendations(candidate, internships, top_n=10)
+            # Enrich with skills/description for UI compatibility
+            by_id = {i.get("internship_id"): i for i in internships}
+            for r in ml_recs:
+                base = by_id.get(r.get("internship_id"), {})
+                enriched = {
+                    **r,
+                    "skills_required": base.get("skills_required", r.get("skills_required", [])),
+                    "description": base.get("description", r.get("description", "")),
+                }
+                recommendations.append(enriched)
+        else:
+            # Fallback to simple overlap if ML import failed
+            recommendations = generate_recommendations(candidate, internships)
         
         return success_response({
             "candidate": candidate.get("name"),
@@ -49,8 +70,37 @@ def get_internship_recommendations(internship_id):
         if not base_internship:
             return error_response("Internship not found", 404)
         
-        # Generate similar internship recommendations
-        recommendations = generate_similar_internships(base_internship, internships)
+        # Generate similar internship recommendations using ML by creating a pseudo-candidate
+        recommendations = []
+        if ml_get_recommendations is not None:
+            pseudo_candidate = {
+                "skills_possessed": base_internship.get("skills_required", []),
+                "sector_interests": [str(base_internship.get("sector", "")).lower()] if base_internship.get("sector") else [],
+                "location_preference": base_internship.get("location", ""),
+                # keep other fields empty; ML handles missing gracefully
+            }
+            pool = [i for i in internships if i.get("internship_id") != internship_id]
+            # Slightly tilt weights towards skill/sector for "similarity" use-case
+            ml_recs = ml_get_recommendations(
+                pseudo_candidate,
+                pool,
+                top_n=10,
+                skill_weight=0.6,
+                loc_weight=0.15,
+                sector_weight=0.2,
+                misc_weight=0.05,
+            )
+            # Enrich with skills/description for UI compatibility
+            by_id = {i.get("internship_id"): i for i in pool}
+            for r in ml_recs:
+                base = by_id.get(r.get("internship_id"), {})
+                recommendations.append({
+                    **r,
+                    "skills_required": base.get("skills_required", r.get("skills_required", [])),
+                    "description": base.get("description", r.get("description", "")),
+                })
+        else:
+            recommendations = generate_similar_internships(base_internship, internships)
         
         return success_response({
             "base_internship": base_internship.get("title"),

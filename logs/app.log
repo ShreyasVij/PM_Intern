@@ -4161,3 +4161,52 @@ werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on 
 2025-09-21 16:02:56,754 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
 2025-09-21 16:03:18,779 - app - INFO - create_or_update_profile:83 - Upserted profile for miata in MongoDB
 2025-09-21 16:03:21,373 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:19:49,270 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:19:49,277 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:19:49,326 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:19:49,328 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:19:54,898 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:19:54,903 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:19:54,958 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:19:54,960 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:20:06,268 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:20:26,487 - app - INFO - signup:61 - User 12345678 saved to MongoDB
+2025-09-21 19:20:27,979 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:21:53,767 - app - INFO - create_or_update_profile:83 - Upserted profile for 12345678 in MongoDB
+2025-09-21 19:23:27,213 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:24:03,482 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:24:09,053 - app - INFO - create_or_update_profile:83 - Upserted profile for 12345678 in MongoDB
+2025-09-21 19:24:11,066 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:39:24,476 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:39:24,482 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:39:24,890 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:39:24,891 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:39:30,298 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:39:30,303 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:39:30,404 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:39:30,406 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:39:34,654 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:39:48,080 - app - INFO - login:115 - User 12345678 logged in successfully
+2025-09-21 19:39:49,386 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:40:24,791 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:40:24,794 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:40:24,903 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:40:24,908 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:40:30,369 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:40:30,372 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:40:30,479 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:40:30,482 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:41:46,904 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:41:46,909 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:41:52,118 - database - INFO - load_data:143 - [DB] Fetched 'skills_synonyms' from MongoDB (480 records) in 0.212s
+2025-09-21 19:41:52,134 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:41:52,138 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:43:01,467 - database - INFO - _initialize:66 - Successfully connected to MongoDB: internship_recommender
+2025-09-21 19:43:01,473 - app - INFO - create_app:40 - Starting PM Intern Recommender in development mode
+2025-09-21 19:43:06,527 - database - INFO - load_data:143 - [DB] Fetched 'skills_synonyms' from MongoDB (480 records) in 0.213s
+2025-09-21 19:43:06,540 - app - INFO - register_legacy_routes:163 - Simplified legacy routes registered for backward compatibility
+2025-09-21 19:43:06,545 - app - INFO - create_app:119 - Application initialized successfully
+2025-09-21 19:43:16,423 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:43:32,526 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB
+2025-09-21 19:44:03,021 - app - INFO - create_or_update_profile:83 - Upserted profile for 12345678 in MongoDB
+2025-09-21 19:44:31,863 - app - INFO - get_internships:25 - Retrieved 500 internships from MongoDB

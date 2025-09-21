@@ -1,30 +1,47 @@
 # backend/ml_model.py
 from rapidfuzz import fuzz
 import difflib
+import math
+import re
+
+# ----------------- distance imports (robust) -----------------
 try:
     from .distance_matrix import get_distance, normalize_city_name
-except ImportError:
-    from distance_matrix import get_distance, normalize_city_name
+except Exception:
+    try:
+        from distance_matrix import get_distance, normalize_city_name
+    except Exception:
+        # If distance_matrix missing, provide safe fallbacks
+        def normalize_city_name(x):
+            return (x or "").strip().lower()
 
-# ----------------- City Helpers -----------------
+        def get_distance(a, b):
+            # fallback: unknown distance
+            return float('inf')
+
+# ----------------- City Helpers (kept from original) -----------------
 def _normalize_city(name: str) -> str:
     return (name or "").strip().lower()
 
 def _get_distance_between_cities(city1: str, city2: str) -> float:
-    """Get distance between two cities using hardcoded distance matrix."""
+    """Get distance between two cities using hardcoded distance matrix (via get_distance)."""
     if not city1 or not city2:
         return float('inf')
-    
-    # Normalize city names
+
+    # Normalize city names using provided helper
     city1_norm = normalize_city_name(city1)
     city2_norm = normalize_city_name(city2)
-    
-    return get_distance(city1_norm, city2_norm)
+
+    try:
+        return get_distance(city1_norm, city2_norm)
+    except Exception:
+        return float('inf')
 
 def find_nearest_city(input_city: str, cities: list[dict]):
     """
     Given input city string and list of cities from internships.json,
     return the best matching city (string match or distance-based nearest).
+    Returns (city_name_or_None, distance_or_None)
     """
     print(f"🔍 Finding nearest city for: '{input_city}'")
     db_city_names = [c.get("name") for c in cities if c.get("name")]
@@ -65,7 +82,7 @@ def find_nearest_city(input_city: str, cities: list[dict]):
         return nearest_city, round(min_dist, 2)
     return None, None
 
-# ----------------- Skill Helpers -----------------
+# ----------------- Skill Helpers (from your original file) -----------------
 def _load_synonyms():
     """Load skill synonyms strictly from MongoDB (Atlas). No JSON fallback."""
     try:
@@ -120,91 +137,178 @@ def _normalize_skill_list(skills):
             out.append(norm)
     return out
 
-# ----------------- Recommendations -----------------
-def get_recommendations(candidate, internships, top_n: int = 10):
-    """
-    Modern scoring system:
-    - Skills matched: up to 50 points (proportional to % matched)
-    - Location proximity: up to 25 points (same city: 25, ≤50km: 20, ≤200km: 10, else 0)
-    - Sector match: 15 points
-    - Field of study: 5 points
-    - Education level: 5 points
-    Max score: 100
-    """
+# ----------------- New similarity helpers (improved) -----------------
+def _tokenize(s: str):
+    if not s:
+        return set()
+    tokens = [t for t in re.split(r'[^a-z0-9]+', s.lower()) if len(t) > 1]
+    return set(tokens)
 
-    recommendations = []
-    candidate_skills = _normalize_skill_list(candidate.get("skills_possessed", []))
-    candidate_skill_set = set(candidate_skills)
-    sector_interests = [s.lower() for s in candidate.get("sector_interests", [])]
+def _jaccard(a_tokens: set, b_tokens: set):
+    if not a_tokens or not b_tokens:
+        return 0.0
+    inter = a_tokens & b_tokens
+    uni = a_tokens | b_tokens
+    return len(inter) / len(uni)
+
+def skill_similarity(candidate_skills, internship_skills, fuzzy_threshold=85):
+    """
+    Returns a normalized score 0..1 combining:
+     - exact/synonym matches (primary)
+     - token overlap (Jaccard on skill phrases)
+     - fuzzy matches on skill strings
+    """
+    if not internship_skills:
+        return 0.0
+    # candidate_skills expected as iterable of normalized strings
+    cand = list(candidate_skills)
+    intern = list(internship_skills)
+    matched = set()
+
+    # exact / synonyms
+    for cs in cand:
+        if cs in intern:
+            matched.add(cs)
+
+    # fuzzy + token overlap for remaining
+    for cs in cand:
+        if cs in matched:
+            continue
+        # fuzzy against any internship skill
+        if any(fuzz.partial_ratio(cs, s) >= fuzzy_threshold for s in intern):
+            matched.add(cs)
+            continue
+        # token overlap with any internship skill
+        cs_tokens = _tokenize(cs)
+        if any(_jaccard(cs_tokens, _tokenize(s)) >= 0.5 for s in intern):
+            matched.add(cs)
+
+    coverage = min(1.0, len(matched) / max(1, len(intern)))
+    return coverage
+
+def location_similarity(candidate_loc, intern_loc):
+    """
+    Return (score 0..1, distance_km or None, reason_str)
+    Tiering: same city -> 1.0, <=50km -> 0.9, <=200km -> 0.6, else 0.0
+    """
+    if not candidate_loc or not intern_loc:
+        return 0.0, None, "no location info"
+    try:
+        c_norm = normalize_city_name(candidate_loc)
+        i_norm = normalize_city_name(intern_loc)
+    except Exception:
+        c_norm = (candidate_loc or "").strip().lower()
+        i_norm = (intern_loc or "").strip().lower()
+
+    if c_norm == i_norm:
+        return 1.0, 0.0, "same city"
+
+    try:
+        dist = get_distance(c_norm, i_norm)
+        if dist is None:
+            dist = float('inf')
+    except Exception:
+        dist = float('inf')
+
+    if dist <= 0:
+        return 1.0, 0.0, "same place"
+    if dist <= 50:
+        return 0.9, dist, f"{int(dist)} km away"
+    if dist <= 200:
+        return 0.6, dist, f"{int(dist)} km away"
+    return 0.0, dist if math.isfinite(dist) else None, f"{int(dist)} km away" if math.isfinite(dist) else "far"
+
+# ----------------- Recommendations (keeps the original function name) -----------------
+def get_recommendations(candidate, internships, top_n=10,
+                        skill_weight=0.5, loc_weight=0.25,
+                        sector_weight=0.15, misc_weight=0.10):
+    """
+    Lightweight, explainable recommendation function that is compatible with
+    existing callers in your codebase.
+    Returns a list of up to top_n internship dicts with match_score and reason.
+    """
+    cand_skills = _normalize_skill_list(candidate.get("skills_possessed", []))
+    cand_skill_set = set(cand_skills)
+    sector_interests = [s.lower() for s in candidate.get("sector_interests", []) or []]
     location_pref = (candidate.get("location_preference") or "").strip().lower()
     field_of_study = (candidate.get("field_of_study") or "").strip().lower()
     education_level = (candidate.get("education_level") or "").strip().lower()
+    is_first_gen = bool(candidate.get("first_generation") or candidate.get("no_experience"))
 
+    scored = []
     for internship in internships or []:
-        internship_id = internship.get("internship_id") or internship.get("id") or None
-        title = internship.get("title", "")
-        organization = internship.get("organization", "")
-        location = (internship.get("location", "")).strip().lower()
-        sector = (internship.get("sector", "")).strip().lower()
         internship_skills = _normalize_skill_list(internship.get("skills_required", []))
-        internship_skills_set = set(internship_skills)
 
-        # --- Skill Matching (with fuzzy) ---
-        matched = []
-        for cand_skill in candidate_skill_set:
-            if cand_skill in internship_skills_set:
-                matched.append(cand_skill)
-            else:
-                if any(fuzz.ratio(cand_skill, s) >= 80 for s in internship_skills_set):
-                    matched.append(cand_skill)
+        skill_sim = skill_similarity(cand_skill_set, internship_skills)
+        loc_sim, dist_km, loc_reason = location_similarity(location_pref, internship.get("location", ""))
+        sector = (internship.get("sector") or "").strip().lower()
+        sector_sim = 1.0 if sector in sector_interests else 0.0
+        field_sim = 1.0 if field_of_study and field_of_study in sector else 0.0
+        edu_sim = 1.0 if education_level and education_level in (internship.get("title") or "").lower() else 0.0
+        fg_boost = 0.08 if is_first_gen and internship.get("is_beginner_friendly") else 0.0
 
-        # --- New Scoring System ---
-        score = 0
+        base_score = (
+            skill_weight * skill_sim +
+            loc_weight * loc_sim +
+            sector_weight * sector_sim +
+            misc_weight * (0.5 * field_sim + 0.5 * edu_sim)
+        )
+        score = min(1.0, base_score + fg_boost)
+        score_pct = round(score * 100, 1)
 
-        # Skill match: up to 50 points
-        skill_score = 0
-        if internship_skills:
-            skill_score = (len(matched) / len(internship_skills)) * 50
-        score += skill_score
-
-        # Location proximity: up to 25 points
-        loc_score = 0
-        if location and location_pref:
-            if location == location_pref:
-                loc_score = 25
-            else:
-                try:
-                    distance = _get_distance_between_cities(location_pref, location)
-                    if distance <= 50:
-                        loc_score = 20
-                    elif distance <= 200:
-                        loc_score = 10
-                except Exception:
-                    pass
-        score += loc_score
-
-        # Sector match: 15 points
-        sector_score = 15 if sector in sector_interests else 0
-        score += sector_score
-
-        # Field of study: 5 points
-        field_score = 5 if field_of_study and field_of_study in sector else 0
-        score += field_score
-
-        # Education level: 5 points
-        edu_score = 5 if education_level and education_level in title.lower() else 0
-        score += edu_score
-
-        match_percentage = min(100, max(0, round(score, 1)))
-        recommendations.append({
-            "internship_id": internship_id,
-            "title": title,
-            "organization": organization,
-            "location": internship.get("location", ""),
-            "sector": internship.get("sector", ""),
-            "match_score": match_percentage,
-            "matched_skills": matched
+        scored.append({
+            "internship": internship,
+            "score": score_pct,
+            "components": {
+                "skill_sim": round(skill_sim, 2),
+                "loc_sim": round(loc_sim, 2),
+                "loc_reason": loc_reason,
+                "sector_sim": sector_sim,
+                "field_sim": field_sim,
+                "edu_sim": edu_sim,
+                "fg_boost": fg_boost
+            }
         })
 
-    recommendations.sort(key=lambda x: (-x["match_score"], str(x.get("internship_id") or "")))
-    return recommendations[:top_n]
+    scored.sort(key=lambda x: (-x["score"], x["internship"].get("internship_id") or ""))
+    results = []
+    seen_orgs = set()
+    for item in scored:
+        org = (item["internship"].get("organization") or "").strip().lower()
+        if org and org in seen_orgs:
+            continue
+        comps = item["components"]
+        reason = []
+        if comps["skill_sim"] >= 0.6:
+            reason.append(f"Strong skill fit ({int(comps['skill_sim']*100)}%)")
+        elif comps["skill_sim"] > 0:
+            reason.append(f"Some skill match ({int(comps['skill_sim']*100)}%)")
+        if comps["loc_sim"] >= 0.9:
+            reason.append("Close to you")
+        elif comps["loc_sim"] >= 0.6:
+            reason.append("Within reasonable distance")
+        if comps["sector_sim"]:
+            reason.append("Sector match")
+        if comps["fg_boost"]:
+            reason.append("Good for beginners")
+
+        results.append({
+            "internship_id": item["internship"].get("internship_id") or item["internship"].get("id"),
+            "title": item["internship"].get("title"),
+            "organization": item["internship"].get("organization"),
+            "location": item["internship"].get("location"),
+            "sector": item["internship"].get("sector"),
+            "match_score": item["score"],
+            "reason": ", ".join(reason) if reason else "Relevant",
+            "components": comps
+        })
+        if org:
+            seen_orgs.add(org)
+        if len(results) >= top_n:
+            break
+
+    return results
+
+# compatibility aliases (if other files import old helpers directly)
+location_tier_score = location_similarity
+_get_distance_between_cities = _get_distance_between_cities
