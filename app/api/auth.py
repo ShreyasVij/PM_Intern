@@ -45,23 +45,7 @@ def signup():
             except Exception as e:
                 app_logger.warning(f"MongoDB user check failed: {e}")
         
-        # Also check JSON file for existing users
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-        login_file = os.path.join(data_dir, 'login_info.json')
-        
-        existing_users = []
-        if os.path.exists(login_file):
-            try:
-                with open(login_file, 'r') as f:
-                    existing_users = json.load(f)
-            except Exception as e:
-                app_logger.warning(f"Failed to read login file: {e}")
-                existing_users = []
-        
-        # Check if username exists in JSON
-        for user in existing_users:
-            if user.get('username') == username:
-                return error_response("Username already exists", 409)
+        # Strict Atlas mode: do not read JSON files for user existence
         
         # Create new user
         hashed_password = hash_password(password)
@@ -70,7 +54,7 @@ def signup():
             "password": hashed_password
         }
         
-        # Save to MongoDB if available
+        # Save to MongoDB
         if db is not None:
             try:
                 db.login_info.insert_one(new_user.copy())
@@ -78,15 +62,7 @@ def signup():
             except Exception as e:
                 app_logger.warning(f"Failed to save user to MongoDB: {e}")
         
-        # Save to JSON file as backup
-        try:
-            existing_users.append(new_user)
-            with open(login_file, 'w') as f:
-                json.dump(existing_users, f, indent=2)
-            app_logger.info(f"User {username} saved to JSON file")
-        except Exception as e:
-            app_logger.error(f"Failed to save user to JSON: {e}")
-            return error_response("Failed to create user", 500)
+        # Strict Atlas mode: do not write JSON files
         
         # Auto-login on signup so profile creation can proceed without extra step
         session['username'] = username
@@ -127,22 +103,7 @@ def login():
             except Exception as e:
                 app_logger.warning(f"MongoDB login check failed: {e}")
         
-        # Check JSON file if not found in MongoDB
-        if not user_found:
-            data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-            login_file = os.path.join(data_dir, 'login_info.json')
-            
-            if os.path.exists(login_file):
-                try:
-                    with open(login_file, 'r') as f:
-                        users = json.load(f)
-                    
-                    for user in users:
-                        if user.get('username') == username and user.get('password') == hashed_password:
-                            user_found = True
-                            break
-                except Exception as e:
-                    app_logger.warning(f"Failed to read login file: {e}")
+        # Strict Atlas mode: do not read JSON files for login
         
         if not user_found:
             return error_response("Invalid username or password", 401)

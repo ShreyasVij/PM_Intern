@@ -62,7 +62,7 @@ HTTP Request → app/main.py (Factory Pattern)
                      ↓
               app/core/ (Business Logic)
                      ↓
-              app/core/database.py → MongoDB (Primary) → data/*.json (Fallback)
+              app/core/database.py → MongoDB Atlas (Primary)
                      ↓
               app/utils/response_helpers.py (Standardized Response)
 ```
@@ -111,7 +111,7 @@ HTTP Request → app/main.py (Factory Pattern)
 
 | **Legacy** | **New** |
 |------------|---------|
-| 1. JSON files only | 1. **MongoDB** (primary)<br>2. **JSON files** (fallback) |
+| 1. JSON files only | 1. **MongoDB Atlas** (primary, Atlas-only runtime)<br>2. JSON used for dev/migration only |
 
 ### **Data Access Pattern**
 
@@ -123,9 +123,9 @@ HTTP Request → app/main.py (Factory Pattern)
 
 | **Data Type** | **Legacy** | **New** | **Access Method** |
 |---------------|------------|---------|-------------------|
-| Internships | `data/internships.json` | `data/internships.json` + MongoDB | **Legacy**: Direct file read<br>**New**: Database manager with fallback |
-| Profiles | `data/profiles.json` | `data/profiles.json` + MongoDB | **Legacy**: Direct file read<br>**New**: Database manager with fallback |
-| Login Info | `data/login-info.json` | `data/login-info.json` + MongoDB | **Legacy**: Direct file read<br>**New**: Database manager with fallback |
+| Internships | `data/internships.json` | MongoDB Atlas | **Legacy**: Direct file read<br>**New**: Atlas-only runtime |
+| Profiles | `data/profiles.json` | MongoDB Atlas | **Legacy**: Direct file read<br>**New**: Atlas-only runtime |
+| Login Info | `data/login-info.json` | MongoDB Atlas | **Legacy**: Direct file read<br>**New**: Atlas-only runtime |
 
 ---
 
@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
 | **Aspect** | **Legacy** | **New** |
 |------------|------------|---------|
-| **Database** | JSON file I/O only | MongoDB + JSON fallback |
+| **Database** | JSON file I/O only | MongoDB Atlas (Atlas-only runtime) |
 | **Error Recovery** | App crashes on errors | Graceful degradation |
 | **Connection Handling** | No connection pooling | MongoDB connection pooling |
 | **Health Monitoring** | None | Health check endpoints |

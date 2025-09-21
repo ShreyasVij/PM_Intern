@@ -66,7 +66,7 @@ with open("data/internships.json", "r") as f:
 return jsonify({"internships": internships}), 200
 ```
 
-#### **New Version Flow**
+#### **New Version Flow (Atlas-first)**
 ```
 HTTP Request → app/main.py
      ↓
@@ -78,11 +78,8 @@ internships_endpoint() → app/api/internships.py
      ↓
 get_internships() function
      ↓
-TRY: app/core/database.py → MongoDB
-  ├─ SUCCESS: return MongoDB data
-  └─ FAIL: FALLBACK to JSON
-     ↓
-FALLBACK: data/internships.json
+TRY: app/core/database.py → MongoDB Atlas
+  └─ SUCCESS: return MongoDB data (Atlas-only runtime)
      ↓
 app/utils/response_helpers.py → success_response()
      ↓
@@ -109,12 +106,12 @@ def load_data(filename):
         return []
 ```
 
-### **New Data Access**
+### **New Data Access (Atlas-only)**
 ```python
 # app/api/internships.py - Robust with fallbacks
 def get_internships():
     try:
-        # Try MongoDB first
+        # Try MongoDB Atlas first
         db = db_manager.get_db()
         if db is not None:
             internships = list(db.internships.find({}))
@@ -123,12 +120,6 @@ def get_internships():
                 if '_id' in internship:
                     internship['_id'] = str(internship['_id'])
             return success_response({"internships": internships})
-        
-        # Fall back to JSON file
-        data_dir = os.path.join(os.path.dirname(...), 'data')
-        with open(os.path.join(data_dir, 'internships.json')) as f:
-            internships = json.load(f)
-        return success_response({"internships": internships})
         
     except Exception as e:
         app_logger.error(f"Error retrieving internships: {e}")

@@ -4,7 +4,7 @@ A sophisticated, production-ready internship recommendation system that connects
 
 ## ✨ Overview
 
-PM Intern Recommender is a professional-grade web application featuring a **modular Flask backend** with **dual database support** (MongoDB + JSON fallback), **comprehensive error handling**, **standardized API responses**, and a **responsive frontend** with organized asset management.
+PM Intern Recommender is a professional-grade web application featuring a **modular Flask backend** with an **Atlas-first datastore** (MongoDB Atlas; no JSON at runtime), **comprehensive error handling**, **standardized API responses**, and a **responsive frontend** with organized asset management.
 
 ## 🚀 Quick Start
 
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ### Configuration
 ```bash
 copy .env.example .env
-# Edit .env with your database settings
+# Edit .env with your Atlas connection (recommended)
 ```
 
 ### Run the Application
@@ -48,7 +48,7 @@ API base (same origin) is:
 - **Profile Builder**: Personal info, education, location preferences, skills, and interests
 - **Smart Autocomplete**: Dynamic skills management with intelligent suggestions
 - **Progress Tracking**: Visual indicators for profile completion and optimization
-- **Data Persistence**: Automatic saving with MongoDB and JSON backup systems
+- **Data Persistence**: Automatic saving with MongoDB Atlas
 
 ### 🔐 **Secure Authentication**
 - **User Registration & Login**: Secure account creation and session management
@@ -93,7 +93,7 @@ PM_Intern/
 
 #### Backend
 - **Python 3.8+** with Flask framework
-- **MongoDB** primary database with **JSON fallback**
+- **MongoDB Atlas** primary database (strict Atlas-only mode supported)
 - **Flask-CORS** for cross-origin support
 - **Modular Architecture** with separation of concerns
 - **Comprehensive Error Handling** and logging
@@ -108,9 +108,8 @@ PM_Intern/
  - Responsive design patterns; subtle animations/transitions
 
 #### Data Layer
-- **MongoDB** for scalable primary storage
-- **JSON Files** for backup and development
-- **Dual-write System** ensuring data consistency
+- **MongoDB Atlas** for scalable primary storage
+- Optional legacy JSON files for development/migration only (not used at runtime when Atlas-only is enabled)
 - **Connection Pooling** and health checks
 
 ### **API Design**
@@ -163,17 +162,21 @@ PM_Intern/
    pip install -r requirements.txt
    ```
 
-4. **Setup MongoDB**:
-   (Optional) Ensure a MongoDB instance is available; otherwise the app will fallback to JSON files.
-   ```
+4. **Setup MongoDB (Atlas Recommended)**
+   - Create a free MongoDB Atlas cluster and a database (e.g., `pm_intern`)
+   - In `.env`, set:
+     - `MONGO_URI=mongodb+srv://<user>:<pass>@<cluster>/pm_intern?retryWrites=true&w=majority`
+     - `DB_NAME=pm_intern`
+     - `DISABLE_JSON_FALLBACK=True` (strict Atlas-only runtime)
+   - Allow your IP in Atlas Network Access
 
-4. **Configuration** (Optional)
+5. **Configuration**
    ```bash
    copy .env.example .env  # Windows
-   # Edit .env for MongoDB connection (fallback to JSON if not configured)
+# Edit .env for MongoDB Atlas connection
    ```
 
-5. **Run Application**
+6. **Run Application**
    ```bash
    python run.py --debug
    ```
@@ -182,7 +185,7 @@ PM_Intern/
    - Open browser to `http://127.0.0.1:3000/frontend/pages/index.html`
    - Application ready! 🎉
 
-### **Development Commands**
+### **Development & Verification Commands**
 ```bash
 # Development mode with auto-reload
 python run.py --debug
@@ -192,6 +195,9 @@ python run.py --port 8000
 
 # Custom environment
 python run.py --env production
+
+# Verify Atlas connection and collection counts
+curl http://127.0.0.1:3000/api/admin/db-stats
 ```
 
 ## 📊 Data Structure & API
@@ -277,9 +283,9 @@ python run.py --env production
 
 3. **Database Operations**
    ```python
-   from app.core.database import get_db_connection
-   db = get_db_connection()
-   # MongoDB operations with JSON fallback
+   from app.core.database import db_manager
+   db = db_manager.get_db()
+   # MongoDB Atlas operations only (when DISABLE_JSON_FALLBACK=True)
    ```
 
 ## 🧪 Testing & Validation
@@ -334,7 +340,6 @@ curl http://127.0.0.1:3000/api/recommendations/CAND_xxxxxxxx
 
 ### **Performance Optimizations**
 - **Database Connection Pooling**: Efficient MongoDB connections
-- **Dual Storage System**: MongoDB primary + JSON fallback for reliability
 - **Modular Architecture**: Reduced loading times and improved maintainability
 - **Optimized Frontend**: Organized assets and component-based structure
 - **Efficient Algorithms**: Optimized recommendation scoring and matching

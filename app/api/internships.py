@@ -27,22 +27,9 @@ def get_internships():
             except Exception as e:
                 app_logger.warning(f"MongoDB query failed: {e}")
         
-        # Fall back to JSON file
-        import json
-        import os
-        
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-        internships_file = os.path.join(data_dir, 'internships.json')
-        
-        if os.path.exists(internships_file):
-            with open(internships_file, 'r') as f:
-                internships = json.load(f)
-            
-            app_logger.info(f"Retrieved {len(internships)} internships from JSON file")
-            return success_response({"internships": internships})
-        else:
-            app_logger.error("No internships data found")
-            return error_response("No internships data available", 404)
+        # Strict Atlas mode: do not read JSON files
+        app_logger.error("No internships data found in MongoDB")
+        return error_response("No internships data available", 404)
             
     except Exception as e:
         app_logger.error(f"Error retrieving internships: {e}")
@@ -64,21 +51,7 @@ def get_internship_by_id(internship_id):
             except Exception as e:
                 app_logger.warning(f"MongoDB query failed: {e}")
         
-        # Fall back to JSON file
-        import json
-        import os
-        
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-        internships_file = os.path.join(data_dir, 'internships.json')
-        
-        if os.path.exists(internships_file):
-            with open(internships_file, 'r') as f:
-                internships = json.load(f)
-            
-            internship = next((i for i in internships if i.get("internship_id") == internship_id), None)
-            if internship:
-                return success_response({"internship": internship})
-        
+        # Strict Atlas mode: do not read JSON files
         return error_response("Internship not found", 404)
             
     except Exception as e:

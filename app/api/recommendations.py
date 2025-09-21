@@ -77,19 +77,7 @@ def load_candidate_by_id(candidate_id):
             except Exception as e:
                 app_logger.warning(f"MongoDB query failed: {e}")
         
-        # Fall back to JSON file
-        import json
-        import os
-        
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-        profiles_file = os.path.join(data_dir, 'profiles.json')
-        
-        if os.path.exists(profiles_file):
-            with open(profiles_file, 'r') as f:
-                profiles = json.load(f)
-            
-            return next((p for p in profiles if p.get("candidate_id") == candidate_id), None)
-        
+        # Strict Atlas mode: do not read JSON files
         return None
     except Exception as e:
         app_logger.error(f"Error loading candidate {candidate_id}: {e}")
@@ -112,17 +100,7 @@ def load_all_internships():
             except Exception as e:
                 app_logger.warning(f"MongoDB query failed: {e}")
         
-        # Fall back to JSON file
-        import json
-        import os
-        
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-        internships_file = os.path.join(data_dir, 'internships.json')
-        
-        if os.path.exists(internships_file):
-            with open(internships_file, 'r') as f:
-                return json.load(f)
-        
+        # Strict Atlas mode: do not read JSON files
         return []
     except Exception as e:
         app_logger.error(f"Error loading internships: {e}")

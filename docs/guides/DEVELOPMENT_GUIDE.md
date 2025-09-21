@@ -4,7 +4,7 @@
 
 ### Prerequisites
 - Python 3.8+
-- MongoDB (optional, JSON fallback available)
+- MongoDB Atlas account (recommended)
 - Git
 
 ### Installation
@@ -35,11 +35,14 @@
    cp .env.example .env    # Linux/Mac
    ```
    
-   Edit `.env` with your configuration:
+   Edit `.env` with your configuration (Atlas recommended):
    ```
-   MONGO_URI=mongodb://localhost:27017/pm_intern
-   SECRET_KEY=your-secret-key-here
-   DEBUG=True
+   MONGO_URI=mongodb+srv://<user>:<pass>@<cluster>/pm_intern?retryWrites=true&w=majority
+   DB_NAME=pm_intern
+   DISABLE_JSON_FALLBACK=True
+   SECRET_KEY=dev-secret-key-change-in-production
+   JWT_SECRET_KEY=jwt-secret-key-change-in-production
+   FLASK_ENV=development
    API_PORT=3000
    ```
 
@@ -58,6 +61,11 @@ python run.py --port 8000
 #### With Custom Environment
 ```bash
 python run.py --env production
+```
+
+#### Verify Atlas Connectivity
+```bash
+curl http://127.0.0.1:3000/api/admin/db-stats
 ```
 
 ## Project Structure
@@ -81,7 +89,7 @@ PM_Intern/
 │   ├── pages/            # HTML pages
 │   ├── assets/           # CSS, JS, images
 │   └── components/       # Reusable components
-├── data/                 # JSON data files
+├── data/                 # JSON data files (legacy/migration only; not used at runtime in Atlas-only mode)
 ├── docs/                 # Documentation
 └── tests/                # Test files
 ```
@@ -121,21 +129,15 @@ PM_Intern/
 
 ### Database Development
 
-#### Using MongoDB
+#### Using MongoDB Atlas
 ```python
-from app.core.database import get_db_connection
+from app.core.database import db_manager
 
-db = get_db_connection()
+db = db_manager.get_db()
 collection = db.candidates
 ```
 
-#### Using JSON Fallback
-```python
-from app.core.database import load_json_data, save_json_data
-
-data = load_json_data('candidates.json')
-save_json_data('candidates.json', updated_data)
-```
+> Note: In Atlas-only mode (DISABLE_JSON_FALLBACK=True), the app will not read/write JSON files at runtime.
 
 ### API Development
 

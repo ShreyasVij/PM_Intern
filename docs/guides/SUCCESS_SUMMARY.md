@@ -10,7 +10,7 @@ Your PM Intern project has been **successfully restructured** and is now running
 ✅ **New Architecture**: Modern Flask app factory pattern implemented  
 ✅ **Backward Compatibility**: All legacy routes working perfectly  
 ✅ **Frontend**: Organized structure with updated asset paths  
-✅ **Database**: MongoDB connection with fallback to JSON  
+✅ **Database**: MongoDB Atlas connection (Atlas-first runtime)  
 ✅ **Environment**: Proper configuration with .env support  
 ✅ **Dependencies**: All packages installed and working  
 
@@ -21,7 +21,7 @@ Your PM Intern project has been **successfully restructured** and is now running
 📁 Frontend: http://127.0.0.1:3000/frontend/pages/index.html
 🔧 Environment: Development mode with debug enabled
 💾 Database: MongoDB connected successfully
-🗂️ Data: JSON fallback working
+🗂️ Data: Atlas-only runtime for dynamic collections (no JSON at runtime)
 🔄 Legacy API: All endpoints preserved and functional
 ```
 

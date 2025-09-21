@@ -12,6 +12,8 @@ class Config:
     MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
     DB_NAME = os.getenv('DB_NAME', 'internship_recommender')
     MONGODB_POOL_SIZE = int(os.getenv('MONGODB_POOL_SIZE', 10))
+    # When true, the app will NOT read/write JSON fallbacks and will rely solely on MongoDB
+    DISABLE_JSON_FALLBACK = os.getenv('DISABLE_JSON_FALLBACK', 'False').lower() == 'true'
     
     # Flask
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')

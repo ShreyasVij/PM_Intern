@@ -6,6 +6,18 @@ http://127.0.0.1:3000
 ```
 
 ## Endpoints
+### Admin
+- **GET** `/api/admin/db-stats`
+- **Description**: Basic database diagnostics (connection status, Atlas-only flag, and collection counts)
+- **Response**:
+  ```json
+  {
+    "database": "connected",
+    "atlas_only": true,
+    "counts": { "profiles": 9, "internships": 500, "login_info": 11, "skills_synonyms": 480 }
+  }
+  ```
+
 
 ### Health Check
 - **GET** `/health`

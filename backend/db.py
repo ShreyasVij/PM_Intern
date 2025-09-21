@@ -13,6 +13,7 @@ try:
     DB_NAME = config.DB_NAME
     DATA_DIR = config.DATA_DIR
     POOL_SIZE = config.MONGODB_POOL_SIZE
+    DISABLE_JSON_FALLBACK = getattr(config, 'DISABLE_JSON_FALLBACK', False)
 except ImportError:
     import os
     MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
@@ -20,6 +21,7 @@ except ImportError:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     POOL_SIZE = int(os.getenv('MONGODB_POOL_SIZE', 10))
+    DISABLE_JSON_FALLBACK = os.getenv('DISABLE_JSON_FALLBACK', 'False').lower() == 'true'
 
 # Try to import logger, fallback to print
 try:
@@ -144,7 +146,12 @@ def load_data(collection_name, use_cache=True):
     except Exception as e:
         log_warning(f"[DB] MongoDB fetch failed for '{collection_name}': {e}")
     
-    # Fallback to JSON
+    # If Atlas-only mode is enabled, don't use JSON fallback
+    if DISABLE_JSON_FALLBACK:
+        log_warning(f"[DB] JSON fallback disabled for '{collection_name}' (DISABLE_JSON_FALLBACK=True)")
+        return []
+
+    # Fallback to JSON (when allowed)
     try:
         json_file = os.path.join(DATA_DIR, f"{collection_name}.json")
         if os.path.exists(json_file):
@@ -195,7 +202,10 @@ def save_data(collection_name, data):
     except Exception as e:
         log_error(f"[DB] MongoDB save failed for '{collection_name}': {e}")
     
-    # Save to JSON (always)
+    # Save to JSON unless disabled (kept for local dev; Atlas-only mode will skip)
+    if DISABLE_JSON_FALLBACK:
+        log_warning(f"[DB] Skipping JSON write for '{collection_name}' (DISABLE_JSON_FALLBACK=True)")
+        return {"mongodb": mongo_success, "json": False}
     try:
         json_file = os.path.join(DATA_DIR, f"{collection_name}.json")
         os.makedirs(os.path.dirname(json_file), exist_ok=True)

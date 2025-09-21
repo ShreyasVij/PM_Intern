@@ -124,7 +124,7 @@ def convert_object_ids(data):
         return data
 
 def load_data(collection_name, use_cache=True):
-    """Load data from MongoDB with JSON fallback."""
+    """Load data strictly from MongoDB (Atlas). No JSON fallback."""
     start_time = time.time()
     
     try:
@@ -148,24 +148,11 @@ def load_data(collection_name, use_cache=True):
     except Exception as e:
         log_warning(f"[DB] MongoDB fetch failed for '{collection_name}': {e}")
     
-    # Fallback to JSON
-    try:
-        json_file = os.path.join(DATA_DIR, f"{collection_name}.json")
-        if os.path.exists(json_file):
-            with open(json_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                log(f"[DB] Fetched '{collection_name}' from JSON fallback ({len(data)} records)")
-                return data
-        else:
-            log_warning(f"[DB] JSON file not found: {json_file}")
-            return []
-            
-    except Exception as e:
-        log_error(f"[DB] JSON fallback failed for '{collection_name}': {e}")
-        return []
+    # Strict Atlas mode: no JSON fallback
+    return []
 
 def save_data(collection_name, data):
-    """Save data to both MongoDB and JSON with error handling."""
+    """Save data to MongoDB only (Atlas). No JSON writes."""
     start_time = time.time()
     mongo_success = False
     json_success = False
@@ -199,22 +186,7 @@ def save_data(collection_name, data):
     except Exception as e:
         log_error(f"[DB] MongoDB save failed for '{collection_name}': {e}")
     
-    # Save to JSON (always)
-    try:
-        os.makedirs(DATA_DIR, exist_ok=True)
-        json_file = os.path.join(DATA_DIR, f"{collection_name}.json")
-        
-        # Ensure data is JSON serializable
-        json_data = convert_object_ids(data)
-        
-        with open(json_file, "w", encoding="utf-8") as f:
-            json.dump(json_data, f, indent=2, ensure_ascii=False)
-        
-        json_success = True
-        log(f"[DB] Saved '{collection_name}' to JSON file: {json_file}")
-        
-    except Exception as e:
-        log_error(f"[DB] JSON save failed for '{collection_name}': {e}")
+    # Strict Atlas mode: no JSON writes
     
     if not mongo_success and not json_success:
         raise Exception(f"Failed to save data to both MongoDB and JSON for collection: {collection_name}")

@@ -7,6 +7,15 @@ import os
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 from backend.db import load_data, save_data, convert_object_ids
+# Robust import of city data
+try:
+    from backend.city_coords import CITY_COORDINATES  # type: ignore
+except Exception:
+    CITY_COORDINATES = None  # type: ignore
+try:
+    from backend.city_coords import get_all_display_cities_sorted  # type: ignore
+except Exception:
+    get_all_display_cities_sorted = None  # type: ignore
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-in-production'  # Add secret key for sessions
@@ -243,6 +252,68 @@ def get_profile(candidate_id):
 def get_internships():
     internships = convert_object_ids(load_data("internships"))
     return jsonify({"internships": internships}), 200
+
+
+# ------------- Cities API (static list from hardcoded coords) -------------
+@app.route("/api/cities", methods=["GET"])
+def list_cities():
+    try:
+        source = None
+        # Try preferred helper
+        if callable(get_all_display_cities_sorted):
+            try:
+                cities = get_all_display_cities_sorted()
+                if isinstance(cities, list) and cities:
+                    # Ensure uniqueness and stable ordering
+                    names = sorted(set([str(c).strip() for c in cities if isinstance(c, str) and c.strip()]))
+                    source = "display_names"
+                    resp = jsonify({"cities": names, "count": len(names), "source": source})
+                    resp.headers["X-Total-Count"] = str(len(names))
+                    return resp, 200
+            except Exception:
+                pass
+        # Fallback to keys from CITY_COORDINATES
+        def _titleize(name: str) -> str:
+            parts = []
+            for token in name.split(' '):
+                if '-' in token:
+                    sub = '-'.join(s[:1].upper() + s[1:] if s else s for s in token.split('-'))
+                    parts.append(sub)
+                else:
+                    parts.append(token[:1].upper() + token[1:] if token else token)
+            return ' '.join(parts)
+        names = []
+        try:
+            if CITY_COORDINATES:
+                names = sorted({_titleize(k) for k in CITY_COORDINATES.keys() if isinstance(k, str)})
+                source = "city_coordinates"
+        except Exception:
+            names = []
+        if not names:
+            # As another fallback, try reading data/cities.in.json
+            try:
+                data_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'cities.in.json')
+                with open(data_path, 'r', encoding='utf-8') as f:
+                    raw = json.load(f)
+                for item in raw if isinstance(raw, list) else []:
+                    city = (item.get('city') or '').strip()
+                    if city:
+                        names.append(_titleize(city.lower()))
+                names = sorted(set(names))
+                source = "data_file"
+            except Exception:
+                pass
+        if names:
+            resp = jsonify({"cities": names, "count": len(names), "source": source or "unknown"})
+            resp.headers["X-Total-Count"] = str(len(names))
+            return resp, 200
+        # Last resort
+        names = sorted(['Mumbai','Delhi','Bengaluru','Chennai','Kolkata','Pune','Jaipur','Chandigarh','Ahmedabad','Hyderabad'])
+        resp = jsonify({"cities": names, "count": len(names), "source": "minimal_fallback"})
+        resp.headers["X-Total-Count"] = str(len(names))
+        return resp, 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 # ---------------- Recommendations ----------------

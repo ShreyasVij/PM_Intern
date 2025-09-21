@@ -51,27 +51,8 @@ def create_or_update_profile():
             except Exception as e:
                 app_logger.warning(f"MongoDB profile check failed: {e}")
         
-        # Also check JSON file
-        data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-        profiles_file = os.path.join(data_dir, 'profiles.json')
-        
-        profiles = []
-        if os.path.exists(profiles_file):
-            try:
-                with open(profiles_file, 'r') as f:
-                    profiles = json.load(f)
-            except Exception as e:
-                app_logger.warning(f"Failed to read profiles file: {e}")
-                profiles = []
-        
-        # Find existing profile in JSON
+        # Strict Atlas mode: do not read JSON files
         profile_index = None
-        for i, profile in enumerate(profiles):
-            if profile.get('username') == username:
-                existing_profile = profile
-                candidate_id = profile.get('candidate_id')
-                profile_index = i
-                break
         
         # Generate candidate_id if creating new profile
         if not candidate_id:
@@ -103,21 +84,7 @@ def create_or_update_profile():
             except Exception as e:
                 app_logger.warning(f"Failed to save profile to MongoDB: {e}")
         
-        # Save to JSON file
-        try:
-            if profile_index is not None:
-                # Update existing profile
-                profiles[profile_index] = profile_data
-            else:
-                # Add new profile
-                profiles.append(profile_data)
-            
-            with open(profiles_file, 'w') as f:
-                json.dump(profiles, f, indent=2)
-            app_logger.info(f"Saved profile for {username} to JSON file")
-        except Exception as e:
-            app_logger.error(f"Failed to save profile to JSON: {e}")
-            return error_response("Failed to save profile", 500)
+        # Strict Atlas mode: do not write JSON files
         
         # Store candidate_id in session for future use
         session['candidate_id'] = candidate_id
@@ -138,7 +105,7 @@ def create_or_update_profile():
 def get_profile_by_username(username):
     """Get profile by username"""
     try:
-        # Try MongoDB first
+        # Try MongoDB
         profile = None
         db = db_manager.get_db()
         if db is not None:
@@ -148,23 +115,6 @@ def get_profile_by_username(username):
                     profile['_id'] = str(profile['_id'])  # Convert ObjectId to string
             except Exception as e:
                 app_logger.warning(f"MongoDB profile retrieval failed: {e}")
-        
-        # Fall back to JSON file
-        if not profile:
-            data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-            profiles_file = os.path.join(data_dir, 'profiles.json')
-            
-            if os.path.exists(profiles_file):
-                try:
-                    with open(profiles_file, 'r') as f:
-                        profiles = json.load(f)
-                    
-                    for p in profiles:
-                        if p.get('username') == username:
-                            profile = p
-                            break
-                except Exception as e:
-                    app_logger.warning(f"Failed to read profiles file: {e}")
         
         if not profile:
             return error_response("Profile not found", 404)
@@ -178,7 +128,7 @@ def get_profile_by_username(username):
 def get_profile_by_candidate_id(candidate_id):
     """Get profile by candidate ID"""
     try:
-        # Try MongoDB first
+        # Try MongoDB
         profile = None
         db = db_manager.get_db()
         if db is not None:
@@ -188,23 +138,6 @@ def get_profile_by_candidate_id(candidate_id):
                     profile['_id'] = str(profile['_id'])  # Convert ObjectId to string
             except Exception as e:
                 app_logger.warning(f"MongoDB profile retrieval failed: {e}")
-        
-        # Fall back to JSON file
-        if not profile:
-            data_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data')
-            profiles_file = os.path.join(data_dir, 'profiles.json')
-            
-            if os.path.exists(profiles_file):
-                try:
-                    with open(profiles_file, 'r') as f:
-                        profiles = json.load(f)
-                    
-                    for p in profiles:
-                        if p.get('candidate_id') == candidate_id:
-                            profile = p
-                            break
-                except Exception as e:
-                    app_logger.warning(f"Failed to read profiles file: {e}")
         
         if not profile:
             return error_response("Profile not found", 404)

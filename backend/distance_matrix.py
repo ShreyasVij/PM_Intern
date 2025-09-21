@@ -1,77 +1,18 @@
 # backend/distance_matrix.py
 """
-Distance matrix for top 30 Indian cities using latitude/longitude and Haversine formula.
+Distance calculation using a static hardcoded city coordinates dictionary.
+This module imports CITY_COORDINATES from backend.city_coords.
 """
 
-CITY_COORDINATES = {
-	"gurgaon": (28.4595, 77.0266),
-	"bhubaneswar": (20.2961, 85.8245),
-	"mysore": (12.2958, 76.6394),
-	"trivandrum": (8.5241, 76.9366),  # Thiruvananthapuram
-	"kochi": (9.9312, 76.2673),
-	"guwahati": (26.1445, 91.7362),
-	"jamshedpur": (22.8046, 86.2029),
-	"dehradun": (30.3165, 78.0322),
-	"mangalore": (12.9141, 74.8560),
-	"siliguri": (26.7271, 88.3953),
-	"gandhinagar": (23.2156, 72.6369),
-	"pondicherry": (11.9416, 79.8083),
-	"agra": (27.1767, 78.0081),
-	"ahmedabad": (23.0225, 72.5714),
-	"amritsar": (31.6340, 74.8723),
-	"aurangabad": (19.8762, 75.3433),
-	"bengaluru": (12.9716, 77.5946),
-	"bhopal": (23.2599, 77.4126),
-	"chandigarh": (30.7333, 76.7794),
-	"chennai": (13.0827, 80.2707),
-	"coimbatore": (11.0168, 76.9558),
-	"delhi": (28.6139, 77.2090),
-	"dhanbad": (23.7957, 86.4304),
-	"faridabad": (28.4089, 77.3178),
-	"ghaziabad": (28.6692, 77.4538),
-	"gwalior": (26.2183, 78.1828),
-	"howrah": (22.5958, 88.2636),
-	"hyderabad": (17.3850, 78.4867),
-	"indore": (22.7196, 75.8577),
-	"jabalpur": (23.1815, 79.9864),
-	"jaipur": (26.9124, 75.7873),
-	"jodhpur": (26.2389, 73.0243),
-	"kalyan-dombivli": (19.2403, 73.1305),
-	"kanpur": (26.4499, 80.3319),
-	"kolkata": (22.5726, 88.3639),
-	"kota": (25.2138, 75.8648),
-	"lucknow": (26.8467, 80.9462),
-	"ludhiana": (30.9005, 75.8573),
-	"madurai": (9.9252, 78.1198),
-	"meerut": (28.9845, 77.7064),
-	"mohali": (30.7046, 76.7179),
-	"mumbai": (19.0760, 72.8777),
-	"nagpur": (21.1458, 79.0882),
-	"nashik": (19.9975, 73.7898),
-	"navi mumbai": (19.0330, 73.0297),
-	"patna": (25.5941, 85.1376),
-	"pimpri-chinchwad": (18.6298, 73.7997),
-	"prayagraj": (25.4358, 81.8463),
-	"pune": (18.5204, 73.8567),
-	"raipur": (21.2514, 81.6296),
-	"rajkot": (22.3039, 70.8022),
-	"ranchi": (23.3441, 85.3096),
-	"srinagar": (34.0837, 74.7973),
-	"surat": (21.1702, 72.8311),
-	"thane": (19.2183, 72.9781),
-	"vadodara": (22.3072, 73.1812),
-	"varanasi": (25.3176, 82.9739),
-	"vasai-virar": (19.3919, 72.8397),
-	"vijayawada": (16.5062, 80.6480),
-	"visakhapatnam": (17.6868, 83.2185),
-}
+from backend.city_coords import CITY_COORDINATES
 
 from math import radians, sin, cos, sqrt, atan2
 
 # Common city name mappings for better matching
 CITY_ALIASES = {
+	# Must map to keys that exist in CITY_COORDINATES
 	"mumbai": ["bombay", "mumbai"],
-	"bangalore": ["bengaluru", "bangalore"],
+	"bengaluru": ["bengaluru", "bangalore", "blr"],
 	"kolkata": ["calcutta", "kolkata"],
 	"chennai": ["madras", "chennai"],
 	"hyderabad": ["hyderabad"],
@@ -82,11 +23,27 @@ CITY_ALIASES = {
 	"lucknow": ["lucknow"],
 	"kanpur": ["kanpur"],
 	"agra": ["agra"],
-	"varanasi": ["varanasi", "banaras", "benares"],
+	"varanasi": ["varanasi", "banaras", "benares", "benaras"],
 	"rajkot": ["rajkot"],
 	"vijayawada": ["vijayawada"],
 	"madurai": ["madurai"],
+	"visakhapatnam": ["visakhapatnam", "vizag"],
+	"pondicherry": ["pondicherry", "puducherry"],
+	"trivandrum": ["trivandrum", "thiruvananthapuram"],
+	"prayagraj": ["prayagraj", "allahabad"],
+	"gurgaon": ["gurgaon", "gurugram"],
+	"navi mumbai": ["navi mumbai", "navimumbai"],
+	"pimpri-chinchwad": ["pimpri-chinchwad", "pimpri chinchwad"],
+	"kalyan-dombivli": ["kalyan-dombivli", "kalyan dombivli"],
 }
+
+def _basic_normalize(city: str) -> str:
+    if not city:
+        return ""
+    s = city.strip().lower()
+    # collapse runs of spaces and remove leading/trailing punctuation-like chars
+    s = " ".join(s.split())
+    return s
 
 def normalize_city_name(city: str) -> str:
 	"""
@@ -94,7 +51,7 @@ def normalize_city_name(city: str) -> str:
 	"""
 	if not city:
 		return ""
-	city_lower = city.strip().lower()
+	city_lower = _basic_normalize(city)
 	for standard_name, aliases in CITY_ALIASES.items():
 		if city_lower in aliases:
 			return standard_name

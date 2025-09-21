@@ -1,6 +1,4 @@
 # backend/ml_model.py
-import json
-import os
 from rapidfuzz import fuzz
 import difflib
 try:
@@ -69,32 +67,19 @@ def find_nearest_city(input_city: str, cities: list[dict]):
 
 # ----------------- Skill Helpers -----------------
 def _load_synonyms():
-    base_dir = os.path.dirname(os.path.dirname(__file__))  # go up from backend/
-    path = os.path.join(base_dir, "data", "skills_synonyms.json")
+    """Load skill synonyms strictly from MongoDB (Atlas). No JSON fallback."""
     try:
-        with open(path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-            # Handle both list format (current) and dict format
-            if isinstance(data, list):
-                # Convert list of objects to dict
-                synonyms_dict = {}
-                for item in data:
-                    if isinstance(item, dict) and "skill" in item:
-                        skill = item["skill"].lower().strip()
-                        synonyms_dict[skill] = skill
-                        # Add synonyms if they exist
-                        if "synonyms" in item and item["synonyms"]:
-                            for syn in item["synonyms"].split(","):
-                                syn_clean = syn.strip().lower()
-                                if syn_clean:
-                                    synonyms_dict[syn_clean] = skill
-                return synonyms_dict
-            elif isinstance(data, dict):
-                return data
-            else:
-                return {}
+        from backend.db import load_data
+        syn_rows = load_data('skills_synonyms') or []
+        mapping = {}
+        for row in syn_rows:
+            alias = str(row.get('alias', '')).strip().lower()
+            canonical = str(row.get('canonical', '')).strip().lower()
+            if alias and canonical:
+                mapping[alias] = canonical
+        return mapping
     except Exception as e:
-        print(f"[ERROR] Failed to load skills_synonyms.json: {e}")
+        print(f"[ERROR] DB load for skills_synonyms failed: {e}")
         return {}
 
 _SKILL_SYNONYMS = _load_synonyms()
