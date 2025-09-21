@@ -179,5 +179,21 @@
     ],
     "created_at": "2025-09-20T16:19:24.093046",
     "updated_at": "2025-09-20T17:03:12.098168"
+  },
+  {
+    "candidate_id": "CAND_9cc5999a",
+    "username": "abrakadabra",
+    "name": "abrakadabra",
+    "skills_possessed": [
+      "java"
+    ],
+    "location_preference": "chandigarh",
+    "education_level": "Undergraduate",
+    "field_of_study": "ece",
+    "sector_interests": [
+      "tech"
+    ],
+    "created_at": "2025-09-20T17:35:19.113750",
+    "updated_at": "2025-09-20T17:35:28.440599"
   }
 ]
