@@ -1,10 +1,13 @@
-// Ensure we run from backend origin to avoid CORS/session issues when using Live Server
+// Ensure we run from backend origin during local development only
 (function enforceBackendOrigin() {
     try {
         const host = window.location.host || '';
-        if (!/:3000$/.test(host)) {
+        const port = window.location.port || '';
+        const isLocalHost = /^localhost(:\d+)?$/.test(host) || /^127\.0\.0\.1(:\d+)?$/.test(host);
+        // Only redirect when running locally (localhost/127.0.0.1) and not already on port 3000
+        if (isLocalHost && port !== '3000') {
             const target = `http://127.0.0.1:3000${window.location.pathname}${window.location.search}${window.location.hash}`;
-            console.warn('Redirecting to backend origin for proper API access:', target);
+            console.warn('Redirecting to backend origin for proper API access (dev only):', target);
             window.location.replace(target);
         }
     } catch (e) {
