@@ -43,7 +43,7 @@ def find_nearest_city(input_city: str, cities: list[dict]):
     return the best matching city (string match or distance-based nearest).
     Returns (city_name_or_None, distance_or_None)
     """
-    print(f"🔍 Finding nearest city for: '{input_city}'")
+    print(f"Finding nearest city for: '{input_city}'")
     db_city_names = [c.get("name") for c in cities if c.get("name")]
 
     if not db_city_names:

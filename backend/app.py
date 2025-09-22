@@ -199,7 +199,7 @@ def find_candidate_index_by_name_location(candidates, name, location):
 # ---------------- Routes ----------------
 @app.route("/")
 def home():
-    return "✅ Internship Recommendation Backend is running!"
+    return "Internship Recommendation Backend is running!"
 
 
 

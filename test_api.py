@@ -10,7 +10,7 @@ BASE_URL = "http://127.0.0.1:3000"
 def test_endpoint(endpoint, description):
     """Test an API endpoint and print results"""
     url = f"{BASE_URL}{endpoint}"
-    print(f"\n🔹 Testing: {description}")
+    print(f"\nTesting: {description}")
     print(f"URL: {url}")
     
     try:
@@ -20,23 +20,23 @@ def test_endpoint(endpoint, description):
         if response.status_code == 200:
             try:
                 data = response.json()
-                print(f"✅ Success - Data type: {type(data)}")
+                print(f"Success - Data type: {type(data)}")
                 if isinstance(data, dict):
                     print(f"Keys: {list(data.keys())}")
                 elif isinstance(data, list):
                     print(f"List length: {len(data)}")
             except:
-                print(f"✅ Success - Text response: {response.text[:100]}...")
+                print(f"Success - Text response: {response.text[:100]}...")
         else:
-            print(f"❌ Error: {response.status_code}")
+            print(f"Error: {response.status_code}")
             print(f"Response: {response.text}")
             
     except requests.exceptions.RequestException as e:
-        print(f"❌ Connection error: {e}")
+        print(f"Connection error: {e}")
 
 def main():
     """Test all main endpoints"""
-    print("🚀 Testing PM Intern API Endpoints")
+    print("Testing PM Intern API Endpoints")
     
     # Test basic endpoints
     test_endpoint("/", "Home endpoint")
@@ -48,7 +48,7 @@ def main():
     test_endpoint("/api/recommendations/test123", "Recommendations (non-existent user)")
     test_endpoint("/api/recommendations/by_internship/123", "Recommendations by internship")
     
-    print("\n🎯 Test completed!")
+    print("\nTest completed!")
 
 if __name__ == "__main__":
     main()

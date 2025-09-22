@@ -61,10 +61,10 @@ class DatabaseManager:
             
             # Test connection
             self._client.admin.command('ping')
-            log(f"✅ Successfully connected to MongoDB: {DB_NAME}")
+            log(f"Successfully connected to MongoDB: {DB_NAME}")
             
         except errors.ServerSelectionTimeoutError:
-            log_error("❌ MongoDB connection timeout. Is MongoDB running?")
+            log_error("MongoDB connection timeout. Is MongoDB running?")
             self._client = None
             self._db = None
         except Exception as e:

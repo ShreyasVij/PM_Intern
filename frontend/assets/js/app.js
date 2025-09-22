@@ -591,9 +591,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (recSearchInput && recLocationInput) {
         recSearchInput.addEventListener('input', debouncedRender);
         recLocationInput.addEventListener('input', debouncedRender);
-        console.log('✅ Search event listeners attached'); // Debug log
+        console.log('Search event listeners attached'); // Debug log
     } else {
-        console.error('❌ Search input elements not found!', {recSearchInput, recLocationInput});
+        console.error('Search input elements not found!', {recSearchInput, recLocationInput});
     }
     
     // Ensure login controls reflect current state immediately
@@ -614,11 +614,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const tryLoadRecs = () => {
                 const cid = localStorage.getItem('candidate_id');
                 if (cid) {
-                    console.log('✅ Found candidate_id, loading recommendations');
+                    console.log('Found candidate_id, loading recommendations');
                     loadPersonalizedRecommendations();
                 } else if (retryCount < maxRetries) {
                     retryCount++;
-                    console.log(`⏳ Waiting for candidate_id... (${retryCount}/${maxRetries})`);
+                    console.log(`Waiting for candidate_id... (${retryCount}/${maxRetries})`);
                     setTimeout(tryLoadRecs, 500); // Increased interval from 300ms to 500ms
                 } else {
                     console.log('❌ Max retries reached waiting for candidate_id, stopping polling');
@@ -661,7 +661,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         localStorage.setItem('lastDataLoad', now.toString());
     } else if (!isInitialized) {
-        console.log('✅ Data was loaded recently and available, skipping auto-load');
+        console.log('Data was loaded recently and available, skipping auto-load');
         isInitialized = true; // Mark as initialized
         
         // Check if AI state exists but data is missing - clear AI state if so
@@ -673,11 +673,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Data is available, just load personalized recommendations
         loadPersonalizedRecsWhenReady();
     } else {
-        console.log('⚠️ Script already initialized, skipping data load');
+        console.log('Script already initialized, skipping data load');
     }
 
     checkLoginStatus();
-    console.log('✅ App initialization complete');
+    console.log('App initialization complete');
 
     // Wire up right-panel toggle buttons
     const btnPers = document.getElementById('togglePersonalized');

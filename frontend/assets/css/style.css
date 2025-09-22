@@ -1,9 +1,9 @@
 /* Light theme (default) */
 :root {
-  --primary: #6366f1;
-  --primary-hover: #5855eb;
-  --primary-light: rgba(99, 102, 241, 0.1);
-  --secondary: #f59e0b;
+  --primary: #1e3a8a;
+  --primary-hover: #1e40af;
+  --primary-light: rgba(30, 58, 138, 0.1);
+  --secondary: #0f766e;
   --success: #10b981;
   --error: #ef4444;
   --warning: #f59e0b;
@@ -26,10 +26,10 @@
 
 /* === True Black Dark Theme (Completed) === */
 [data-theme="dark"] {
-  --primary: #8183f7;
-  --primary-hover: #9698fa;
-  --primary-light: rgba(129, 131, 247, 0.1);
-  --secondary: #f6ae3b;
+  --primary: #3b82f6;
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(59, 130, 246, 0.1);
+  --secondary: #14b8a6;
   --success: #13ce92;
   --error: #f05f5f;
   --warning: #f6ae3b;
