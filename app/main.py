@@ -95,8 +95,9 @@ def create_app(config_name=None):
     
     @app.route('/')
     def home():
-        """Home endpoint"""
-        return "PM Internship Recommendation Backend is running!"
+        """Redirect root to the frontend UI"""
+        from flask import redirect
+        return redirect('/frontend/pages/index.html')
     
     # Static file serving for frontend
     @app.route('/frontend/<path:filename>')
